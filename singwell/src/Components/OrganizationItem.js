@@ -8,9 +8,14 @@ class OrganizationItem extends Component {
   render() {
   	console.log(this.props)
     return (
-      <li className="Organization">
-      	<strong>{this.props.organization.title}:</strong> {this.props.organization.category}
-      </li>
+    	<ul className="Organization">
+	      <li >
+	      	{this.props.organization.name} 
+	      </li>
+	      <li >
+	      	{this.props.organization.description} 
+	      </li>
+		</ul>
     );
   }
 }

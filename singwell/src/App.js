@@ -33,26 +33,11 @@ class App extends Component {
     });
   }
 
-  getOrganizations() {
-    this.setState({organizations: [
-        {
-          title: 'business website',
-          category: 'web design'
-        }
-      ]});
-  }
-
-  //fires off when component is rerendered
-  //if calling from API call them from this 
-  // or componnentDidMount()
-
-  componentWillMount() {
-      this.getOrganizations();
-  }
+  // componentWillMount() {
+  // }
 
   componentDidMount() {
-    this.getTodos();
-
+      this.getTodos();
   }
 
   handleAddOrganization(organization) {

@@ -9,16 +9,14 @@ class Organizations extends Component {
   render() {
 
   	let organizationItems;
-  	console.log(this.props.organizations)
 	if(this.props.organizations) {
 		organizationItems = this.props.organizations.map(organization => {
 			return (
-				<OrganizationItem key= {organization.title} organization={organization} />
+				<OrganizationItem key= {organization.name} organization={organization} />
 			);
 		});
 
 	}
-  	console.log(this.props)
     return (
       <div className="Organizations">
       	<h3> Latest Organizations </h3>
