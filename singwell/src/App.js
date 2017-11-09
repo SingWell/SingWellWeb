@@ -1,18 +1,72 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Organizations from './Components/Organizations'
+import AddOrganization from './Components/AddOrganization'
+import $ from 'jquery';
 import './App.css';
 
 class App extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      organizations: [
+        
+      ],
+      todos: []
+
+    }
+  }
+
+  getTodos() {
+    $.ajax({
+      url: "https://jsonplaceholder.typicode.com/todos",
+      dataType: 'json',
+      cache: false, 
+      success: function(data) {
+        this.setState({todos: data}, function(){
+          console.log(this.state);
+        })
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.log(err);
+      }
+    });
+  }
+
+  getOrganizations() {
+    this.setState({organizations: [
+        {
+          title: 'business website',
+          category: 'web design'
+        }
+      ]});
+  }
+
+  //fires off when component is rerendered
+  //if calling from API call them from this 
+  // or componnentDidMount()
+
+  componentWillMount() {
+      this.getOrganizations();
+  }
+
+  componentDidMount() {
+    this.getTodos();
+
+  }
+
+  handleAddOrganization(organization) {
+    let organizations = this.state.organizations;
+    organizations.push(organization);
+    this.setState({organizations:organizations});
+  }
+
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <AddOrganization addOrganization={this.handleAddOrganization.bind(this)} />
+        <Organizations organizations={this.state.organizations}/>
       </div>
     );
   }
