@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import OrganizationItem from './OrganizationItem';
 
 
-class Organizations extends Component {
-	
 
+class Organizations extends Component {
 
   render() {
 
