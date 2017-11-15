@@ -11,7 +11,7 @@ class OrganizationItem extends Component {
     return (
     	<ul className="Organization">
 	      <li >
-	      	<Link to={`/roster/1`}>{this.props.organization.name}</Link>
+	      	<Link to={`/`}>{this.props.organization.name}</Link>
 	      </li>
 		</ul>
     );

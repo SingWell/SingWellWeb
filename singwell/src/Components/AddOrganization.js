@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 
 class AddOrganization extends Component {
 
@@ -257,13 +258,31 @@ class AddOrganization extends Component {
 		this.setState({newOrganization:{
 			name: this.refs.name.value,
 			description: this.refs.description.value,
-			streetAddress: this.refs.streetAddress.value,
-			city: this.refs.city.value,
-			state: this.refs.state.value,
-			zipcode: this.refs.zipcode.value,
-			phoneNumber: this.refs.phoneNumber.value
+			address: this.refs.streetAddress.value + ", " + this.refs.city.value + ", " + this.refs.state.value + " " + this.refs.zipcode.value,
+			owner: 1
+			// streetAddress: this.refs.streetAddress.value,
+			// city: this.refs.city.value,
+			// state: this.refs.state.value,
+			// zipcode: this.refs.zipcode.value,
+			// phoneNumber: this.refs.phoneNumber.value
 		}}, function() {
-			this.props.addOrganization(this.state.newOrganization);
+			// this.props.addOrganization(this.state.newOrganization);
+			console.log(this.state.newOrganization)
+			console.log(JSON.stringify(this.state.newOrganization))
+			$.ajax({
+			  type: "POST",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
+		      dataType: 'json',
+		      data: JSON.stringify(this.state.newOrganization),
+		      success: function(data) {
+		        this.setState({orgPost: data}, function(){
+		          console.log(this.state);
+		        })
+		      }.bind(this),
+		      error: function(xhr, status, err) {
+		        console.log(err);
+		      }
+		    });
 		});
   		e.preventDefault();
   	}

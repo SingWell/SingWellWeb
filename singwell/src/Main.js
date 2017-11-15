@@ -8,56 +8,34 @@ import $ from 'jquery';
 
 class Main extends Component {
 
-constructor() {
-    super();
-    this.state = {
-      organizations: [
-        
-      ],
-      todos: []
+	componentWillMount() {
+    	$.ajax({
+	      type: "GET",
+	      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
+	      dataType: 'json',
+	      cache: false, 
+	      success: function(data) {
+	        this.setState({orgGet: data}, function(){
+	          console.log(this.state);
+	        })
+	      }.bind(this),
+	      error: function(xhr, status, err) {
+	        console.log(err);
+	      }
+	    });
+	  }
 
-    }
-  }
 
-  getTodos() {
-    $.ajax({
-      url: "https://jsonplaceholder.typicode.com/todos",
-      dataType: 'json',
-      cache: false, 
-      success: function(data) {
-        this.setState({todos: data}, function(){
-          console.log(this.state);
-        })
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.log(err);
-      }
-    });
-  }
-
-  // componentWillMount() {
-  // }
-
-  componentDidMount() {
-      this.getTodos();
-  }
-
-  handleAddOrganization(organization) {
-    let organizations = this.state.organizations;
-    organizations.push(organization);
-    this.setState({organizations:organizations});
-  }
-
-render() {
-  return (
-  	<main>
-	    <Switch>
-	      <Route path='/' component={AddOrganization} />
-	      <Route path='/organizations' component={Organizations} />
-    	</Switch>
-  	</main>
-  );
-}
+	render() {
+	  return (
+	  	<main>
+		    <Switch>
+		      <Route exact path='/' component={AddOrganization} />
+		      <Route path='/organizations' component={Organizations} />
+	    	</Switch>
+	  	</main>
+	  );
+	}
 
 }
 
