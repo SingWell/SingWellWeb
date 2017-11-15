@@ -259,7 +259,7 @@ class AddOrganization extends Component {
 			name: this.refs.name.value,
 			description: this.refs.description.value,
 			address: this.refs.streetAddress.value + ", " + this.refs.city.value + ", " + this.refs.state.value + " " + this.refs.zipcode.value,
-			owner: 1
+			admins: []
 			// streetAddress: this.refs.streetAddress.value,
 			// city: this.refs.city.value,
 			// state: this.refs.state.value,
