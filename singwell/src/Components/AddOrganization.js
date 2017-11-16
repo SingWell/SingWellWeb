@@ -4,9 +4,9 @@ import $ from 'jquery';
 class AddOrganization extends Component {
 
 	constuctor(){
-		this.state = {
+		this.setState ( {
 			newOrganization:{}
-		}
+		});
 	}
 
 
@@ -259,21 +259,14 @@ class AddOrganization extends Component {
 			name: this.refs.name.value,
 			description: this.refs.description.value,
 			address: this.refs.streetAddress.value + ", " + this.refs.city.value + ", " + this.refs.state.value + " " + this.refs.zipcode.value,
-			admins: []
-			// streetAddress: this.refs.streetAddress.value,
-			// city: this.refs.city.value,
-			// state: this.refs.state.value,
-			// zipcode: this.refs.zipcode.value,
-			// phoneNumber: this.refs.phoneNumber.value
+			admins: [1]
 		}}, function() {
-			// this.props.addOrganization(this.state.newOrganization);
 			console.log(this.state.newOrganization)
-			console.log(JSON.stringify(this.state.newOrganization))
 			$.ajax({
 			  type: "POST",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
-		      dataType: 'json',
-		      data: JSON.stringify(this.state.newOrganization),
+		      dataType: 'application/json',
+		      data: this.state.newOrganization,
 		      success: function(data) {
 		        this.setState({orgPost: data}, function(){
 		          console.log(this.state);
