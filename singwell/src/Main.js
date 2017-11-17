@@ -3,8 +3,8 @@ import { Switch, Route } from 'react-router-dom'
 import Organizations from './Components/Organizations'
 import AddOrganization from './Components/AddOrganization'
 import AddChoir from './Components/AddChoir'
+
 import $ from 'jquery';
-// import Home from './Home'
 
 
 class Main extends Component {
@@ -34,6 +34,7 @@ class Main extends Component {
 		      <Route exact path='/' component={AddOrganization} />
 		      <Route exact path='/organizations' component={Organizations} />
 		      <Route path='/organizations/:id/choirs' component={AddChoir} />
+
 	    	</Switch>
 	  	</main>
 	  );
