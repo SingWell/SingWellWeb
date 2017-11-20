@@ -6,17 +6,16 @@ class AddOrganization extends Component {
 
 	constructor(){
 		super();
+		
+	}
 
+	componentWillMount() {
 		this.setState ( {
 			newOrganization:{},
 			fireRedirect: false,
 			orgID: null
 			
 		});
-		this.state = {
-			
-		}
-		
 	}
 
 
@@ -295,7 +294,7 @@ class AddOrganization extends Component {
 
   render() {
   	const { from } = this.props.location.state || '/';
-  	const {fireRedirect} = this.state;
+  	const { fireRedirect } = this.state;
   	const { orgID } = this.state;
 
 

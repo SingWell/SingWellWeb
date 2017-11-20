@@ -1,39 +1,45 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import { Redirect } from 'react-router'
 
 class AddChoir extends Component {
 
-	constuctor(){
-		this.setState ( {
-			newChoir:{}
-		});
-	}
-
-
-	static defaultProps = {
+	constructor() {
+		super();
 		
 	}
 
+	componentWillMount() {
+		this.setState ( {
+			newChoir:{},
+			fireRedirect: false,
+			choirID: null
+		});
+	}
 
 	handleSubmit(e){
 		this.setState({newChoir:{
 			name: this.refs.name.value,
-			meeting_day: 1,
-			meeting_day_start_hour: "11:00",
-			meeting_day_end_hour: "12:00",
-			organization: 1,
+			meeting_day: this.refs.meetingDay.value,
+			meeting_day_start_hour: this.refs.meetingStartTime.value,
+			meeting_day_end_hour: this.refs.meetingEndTime.value,
+			organization: this.props.match.params.orgID,
 			choristers: [
 				1
 			]
 		}}, function() {
-			console.log(this.state.newChoir)
 			$.ajax({
 			  type: "POST",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/1/choirs/",
-		      dataType: 'application/json',
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/",
+		      dataType: 'json',
 		      data: this.state.newChoir,
 		      success: function(data) {
-		        this.setState({choirPost: data}, function(){
+		        this.setState(
+		        	{
+		        		choirPost: data,
+		        		choirID: data.id,
+		        		fireRedirect: true
+		        	}, function(){
 		          console.log(this.state);
 		        })
 		      }.bind(this),
@@ -48,6 +54,9 @@ class AddChoir extends Component {
 
   render() {
 
+  	const { from } = this.props.location.state || '/';
+  	const { fireRedirect } = this.state;
+  	const { choirID } = this.state;
 
     return (
       <div>
@@ -75,6 +84,9 @@ class AddChoir extends Component {
       		</div>
       		<input type="submit" value="Submit" />
       	</form>
+      	{fireRedirect && (
+          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/choirs/' + choirID}/>
+        )}
       </div>
     );
   }
