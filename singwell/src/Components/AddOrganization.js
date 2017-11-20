@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import { Redirect } from 'react-router'
 
 class AddOrganization extends Component {
 
-	constuctor(){
+	constructor(){
+		super();
+
 		this.setState ( {
-			newOrganization:{}
+			newOrganization:{},
+			fireRedirect: false,
+			orgID: null
+			
 		});
+		this.state = {
+			
+		}
+		
 	}
 
 
@@ -265,12 +275,15 @@ class AddOrganization extends Component {
 			$.ajax({
 			  type: "POST",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
-		      dataType: 'application/json',
+		      dataType: 'json',
 		      data: this.state.newOrganization,
 		      success: function(data) {
-		        this.setState({orgPost: data}, function(){
-		          console.log(this.state);
-		        })
+		        this.setState(
+		        	{
+		        		orgPost: data,
+		        		orgID: data.id,
+		        		fireRedirect: true 
+		        	});
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
@@ -281,6 +294,10 @@ class AddOrganization extends Component {
   	}
 
   render() {
+  	const { from } = this.props.location.state || '/';
+  	const {fireRedirect} = this.state;
+  	const { orgID } = this.state;
+
 
   	let stateOptions = this.props.states.map(state => {
   		return <option key={state.name} value={state.abbreviation}>{state.abbreviation}</option>
@@ -326,6 +343,9 @@ class AddOrganization extends Component {
       		</div>
       		<input type="submit" value="Submit" />
       	</form>
+      	{fireRedirect && (
+          <Redirect to={from || '/organizations/' + orgID}/>
+        )}
       </div>
     );
   }

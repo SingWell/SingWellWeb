@@ -21,7 +21,7 @@ class Sidebar extends Component {
 	render() {
 	  return (
 	  	<div style={{width: '245px'}}>
-		    <Layout fixedDrawer>
+		    {/* <Layout fixedDrawer>
 		        <Drawer title="Title">
 		            <Navigation>
 		                <a href="#">Link</a>
@@ -31,7 +31,7 @@ class Sidebar extends Component {
 		            </Navigation>
 		        </Drawer>
 		        <Content />
-		    </Layout>
+		    </Layout> */}
 		</div>
 	 	
 	  );
