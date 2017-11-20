@@ -20,7 +20,8 @@ class Sidebar extends Component {
 
 	render() {
 	  return (
-	  	<div style={{width: '245px'}}>
+	  	// was 245
+	  	<div style={{width: '0px'}}>
 		    {/* <Layout fixedDrawer>
 		        <Drawer title="Title">
 		            <Navigation>

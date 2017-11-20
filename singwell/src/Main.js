@@ -28,5 +28,3 @@ class Main extends Component {
 }
 
 export default Main
-
- // <Route exact path='/' component={Home}/>

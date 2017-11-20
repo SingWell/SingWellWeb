@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import $ from 'jquery';
 import '../css/Organizations.css'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardText, CardActions,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 
@@ -49,33 +49,139 @@ class Organizations extends Component {
       });
     }
 
-  render() {
+    constructor(props) {
+        super(props);
 
+        this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+
+        this.state = {
+            activeHeaderTab: 0
+        };
+    }
+
+    onChangeHeaderTab(tabId) {
+        this.setState({
+            activeHeaderTab: tabId
+        });
+    }
+
+    renderTabOverview() {
+        return (
+            <div>
+                <List>
+                  <ListItem>
+                    <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
+                  </ListItem>
+                  <ListItem>
+                    <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
+                  </ListItem>
+                </List>
+            </div>
+        );
+    }
+
+    renderChoirs() {
         let choirItems;
         choirItems = this.state.choirGet.map(choir => {
+            console.log(choir)
             return (
-                <ChoirItem key= {choir.id} choir={choir} orgID={this.props.match.params.orgID}/>
+                <ChoirItem key= {choir.id} choir={choir} orgID={this.props.match.params.orgID} history={this.props.history}/>
             );
         });
+        return <div>
+                    <Grid component="section" className="section--center" shadow={0} noSpacing>
+                    <Cell col={12}>
+                        <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/choirs/')}>
+                            <Icon name="add" />
+                        </FABButton>
+                    </Cell>
+                    
+                        {choirItems}
+                        
+                    </Grid>
+                </div>
 
+    }
+
+    renderActiveTabContent() {
+        switch (this.state.activeHeaderTab) {
+            case 0: return this.renderTabOverview();
+            case 1: return this.renderChoirs();
+            default: return <div>Nothing to see here :-)</div>;
+        }
+    }
+
+
+  render() {
+        
 
       return (
-        <div className="Organizations">
-         <h1> {this.state.orgGet.name} </h1>
-         <h2> {this.state.orgGet.description} </h2>
-         <h3> Choirs </h3>
-         <ul className="Choirs">
-            {choirItems}
-            <li>
-                <Link to={`/organizations/${this.props.match.params.orgID}/choirs/`}>Add Choir</Link>
-              </li>
-         </ul>
-            
 
+                <div className={classNames('mdl-demo', 'mdl-base')}>
+                    <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
+                        <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
+                            <HeaderRow className="mdl-layout--large-screen-only" />
+                            <HeaderRow className="mdl-layout--large-screen-only">
+                                <h3>{this.state.orgGet.name}</h3>
+                            </HeaderRow>
+                            <HeaderRow className="mdl-layout--large-screen-only" />
+                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                                <Tab>Overview</Tab>
+                                <Tab>Choirs</Tab>
+                            </HeaderTabs>
+                        </Header>
+                        <Content component="main">
+                            <div className="react-mdl-layout__tab-panel">
+                                {this.renderActiveTabContent()}
+                            </div>
+                            {/* <Footer size="mega">
+                                <FooterSection type="middle">
+                                    <FooterDropDownSection title="Features">
+                                        <FooterLinkList>
+                                            <a href="#">About</a>
+                                            <a href="#">Terms</a>
+                                            <a href="#">Partners</a>
+                                            <a href="#">Updates</a>
+                                        </FooterLinkList>
+                                    </FooterDropDownSection>
+                                    <FooterDropDownSection title="Details">
+                                        <FooterLinkList>
+                                            <a href="#">Specs</a>
+                                            <a href="#">Tools</a>
+                                            <a href="#">Resources</a>
+                                        </FooterLinkList>
+                                    </FooterDropDownSection>
+                                    <FooterDropDownSection title="Technology">
+                                        <FooterLinkList>
+                                            <a href="#">How it works</a>
+                                            <a href="#">Patterns</a>
+                                            <a href="#">Usage</a>
+                                            <a href="#">Products</a>
+                                            <a href="#">Contracts</a>
+                                        </FooterLinkList>
+                                    </FooterDropDownSection>
+                                    <FooterDropDownSection title="FAQ">
+                                        <FooterLinkList>
+                                            <a href="#">Questions</a>
+                                            <a href="#">Answers</a>
+                                            <a href="#">Contact Us</a>
+                                        </FooterLinkList>
+                                    </FooterDropDownSection>
+                                </FooterSection>
+                                <FooterSection type="bottom" logo="More Information">
+                                    <FooterLinkList>
+                                        <a href="https://developers.google.com/web/starter-kit/">Web Starter Kit</a>
+                                        <a href="#">Help</a>
+                                        <a href="#">Privacy & Terms</a>
+                                    </FooterLinkList>
+                                </FooterSection>
+                            </Footer> */}
+                        </Content>
+                    </Layout>
+                    
+                </div>
 
-        </div>
-
-      );
+        );
     }
 }
 

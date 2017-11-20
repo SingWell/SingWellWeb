@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
+import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    FooterDropDownSection } from  'react-mdl';
+import { Dropdown, SelectField, Option } from 'react-mdl-extra';
+import { getColorClass, getTextColorClass } from '../css/palette';
+import { MDLSelectField } from 'react-mdl-select';
+
+
+
 
 class AddOrganization extends Component {
 
@@ -13,8 +23,8 @@ class AddOrganization extends Component {
 		this.setState ( {
 			newOrganization:{},
 			fireRedirect: false,
-			orgID: null
-			
+			orgID: null,
+			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
 		});
 	}
 
@@ -22,6 +32,7 @@ class AddOrganization extends Component {
 	static defaultProps = {
 		//         "name": "Alabama",
 		//         "abbreviation": "AL"
+		statesA:["AB", "BC"],
 		states: [
 		    {
 		        "name": "Alabama",
@@ -264,10 +275,11 @@ class AddOrganization extends Component {
 
 
 	handleSubmit(e){
+		console.log()
 		this.setState({newOrganization:{
-			name: this.refs.name.value,
-			description: this.refs.description.value,
-			address: this.refs.streetAddress.value + ", " + this.refs.city.value + ", " + this.refs.state.value + " " + this.refs.zipcode.value,
+			name: this.refs.name.inputRef.value,
+			description: this.refs.description.inputRef.value,
+			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
 			admins: [1]
 		}}, function() {
 			console.log(this.state.newOrganization)
@@ -296,6 +308,7 @@ class AddOrganization extends Component {
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
   	const { orgID } = this.state;
+  	const { buttonClasses } =this.state;
 
 
   	let stateOptions = this.props.states.map(state => {
@@ -303,49 +316,76 @@ class AddOrganization extends Component {
   	});
 
     return (
-      <div>
-      	<h3>Add Organization </h3>
-      	<form onSubmit={this.handleSubmit.bind(this)}> 
-      		<div>
-	      		<label>Name</label><br />
-	      		<input type="text" ref= "name" />
-      		</div>
-      		<div>
-	      		<label>Description</label><br />
-	      		<input type="text" ref= "description" />
-      		</div>
-      		<div>
-	      		<label>Street Address</label><br />
-	      		<input type="text" ref= "streetAddress" />
-      		</div>
-      		<div>
-	      		<label>City</label><br />
-	      		<input type="text" ref= "city" />
-      		</div>
-      		<div>
-	      		<label>State</label><br />
-	      		<select ref= "state">
-	      			{stateOptions}
-	      		</select>
-      		</div>
-      		<div>
-	      		<label>Zipcode</label><br />
-	      		<input type="text" ref= "zipcode" />
-      		</div>
-      		<div>
-	      		<label>Phone Number</label><br />
-	      		<input type="text" ref= "phoneNumber" />
-      		</div>
-      		<div>
-	      		<label>Email</label><br />
-	      		<input type="text" ref= "email" />
-      		</div>
-      		<input type="submit" value="Submit" />
-      	</form>
-      	{fireRedirect && (
-          <Redirect to={from || '/organizations/' + orgID}/>
-        )}
-      </div>
+
+    	<Card shadow={0} style={{ margin: '10px'}}>
+		    <CardTitle>Add Organization</CardTitle>
+		    <CardText>
+		       <form onSubmit={this.handleSubmit.bind(this)}>
+		       <Textfield
+				    onChange={() => {}}
+				    label="Name..."
+				    floatingLabel
+				    ref="name"
+				    style={{width: '200px'}}
+				/>
+		      	<Textfield
+				    onChange={() => {}}
+				    label="Description..."
+				    floatingLabel
+				    ref="description"
+				    rows={3}
+				    style={{width: '200px'}}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Street Address..."
+				    floatingLabel
+				    ref="streetAddress"
+				    style={{width: '200px'}}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="City..."
+				    floatingLabel
+				    ref="city"
+				    style={{width: '200px'}}
+				/>
+		      		<div>
+			      		<label>State</label><br />
+			      		<select ref= "state">
+			      			{stateOptions}
+			      		</select>
+		      		</div>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Zipcode..."
+				    floatingLabel
+				    ref="zipcode"
+				    style={{width: '200px'}}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Phone Number..."
+				    floatingLabel
+				    ref="phoneNumber"
+				    style={{width: '200px'}}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Email..."
+				    floatingLabel
+				    ref="email"
+				    style={{width: '200px'}}
+				/>
+				<br/>
+		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
+		      	</form>
+		      	{fireRedirect && (
+		          <Redirect to={from || '/organizations/' + orgID}/>
+		        )} 
+		    </CardText>
+		</Card>
+     
     );
   }
 }

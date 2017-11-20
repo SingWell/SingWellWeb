@@ -1,4 +1,12 @@
 .Organizations {
 
-	padding-left: 20px;
+	/*padding-left: 20px;*/
+}
+
+.demo-tabs {
+    width: 70%;
+    margin: auto;
+}
+.demo-tabs .content {
+    height: 100px;
 }
