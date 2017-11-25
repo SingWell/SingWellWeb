@@ -4,15 +4,21 @@
   "private": true,
   "dependencies": {
     "jquery": "^3.2.1",
+    "moment": "^2.19.2",
+    "moment-timezone": "^0.5.14",
     "react": "^16.0.0",
+    "react-day-picker": "^7.0.0",
     "react-dom": "^16.0.0",
     "react-mdl": "^1.10.3",
     "react-mdl-extra": "^1.5.0",
     "react-mdl-select": "^1.1.5",
+    "react-moment": "^0.6.8",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
-    "react-sidenav": "^2.1.2"
+    "react-sidenav": "^2.1.2",
+    "react-weekday-picker": "^1.0.8",
+    "react-weekly-day-picker": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -21,6 +27,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "react-icons-kit": "^1.0.7"
+    "react-icons-kit": "^1.0.7",
+    "react-times": "^2.2.8"
   }
 }
