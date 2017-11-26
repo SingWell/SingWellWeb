@@ -158,8 +158,8 @@ class AddChoir extends Component {
 		this.setState({newChoir:{
 			name: this.refs.name.inputRef.value,
 			meeting_day: this.refs.meetingDay.value,
-			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart,
-			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd,
+			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
+			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
 			organization: this.props.match.params.orgID,
 			choristers: [
 				1

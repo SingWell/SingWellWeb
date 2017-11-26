@@ -88,7 +88,8 @@ class Organizations extends Component {
                 <ChoirItem key= {choir.id} choir={choir} orgID={this.props.match.params.orgID} history={this.props.history}/>
             );
         });
-        return <div>
+        return (
+                <div>
                     <Grid component="section" className="section--center" shadow={0} noSpacing>
                     <Cell col={12}>
                         <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/choirs/')}>
@@ -100,6 +101,7 @@ class Organizations extends Component {
                         
                     </Grid>
                 </div>
+            );
 
     }
 
