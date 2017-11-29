@@ -15,6 +15,13 @@ import Moment from 'react-moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
+import ReactMaterialSelect from 'react-material-select'
+import 'react-material-select/lib/css/reactMaterialSelect.css'
+
+// import ReactMaterialDatePicker from 'react-material-datepicker'
+
+import DatePicker from 'material-ui/DatePicker';
+
 
 
 class AddEvent extends Component {
@@ -36,6 +43,7 @@ class AddEvent extends Component {
 	      focused,
 	      timezone,
 	      showTimezone,
+	      choir: {},
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -43,6 +51,8 @@ class AddEvent extends Component {
 	    this.onMinuteChange = this.onMinuteChange.bind(this);
 	    this.onTimeChange = this.onTimeChange.bind(this);
 	    this.handleFocusedChange = this.handleFocusedChange.bind(this);	
+
+	    this.callbackFunction = this.callbackFunction.bind(this)
 	}
 
 	onHourChange(hour) {
@@ -67,6 +77,16 @@ class AddEvent extends Component {
 	    const { focused } = this.state;
 	    this.setState({ focused: !focused });
 	  }
+
+	  callbackFunction(selected) {
+	   	 this.setState({choir: selected})
+	  }
+
+
+	  onDateChange(event, date) {
+		  // endDate will be undefined if 'range=false'
+		  console.log(date); 
+		}
 
 	componentWillMount() {
 		this.setState ( {
@@ -137,13 +157,13 @@ class AddEvent extends Component {
       timezone,
       showTimezone,
     } = this.state;
-
+	console.log(this.state.choirGet)
 
     let choirs;
     choirs = this.state.choirGet.map(choir => {
         console.log(choir)
         return (
-        	<option key={choir.id} value={choir.id}>{choir.name}</option>
+        	<option key={choir.id} dataValue={choir.id}>{choir.name}</option>
             
         );
     });
@@ -163,10 +183,8 @@ class AddEvent extends Component {
 					    ref="name"
 					    style={{width: '200px'}}
 					/>
-					<br/>
-					<label>Date of Event</label>
-					<br/>
-					<DayPickerInput onDayChange={day => console.log(day)} />
+					{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
+					<DatePicker floatingLabelText="Date of Event..." container="inline" onChange={this.onDateChange}/>
 		      		<br/>
 		      		<br/>
 		      		<label>Event Time:</label>
@@ -186,14 +204,11 @@ class AddEvent extends Component {
 					    label="Location..."
 					    floatingLabel
 					    ref="location"
-					    style={{width: '200px'}}
 					/>
 					<br/>
-					<label>Choir:</label> 
-					<br/>
-					<select ref= "choir">
-		      			{choirs}
-		      		</select>
+					<ReactMaterialSelect label="Choir..." onChange={this.callbackFunction}>
+		                {choirs}
+		            </ReactMaterialSelect>
 		      		<br/>
 		      		<br/>
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
