@@ -327,6 +327,7 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="name"
 				    style={{width: '200px'}}
+				    required="true"
 				/>
 		      	<Textfield
 				    onChange={() => {}}
@@ -369,6 +370,7 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="phoneNumber"
 				    style={{width: '200px'}}
+				    required="true"
 				/>
 		      		<Textfield
 				    onChange={() => {}}

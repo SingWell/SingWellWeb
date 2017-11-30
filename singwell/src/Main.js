@@ -4,7 +4,8 @@ import Organizations from './Components/Organizations'
 import AddOrganization from './Components/AddOrganization'
 import AddChoir from './Components/AddChoir'
 import Choir from './Components/Choir'
-
+import CreateProfile from './Components/CreateProfile'
+import Profile from './Components/Profile'
 import $ from 'jquery';
 
 
@@ -19,7 +20,8 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID' component={Organizations} />
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID' component={Choir} />
-
+		      <Route exact path='/profile/create' component={CreateProfile} />
+		      <Route exact path='/users/1' component={Profile} />
 	    	</Switch>
 	  	</main>
 	  );
