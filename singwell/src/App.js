@@ -8,11 +8,13 @@ import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+
 class App extends Component {
 
   render() {
     return (
-
       <div className="App" style={{display: "flex"}}>
         <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
 	        <Sidebar />
