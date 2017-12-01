@@ -20,7 +20,7 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID' component={Organizations} />
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID' component={Choir} />
-		      <Route exact path='/organizations/:orgID/choirs/:choirID/events' component={AddEvent} />
+		      <Route exact path='/organizations/:orgID/events' component={AddEvent} />
 
 	    	</Switch>
 	  	</main>
