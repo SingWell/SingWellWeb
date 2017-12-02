@@ -128,11 +128,12 @@ class Organizations extends Component {
 
     }
 
+
     renderEvents() {
         const {events} = this.state
         this.state.events = {};
         let eventItems = this.state.eventGet.map(event => {
-            console.log(moment(event.date).date())
+            console.log(event.id)
             if(typeof(events[moment(event.date).date()]) !== "undefined") {
                 events[moment(event.date).date()].push(event.name)
             } else {
@@ -140,6 +141,8 @@ class Organizations extends Component {
             }
             
         });
+
+
 
         function renderDay(day) {
           const date = day.getDate();
@@ -150,19 +153,32 @@ class Organizations extends Component {
             right: 0,
             fontSize: 20,
           };
-          const birthdayStyle = { fontSize: '0.8em', textAlign: 'left' };
+          const containerStyle = { 
+            margin:'2px',
+            border: '1px solid #3a87ad',
+            borderRadius: '3px',
+            position: 'relative',
+            display: 'block',
+            cursor: 'pointer'
+         };
+         const textStyle = {
+            fontSize: '0.8em', 
+            textAlign: 'left',
+            margin: '1.5px',
+         }
           const cellStyle = {
             height: 150,
             width: 160,
             position: 'relative',
           };
+
           return (
             <div style={cellStyle}>
               <div style={dateStyle}>{date}</div>
               {events[date] &&
                 events[date].map((name, i) => (
-                  <div key={i} style={birthdayStyle}>
-                    🎁 {name}
+                  <div onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events')} key={i} style={containerStyle}>
+                    <div style={textStyle}> {name} </div>
                   </div>
                 ))}
             </div>

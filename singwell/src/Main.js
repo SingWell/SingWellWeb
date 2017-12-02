@@ -5,6 +5,7 @@ import AddOrganization from './Components/AddOrganization'
 import AddChoir from './Components/AddChoir'
 import Choir from './Components/Choir'
 import AddEvent from './Components/AddEvent'
+import Event from './Components/Event'
 
 import $ from 'jquery';
 
@@ -21,6 +22,8 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID' component={Choir} />
 		      <Route exact path='/organizations/:orgID/events' component={AddEvent} />
+		      <Route exact path='/organizations/:orgID/events/:eventID' component={Event} />
+
 
 	    	</Switch>
 	  	</main>

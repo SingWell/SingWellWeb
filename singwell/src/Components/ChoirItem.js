@@ -34,10 +34,7 @@ class ChoirItem extends Component {
       </Cell>
     );
   }
-  // onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/choirs/' + this.props.choir.id)}
-  // <li>
-  //         <Link to={`/organizations/${this.props.orgID}/choirs/${this.props.choir.id}`}>{this.props.choir.name}</Link>
-  //       </li>
+
 }
 
 export default ChoirItem;
