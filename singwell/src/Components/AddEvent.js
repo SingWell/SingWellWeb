@@ -222,7 +222,7 @@ class AddEvent extends Component {
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
 		      	</form>
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID }/>
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID }/>
 		        )} 
 		    </CardText>
 		</Card>

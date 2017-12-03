@@ -9,6 +9,8 @@ import classNames from 'classnames';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
+import RosterItem from './RosterItem'
+
 
 
 
@@ -27,6 +29,7 @@ class Choir extends Component {
   componentWillMount() {
     this.setState ( {
         choirGet:{},
+        rosterGet:[],
         weekday: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
       });
 
@@ -44,7 +47,26 @@ class Choir extends Component {
           console.log(err);
         }
       });
+
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID + "/roster/",
+        dataType: 'json',
+        cache: false, 
+        success: function(data) {
+          this.setState({rosterGet: data}, function() {
+            console.log(this.state)
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });
+
+
     }
+
+
 
     onChangeHeaderTab(tabId) {
         this.setState({
@@ -76,21 +98,21 @@ class Choir extends Component {
     }
 
     renderRoster() {
+
+      let rosterItems;
+        rosterItems = this.state.rosterGet.map(person => {
+            return (
+                <RosterItem key= {person.id} person={person} history={this.props.history}/>
+            );
+        });
+
         return (
           <div>
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
             </FABButton>
             <List>
-              <ListItem>
-                <ListItemContent icon="today"></ListItemContent>
-              </ListItem>
-              <ListItem>
-                <ListItemContent icon="timer"></ListItemContent>
-              </ListItem>
-              <ListItem>
-                <ListItemContent icon="timer_off"></ListItemContent>
-              </ListItem>
+              { rosterItems }
             </List>
             </div>
         );

@@ -135,13 +135,16 @@ class Organizations extends Component {
         let eventItems = this.state.eventGet.map(event => {
             console.log(event.id)
             if(typeof(events[moment(event.date).date()]) !== "undefined") {
-                events[moment(event.date).date()].push(event.name)
+                events[moment(event.date).date()].push(event.name + "&&&" + event.id)
+                // events[moment(event.date).date()].push({"name":event.name, "id":event.id})
+               
             } else {
-                events[moment(event.date).date()] = [event.name]
+                events[moment(event.date).date()] = [event.name + "&&&" + event.id]
+                // events[moment(event.date).date()] = [{"name":event.name, "id":event.id}]
             }
             
         });
-
+        console.log(events)
 
 
         function renderDay(day) {
@@ -177,8 +180,8 @@ class Organizations extends Component {
               <div style={dateStyle}>{date}</div>
               {events[date] &&
                 events[date].map((name, i) => (
-                  <div onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events')} key={i} style={containerStyle}>
-                    <div style={textStyle}> {name} </div>
+                  <div onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events/' + name.split("&&&")[1])} key={i} style={containerStyle}>
+                    <div style={textStyle}> {name.split("&&&")[0]} </div>
                   </div>
                 ))}
             </div>
@@ -197,7 +200,7 @@ class Organizations extends Component {
                         <DayPicker
                           canChangeMonth={true}
                           className="Birthdays"
-                          renderDay={renderDay}
+                          renderDay={renderDay.bind(this)}
                         />
                                   
                     </Grid>
