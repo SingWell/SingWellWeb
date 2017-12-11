@@ -23,7 +23,7 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID' component={Choir} />
 		      <Route exact path='/profile/create' component={CreateProfile} />
-		      <Route exact path='/users/1' component={Profile} />
+		      <Route exact path='/viewprofile' component={Profile} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID/events' component={AddEvent} />
 	    	</Switch>
 	  	</main>

@@ -327,7 +327,7 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="name"
 				    style={{width: '200px'}}
-				    required="true"
+				    required={true}
 				/>
 		      	<Textfield
 				    onChange={() => {}}
@@ -370,7 +370,7 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="phoneNumber"
 				    style={{width: '200px'}}
-				    required="true"
+				    required={true}
 				/>
 		      		<Textfield
 				    onChange={() => {}}
@@ -378,6 +378,7 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="email"
 				    style={{width: '200px'}}
+				    required={true}
 				/>
 				<br/>
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />

@@ -10,11 +10,9 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 
 import '../css/AddChoir.css'
 
-import Moment from 'react-moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
-// import WeekdayPicker from "react-weekday-picker";
 
 class AddChoir extends Component {
 
@@ -224,6 +222,7 @@ class AddChoir extends Component {
 					    floatingLabel
 					    ref="name"
 					    style={{width: '200px'}}
+					    required={true}
 					/>
 					<br/>
 					<label>Meeting Day</label>

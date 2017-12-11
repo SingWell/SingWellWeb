@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import SelectField from 'material-ui/SelectField';
+import Card from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
@@ -16,12 +17,12 @@ class Profile extends Component {
 
 	componentWillMount() {
 		this.setState ( {
-        userGet:{},
+        userGet:{}
       });
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.orgID,
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile/",
         dataType: 'json',
         cache: false, 
         success: function(data) {
@@ -39,8 +40,7 @@ class Profile extends Component {
 	render() {
 
 		return (
-			
-				<p1>Hello</p1>
+			<h1>Profile</h1>
 
 		)
 

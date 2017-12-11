@@ -11,7 +11,7 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
-import Moment from 'react-moment';
+//import Moment from 'react-moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
