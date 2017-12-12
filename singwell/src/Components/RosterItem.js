@@ -22,7 +22,7 @@ class RosterItem extends Component {
 
     return (
 
-      <ListItem>
+      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
         <ListItemContent avatar="person" >{this.props.person.username}</ListItemContent>
       </ListItem>
     );

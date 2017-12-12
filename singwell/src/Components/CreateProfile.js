@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import { Redirect } from 'react-router'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Dropdown, SelectField, Option } from 'react-mdl-extra';
-import { getColorClass, getTextColorClass } from '../css/palette';
-import { MDLSelectField } from 'react-mdl-select';
+import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
+import { Card, CardTitle, CardText } from  'react-mdl';
+//import MuiThemeProvider from 'material-ui/styles';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import SelectField from 'material-ui/SelectField';
+import { MenuItem, TextField, RaisedButton, FlatButton } from 'material-ui/'
 
-
-
-
-class AddOrganization extends Component {
+class CreateProfile extends Component {
 
 	constructor(){
 		super();
@@ -21,18 +18,34 @@ class AddOrganization extends Component {
 
 	componentWillMount() {
 		this.setState ( {
-			newOrganization:{},
 			fireRedirect: false,
-			orgID: null,
-			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
+			user: null
+
 		});
 	}
 
-
-	static defaultProps = {
-		//         "name": "Alabama",
-		//         "abbreviation": "AL"
-		statesA:["AB", "BC"],
+	static defaultProps ={
+		instruments: [
+		  'Bassoon',
+		  'Cello',
+		  'Clarinet',
+		  'English Horn',
+		  'Euphonium',
+		  'Flute',
+		  'French Horn',
+		  'Guitar',
+		  'Oboe',
+		  'Organ',
+		  'Percussion',
+		  'Piano',
+		  'Saxophone',
+		  'String Bass',
+		  'Trombone',
+		  'Trumpet',
+		  'Tuba',
+		  'Viola',
+		  'Violin'
+		],
 		states: [
 		    {
 		        "name": "Alabama",
@@ -271,29 +284,62 @@ class AddOrganization extends Component {
 		        "abbreviation": "WY"
 		    }
 		]
+
 	}
 
+    handleChange = (event, index, values) => this.setState({values});
+
+	instrumentItems(values) {
+	    return this.props.instruments.map((instrument) => (
+			<MenuItem
+				key={instrument}
+				insetChildren={true}
+				checked={values && values.indexOf(instrument) > -1}
+				value={instrument}
+				primaryText={instrument}
+			/>
+    	));
+	}
+
+	stateItems(values) {
+		return this.props.states.map((state) => (
+			<MenuItem
+				key={state.name}
+				insetChildren={true}
+				checked={values && values.indexOf(state) > -1}
+				value={state.abbreviation}
+				primaryText={state.abbreviation}
+			/>
+		));
+	}
+  
 
 	handleSubmit(e){
-		console.log()
-		this.setState({newOrganization:{
-			name: this.refs.name.inputRef.value,
-			description: this.refs.description.inputRef.value,
-			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
-			admins: [1]
-		}}, function() {
-			console.log(this.state.newOrganization)
+		this.setState({profile:{
+			//fname: this.refs.fname.value,
+			//lname: this.refs.lname.value,
+			//email: this.refs.email.value,
+			phone_number: this.refs.phone.value,
+			bio: this.refs.bio.value, 
+			address: this.refs.address.value,
+			city: this.refs.city.value,
+			state: this.refs.state.value,
+			zip_code: this.refs.state.value,
+			//instruments: this.refs.instruments.value,
+			date_of_birth: this.refs.dob.value,
+		}},
+			function() {
+			console.log(this.state.profile)
 			$.ajax({
-			  type: "POST",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
+			  type: "PUT",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile",
 		      dataType: 'json',
-		      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-		      data: this.state.newOrganization,
+		      data: this.state.profile,
 		      success: function(data) {
 		        this.setState(
 		        	{
-		        		orgPost: data,
-		        		orgID: data.id,
+		        		profilePost: data,
+		        		user: 1,
 		        		fireRedirect: true 
 		        	});
 		      }.bind(this),
@@ -305,90 +351,107 @@ class AddOrganization extends Component {
   		e.preventDefault();
   	}
 
-  render() {
-  	const { from } = this.props.location.state || '/';
-  	const { fireRedirect } = this.state;
-  	const { orgID } = this.state;
-  	const { buttonClasses } =this.state;
+  	render() {
+	  	const { from } = this.props.location.state || '/';
+	  	const { fireRedirect } = this.state;
+	  	const { values } = this.state;
 
-
-  	let stateOptions = this.props.states.map(state => {
-  		return <option key={state.name} value={state.abbreviation}>{state.abbreviation}</option>
-  	});
-
-    return (
-
-    	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Organization</CardTitle>
+	    return (
+	      <Card shadow={0} style={{ margin: '10px'}}>
+		    <CardTitle>Create Profile </CardTitle>
 		    <CardText>
-		       <form onSubmit={this.handleSubmit.bind(this)}>
-		       <Textfield
+		    	<Link to="/users/1">
+		    		<FlatButton label="skip this step" />
+		    	</Link>
+		       	<form onSubmit={this.handleSubmit.bind(this)}>
+		       	{/*<TextField
 				    onChange={() => {}}
-				    label="Name..."
-				    floatingLabel
+				    floatingLabelText="First Name..."
 				    ref="name"
 				    style={{width: '200px'}}
 				/>
-		      	<Textfield
+		      	<TextField
 				    onChange={() => {}}
-				    label="Description..."
-				    floatingLabel
+				    floatingLabelText="Last Name..."
 				    ref="description"
-				    rows={3}
 				    style={{width: '200px'}}
+				/> */}
+				<TextField
+					floatingLabelText="Address..."
+					ref="address"
+					style={{width: '200px'}}
 				/>
-		      		<Textfield
+				<TextField
+					floatingLabelText="City..."
+					ref="city"
+					style={{width: '200px'}}
+				/>
+				<SelectField
+					floatingLabelText="State..."
+					value={this.state.values}
+					maxHeight={200}
+					style={{width: '200px'}}
+					onChange={this.handleChange}
+				>{this.stateItems(this.values)}
+				</SelectField>
+				<TextField
+					floatingLabelText="Zip..."
+					ref="zipcode"
+					type="number"
+					style={{width: '200px'}}
+				/>
+		      	<TextField
 				    onChange={() => {}}
-				    label="Street Address..."
-				    floatingLabel
+				    floatingLabelText="Bio..."
 				    ref="streetAddress"
+				    rows={3}
+				    multiLine={true}
 				    style={{width: '200px'}}
 				/>
-		      		<Textfield
+		      	{/*<TextField
 				    onChange={() => {}}
-				    label="City..."
-				    floatingLabel
+				    floatingLabelText="Email..."
 				    ref="city"
 				    style={{width: '200px'}}
-				/>
-		      		<div>
-			      		<label>State</label><br />
-			      		<select ref= "state">
-			      			{stateOptions}
-			      		</select>
-		      		</div>
-		      		<Textfield
+				/>*/}
+				<SelectField
+			        multiple={true}
+			        floatingLabelText="Select your Instruments..."
+			        value={this.state.values}
+			        onChange={this.handleChange}
+			    >
+			        {this.instrumentItems(this.values)}
+				</SelectField>
+
+		      	<TextField
 				    onChange={() => {}}
-				    label="Zipcode..."
-				    floatingLabel
-				    ref="zipcode"
+				    floatingLabelText="Phone Number..."
+				    type="number"
+				    ref="phone"
 				    style={{width: '200px'}}
 				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Phone Number..."
-				    floatingLabel
-				    ref="phoneNumber"
-				    style={{width: '200px'}}
-				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Email..."
-				    floatingLabel
-				    ref="email"
-				    style={{width: '200px'}}
-				/>
+	      		<TextField
+			        id="date"
+			        floatingLabelText="Birthday"
+			        type="text"
+			        hintText="mm/dd/yyyy"
+			        //className={classes.textField}
+			        inputlabelprops={{
+			          shrink: true
+			        }}
+			    />
 				<br/>
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
+		      		<RaisedButton type="Submit" label="Save" />
 		      	</form>
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + orgID}/>
-		        )} 
+		          <Redirect to={from || '/viewprofile'}/>
+		        )}
 		    </CardText>
 		</Card>
-     
-    );
-  }
-}
 
-export default AddOrganization;
+	    );
+	  }
+	}
+
+
+export default CreateProfile

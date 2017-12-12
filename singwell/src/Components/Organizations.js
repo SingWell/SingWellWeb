@@ -28,7 +28,8 @@ class Organizations extends Component {
         orgGet:{},
         choirGet:[],
         eventGet: [],
-        events: {}
+        events: {},
+        geocode: {}
       });
 
     $.ajax({
@@ -36,8 +37,10 @@ class Organizations extends Component {
         url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID,
         dataType: 'json',
         cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({orgGet: data});
+          // geocodeAddress(data.address)
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -49,6 +52,7 @@ class Organizations extends Component {
         url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/",
         dataType: 'json',
         cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({choirGet: data});
         }.bind(this),
@@ -62,6 +66,7 @@ class Organizations extends Component {
         url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/events/",
         dataType: 'json',
         cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({eventGet: data});
         }.bind(this),
@@ -82,11 +87,36 @@ class Organizations extends Component {
         };
     }
 
+
+/* geocodeAddress(address) {
+        this.geocoder.geocode({ 'address': address }, function handleResults(results, status) {
+
+          if (status === google.maps.GeocoderStatus.OK) {
+            console.log(results)
+            this.map.setCenter(results[0].geometry.location);
+            this.marker.setPosition(results[0].geometry.location);
+
+          }
+
+          this.map.setCenter({
+            lat: latitude,
+            lng: longitude
+          });
+
+          this.marker.setPosition({
+            lat: latitude,
+            lng: longitude
+          });
+
+        }.bind(this));
+      } */
+
     onChangeHeaderTab(tabId) {
         this.setState({
             activeHeaderTab: tabId
         });
     }
+
 
     renderTabOverview() {
         return (
@@ -198,7 +228,7 @@ class Organizations extends Component {
                     </Cell>
                     
                         <DayPicker
-                          canChangeMonth={true}
+                          canChangeMonth={false}
                           className="Birthdays"
                           renderDay={renderDay.bind(this)}
                         />
@@ -217,6 +247,7 @@ class Organizations extends Component {
         }
     }
 
+    
 
   render() {
         

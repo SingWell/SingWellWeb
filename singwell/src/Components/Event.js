@@ -9,6 +9,8 @@ import classNames from 'classnames';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
+import TextField from 'material-ui/TextField';
+
 
 
 
@@ -35,6 +37,7 @@ class Event extends Component {
         url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/events/" + this.props.match.params.eventID,
         dataType: 'json',
         cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({eventGet: data}, function() {
             console.log(this.state)
@@ -69,7 +72,7 @@ class Event extends Component {
                 <ListItemContent icon="timer">{this.state.eventGet.time}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer_off">{this.state.eventGet.location}</ListItemContent>
+                <ListItemContent icon="home">{this.state.eventGet.location}</ListItemContent>
               </ListItem>
             </List>
             </div>
@@ -79,14 +82,73 @@ class Event extends Component {
 
     renderProgram() {
         return (
-          <div>
+          <div style={{marginLeft: '20px'}}>
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
             </FABButton>
-            <List>
-              
-            </List>
+            <div >
+              <TextField
+                defaultValue="Lift Up Your Hearts - VOZ 580"
+                floatingLabelText="Choral Prelude"
+              /><br />
+              <TextField
+                defaultValue="Canticle of the Sun - RS2 677"
+                floatingLabelText="Entrance"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Penitenial Rite"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Glory to God"
+              /><br />
+              <TextField
+                defaultValue="(Mass Part) - SS1 #21"
+                floatingLabelText="Gospel Acclimation"
+              /><br />
+              <TextField
+                defaultValue="Jesus, the Lord - VOZ 509"
+                floatingLabelText="Preparation"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Holy, Holy Holy"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Memorial Acclimation 2"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Amen"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Lamb of God"
+              /><br />
+              <TextField
+                defaultValue="Mass of Renewal"
+                floatingLabelText="Penitenial Rite"
+              /><br />
+              <TextField
+                defaultValue="Wesley: Lead Me Lord"
+                floatingLabelText="Communion"
+              /><br />
+              <TextField
+                defaultValue="Bread of Life - VOZ 814"
+                floatingLabelText="Communion"
+              /><br />
+              <TextField
+                defaultValue="Lord of All Nations - RS2 810"
+                floatingLabelText="Communion"
+              /><br />
+              <TextField
+                defaultValue="We Are Called - RS2 902"
+                floatingLabelText="Sending Forth"
+              /><br />
             </div>
+          </div>
         );
 
     }
