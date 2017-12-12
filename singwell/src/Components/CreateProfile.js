@@ -320,7 +320,7 @@ class CreateProfile extends Component {
 			//lname: this.refs.lname.value,
 			//email: this.refs.email.value,
 			phone_number: this.refs.phone.value,
-			bio: this.refs.bio.value,
+			bio: this.refs.bio.value, 
 			address: this.refs.address.value,
 			city: this.refs.city.value,
 			state: this.refs.state.value,
@@ -452,6 +452,7 @@ class CreateProfile extends Component {
 	    );
 	  }
 	}
+
 
 
 export default CreateProfile

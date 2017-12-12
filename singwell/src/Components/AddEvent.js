@@ -11,7 +11,8 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
-//import Moment from 'react-moment';
+import Moment from 'react-moment';	
+import moment from 'moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
@@ -31,6 +32,7 @@ class AddEvent extends Component {
 		const { defaultTime, focused, showTimezone, timezone } = props;
 	    let hour = '';
 	    let minute = '';
+	    let date = '';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -44,6 +46,7 @@ class AddEvent extends Component {
 	      timezone,
 	      showTimezone,
 	      choir: {},
+	      date
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -52,7 +55,8 @@ class AddEvent extends Component {
 	    this.onTimeChange = this.onTimeChange.bind(this);
 	    this.handleFocusedChange = this.handleFocusedChange.bind(this);	
 
-	    this.callbackFunction = this.callbackFunction.bind(this)
+	    this.callbackFunction = this.callbackFunction.bind(this);
+	    this.onDateChange = this.onDateChange.bind(this);
 	}
 
 	onHourChange(hour) {
@@ -80,13 +84,12 @@ class AddEvent extends Component {
 
 	  callbackFunction(selected) {
 	   	 this.setState({choir: selected})
+
 	  }
 
-
 	  onDateChange(event, date) {
-		  // endDate will be undefined if 'range=false'
-		  console.log(date); 
-		}
+	  	this.setState({date: moment(date).format("YYYY-MM-DD")});
+	  }
 
 	componentWillMount() {
 		this.setState ( {
@@ -102,6 +105,7 @@ class AddEvent extends Component {
 	        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/",
 	        dataType: 'json',
 	        cache: false, 
+	        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 	        success: function(data) {
 	          this.setState({choirGet: data});
 	        }.bind(this),
@@ -117,16 +121,21 @@ class AddEvent extends Component {
 
 
 	handleSubmit(e){
+		console.log(+this.state.choir.value)
 		this.setState({newEvent:{
-			// name: this.refs.name.inputRef.value,
-			// description: this.refs.description.inputRef.value,
-			// address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
-			// admins: [1]
+			name: this.refs.name.inputRef.value,
+			date: this.state.date,
+			time: this.state.hour + ":" + this.state.minute + ":00",
+			location: this.refs.location.inputRef.value,
+			choirs: [
+				+this.state.choir.value
+			],
+			organization: this.props.match.params.orgID
 		}}, function() {
-			console.log(this.state.newOrganization)
+			console.log(this.state.newEvent)
 			$.ajax({
 			  type: "POST",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/events/",
 		      dataType: 'json',
 		      data: this.state.newEvent,
 		      success: function(data) {
@@ -134,7 +143,7 @@ class AddEvent extends Component {
 		        	{
 		        		eventPost: data,
 		        		eventID: data.id,
-		        		fireRedirect: true 
+		        		fireRedirect: true
 		        	});
 		      }.bind(this),
 		      error: function(xhr, status, err) {
@@ -214,7 +223,7 @@ class AddEvent extends Component {
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
 		      	</form>
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + eventID}/>
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID }/>
 		        )} 
 		    </CardText>
 		</Card>
