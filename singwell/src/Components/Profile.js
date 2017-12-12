@@ -17,10 +17,14 @@ class Profile extends Component {
 
 	componentWillMount() {
 		this.setState ( {
-        userGet:{}
+        userGet:{
+          firstname: "john",
+          lastname: "smith",
+          bio: "this is my bio"
+        }
       });
 
-    $.ajax({
+    /*$.ajax({
         type: "GET",
         url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile/",
         dataType: 'json',
@@ -31,7 +35,7 @@ class Profile extends Component {
         error: function(xhr, status, err) {
           console.log(err);
         }
-      });
+      });*/
 
 	}
 
