@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import classNames from 'classnames';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import { IconButton, FontIcon } from 'material-ui/';
+import ImageEdit from 'material-ui/svg-icons/image/edit';
+
 
 import RosterItem from './RosterItem'
 
@@ -94,6 +97,9 @@ class Choir extends Component {
               <ListItem>
                 <ListItemContent icon="timer_off">{this.state.choirGet.meeting_day_end_hour}</ListItemContent>
               </ListItem>
+              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/choirs/' +this.props.match.params.choirID + '/edit/')}>
+                  <ImageEdit />
+              </IconButton>
             </List>
             </div>
         );

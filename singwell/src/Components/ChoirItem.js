@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
+import { IconButton, FontIcon } from 'material-ui/';
+import ImageEdit from 'material-ui/svg-icons/image/edit';
+
 
 
 

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import $ from 'jquery';
 import '../css/Organizations.css'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 
@@ -16,7 +16,8 @@ import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
 
-
+import { IconButton, FontIcon } from 'material-ui/';
+import ImageEdit from 'material-ui/svg-icons/image/edit';
 
 
 
@@ -121,6 +122,7 @@ class Organizations extends Component {
     renderTabOverview() {
         return (
             <div>
+            <div>
                 <List>
                   <ListItem>
                     <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
@@ -129,6 +131,12 @@ class Organizations extends Component {
                     <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
                   </ListItem>
                 </List>
+            </div>
+            <div>
+            <IconButton style={{display: 'inline'}} tooltip="edit" tooltipPosition="top-center" >
+                  <ImageEdit />
+            </IconButton>
+            </div>
             </div>
         );
     }

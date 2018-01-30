@@ -20,7 +20,6 @@ class CreateProfile extends Component {
 		this.setState ( {
 			fireRedirect: false,
 			user: null
-
 		});
 	}
 
@@ -363,7 +362,7 @@ class CreateProfile extends Component {
 		    	<Link to="/users/1">
 		    		<FlatButton label="skip this step" />
 		    	</Link>
-		       	<form onSubmit={this.handleSubmit.bind(this)}>
+		       	{/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 		       	{/*<TextField
 				    onChange={() => {}}
 				    floatingLabelText="First Name..."
@@ -388,6 +387,7 @@ class CreateProfile extends Component {
 				/>
 				<SelectField
 					floatingLabelText="State..."
+					ref="state"
 					value={this.state.values}
 					maxHeight={200}
 					style={{width: '200px'}}
@@ -441,10 +441,10 @@ class CreateProfile extends Component {
 			        }}
 			    />
 				<br/>
-		      		<RaisedButton type="Submit" label="Save" />
-		      	</form>
+		      		<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>
+		      	{/*</form>*/}
 		      	{fireRedirect && (
-		          <Redirect to={from || '/viewprofile'}/>
+		          <Redirect to={from || '/organizations/1/'}/>
 		        )}
 		    </CardText>
 		</Card>

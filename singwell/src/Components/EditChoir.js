@@ -16,8 +16,7 @@ import '../css/AddChoir.css'
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
-
-class AddChoir extends Component {
+class EditChoir extends Component {
 
 	constructor(props) {
 		super(props);
@@ -60,85 +59,83 @@ class AddChoir extends Component {
 			
 	}
 
-  onHourChange(hourStart) {
-    this.setState({ hourStart });
-  }
+	onHourChange(hourStart) {
+	this.setState({ hourStart });
+	}
 
-  onMinuteChange(minuteStart) {
-    this.setState({ minuteStart });
-  }
+	onMinuteChange(minuteStart) {
+	this.setState({ minuteStart });
+	}
 
-  onTimeChange(time) {
-    const [hourStart, minuteStart] = time.split(':');
-    this.setState({ hourStart, minuteStart });
-  }
-
-
-  onFocusChange(focusedStart) {
-    this.setState({ focusedStart });
-  }
-
-  handleFocusedChange() {
-    const { focusedStart } = this.state;
-    this.setState({ focusedStart: !focusedStart });
-  }
-
-  onHourChangeEnd(hourEnd) {
-    this.setState({ hourEnd });
-  }
-
-  onMinuteChangeEnd(minuteEnd) {
-    this.setState({ minuteEnd });
-  }
-
-  onTimeChangeEnd(time) {
-    const [hourEnd, minuteEnd] = time.split(':');
-    this.setState({ hourEnd, minuteEnd });
-  }
+	onTimeChange(time) {
+	const [hourStart, minuteStart] = time.split(':');
+	this.setState({ hourStart, minuteStart });
+	}
 
 
-  onFocusChangeEnd(focusedEnd) {
-    this.setState({ focusedEnd });
-  }
+	onFocusChange(focusedStart) {
+	this.setState({ focusedStart });
+	}
 
-  handleFocusedChangeEnd() {
-    const { focusedEnd } = this.state;
-    this.setState({ focusedEnd: !focusedEnd });
-  }
+	handleFocusedChange() {
+	const { focusedStart } = this.state;
+	this.setState({ focusedStart: !focusedStart });
+	}
+
+	onHourChangeEnd(hourEnd) {
+	this.setState({ hourEnd });
+	}
+
+	onMinuteChangeEnd(minuteEnd) {
+	this.setState({ minuteEnd });
+	}
+
+	onTimeChangeEnd(time) {
+	const [hourEnd, minuteEnd] = time.split(':');
+	this.setState({ hourEnd, minuteEnd });
+	}
 
 
+	onFocusChangeEnd(focusedEnd) {
+	this.setState({ focusedEnd });
+	}
+
+	handleFocusedChangeEnd() {
+	const { focusedEnd } = this.state;
+	this.setState({ focusedEnd: !focusedEnd });
+	}
 
 	componentWillMount() {
 		this.setState ( {
 			newChoir:{},
-			//choirGet:{},
+			choirGet:{},
 			fireRedirect: false,
 			choirID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
 			//edit: false,
-			values: {}
+ 			values: {}
 		});
 
-		// $.ajax({
-  //       type: "GET",
-  //       url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,
-  //       dataType: 'json',
-  //       cache: false, 
-  //       headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-  //       success: function(data) {
-  //         this.setState(
-  //         	{
-		// 		choirGet: data, 
-  //         		edit: true
-  //         	}, function() {
-  //           console.log(this.state)
-  //           //console.log("true")
-  //         });
-  //       }.bind(this),
-  //       error: function(xhr, status, err) {
-  //         console.log(err)
-  //       }
-  //     });
+		$.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState(
+          	{
+				choirGet: data, 
+          		//edit: true
+          	}, function() {
+            console.log(this.state)
+            //console.log("true")
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err)
+        }
+      });
 	}
 
 	static defaultProps = {
@@ -178,86 +175,47 @@ class AddChoir extends Component {
 		  showTimezone: false
 	}
 
-	// handleChange(event, index, values){
-	// 	this.setState({values});
-	// }
-
-	/*setWeekdays(values) {
-		return this.props.days.map((day) => (
-			<MenuItem
-				key={day.number}
-				//insetChildren={true}
-				checked={values && values.indexOf(day) > -1}
-				value={day.name}
-				//primaryText={day.name}
-			/>
-		));
-	}*/
-
 	handleSubmit(e){
 		this.setState({newChoir:{
+			id: 13,
 			name: this.refs.name.inputRef.value,
-			meeting_day: this.refs.meetingDay.value,
+			meeting_day: +this.refs.meetingDay.value,
 			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
 			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
-			organization: this.props.match.params.orgID,
+			organization: +this.props.match.params.orgID,
 			choristers: [
 				1
-			]
+			],
+			organization_name: "kfjabf"
 		}}, function() {
-			// if(this.edit == true){
-			// 	console.log("inside put statement");
-			// 	$.ajax({
-			// 		type: "PUT",
-			// 		url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,					
-			// 		dataType: 'json',
-			// 		headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-			// 		data: this.state.newChoir,
-			// 		success: function(data) {
-			// 			this.setState(
-			// 				{
-			// 					choirPut: data,
-			// 					choirID: this.props.match.params.choirID,
-			// 					fireRedirect: true
-			// 				}, function(){
-			// 					console.log(this.state);
-			// 				})
-			// 		}.bind(this),
-			// 		error:function(xhr, status, err) {
-			// 			console.log(err);
-			// 			console.log(xhr.responsetext);
-			// 		}
-			// 	})
-			// }
-			// else{
-				console.log("inside post statement");
-				$.ajax({
-				  type: "POST",
-			      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/",
-			      dataType: 'json',
-			      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-			      data: this.state.newChoir,
-			      success: function(data) {
-			        this.setState(
-			        	{
-			        		choirPost: data,
-			        		choirID: data.id,
-			        		fireRedirect: true
-			        	}, function(){
-			          console.log(this.state);
-			        })
-			      }.bind(this),
-			      error: function(xhr, status, err) {
-			        console.log(err);
-			        console.log(xhr.responseText);
-			      }
-			    });
-		//}
+			//console.log("inside put statement");
+			console.log(this.state.newChoir);
+			$.ajax({
+				type: "PUT",
+				url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,					
+				dataType: "json",
+				//headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+				data: this.state.newChoir,
+				success: function(data) {
+					this.setState(
+						{
+							choirPut: data,
+							choirID: this.props.match.params.choirID,
+							fireRedirect: true
+						}, function(){
+							console.log(this.state);
+						})
+				}.bind(this),
+				error:function(xhr, status, err) {
+					console.log(err);
+					console.log(xhr.responsetext);
+				}
+			})
 		});
   		e.preventDefault();
   	}
 
-  render() {
+  	render() {
 
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
@@ -281,6 +239,7 @@ class AddChoir extends Component {
   	});
 
     return (
+    	<div>
     	<Card shadow={0} style={{ margin: '10px'}}>
 		    <CardTitle>Add Choir</CardTitle>
 		    <CardText className={"timePickerForm"}>
@@ -348,6 +307,8 @@ class AddChoir extends Component {
 		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
 		    </CardActions>
 		</Card>
+	    <pre>{JSON.stringify(this.state)}</pre>
+		</div>
 
 
       
@@ -357,4 +318,10 @@ class AddChoir extends Component {
 
 }
 
-export default AddChoir;
+export default EditChoir;
+
+
+
+
+
+
