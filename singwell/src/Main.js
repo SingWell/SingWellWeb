@@ -8,6 +8,7 @@ import AddEvent from './Components/AddEvent'
 import Event from './Components/Event'
 import CreateProfile from './Components/CreateProfile'
 import Profile from './Components/Profile'
+import Login from './Components/Login'
 
 import $ from 'jquery';
 
@@ -19,6 +20,7 @@ class Main extends Component {
 	  return (
 	  	<main>
 		    <Switch>
+		      <Route exact path='/login' component={Login} />
 		      <Route exact path='/' component={AddOrganization} />
 		      <Route exact path='/organizations/:orgID' component={Organizations} />
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />

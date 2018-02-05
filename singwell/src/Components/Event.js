@@ -11,6 +11,22 @@ import 'react-day-picker/lib/style.css';
 
 import TextField from 'material-ui/TextField';
 
+import AutoComplete from 'material-ui/AutoComplete';
+
+import moment from 'moment'
+
+
+const musicLibrary = [
+  "Lift Up Your Hearts - VOZ 580",
+  "Canticle of the Sun - RS2 677",
+  "Mass of Renewal",
+  "(Mass Part) - SS1 #21",
+  "Jesus, the Lord - VOZ 509",
+  "Wesley: Lead Me Lord",
+  "Bread of Life - VOZ 814",
+  "Lord of All Nations - RS2 810",
+  "We Are Called - RS2 902"
+];
 
 
 
@@ -66,10 +82,10 @@ class Event extends Component {
             </FABButton>
             <List>
               <ListItem>
-                <ListItemContent icon="today">{this.state.eventGet.date}</ListItemContent>
+                <ListItemContent icon="today">{moment(this.state.eventGet.date).format("MMM Do, YYYY") }</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer">{this.state.eventGet.time}</ListItemContent>
+                <ListItemContent icon="timer">{moment(this.state.eventGet.time, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
               <ListItem>
                 <ListItemContent icon="home">{this.state.eventGet.location}</ListItemContent>
@@ -87,6 +103,11 @@ class Event extends Component {
                 <Icon name="keyboard_arrow_left" />
             </FABButton>
             <div >
+              <AutoComplete
+                hintText="Type anything"
+                filter={AutoComplete.caseInsensitiveFilter}
+                dataSource={musicLibrary}
+              /><br />
               <TextField
                 defaultValue="Lift Up Your Hearts - VOZ 580"
                 floatingLabelText="Choral Prelude"
@@ -147,6 +168,7 @@ class Event extends Component {
                 defaultValue="We Are Called - RS2 902"
                 floatingLabelText="Sending Forth"
               /><br />
+              
             </div>
           </div>
         );

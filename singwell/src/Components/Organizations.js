@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ChoirItem from './ChoirItem';
+import EventItem from './EventItem';
 import classNames from 'classnames';
 import $ from 'jquery';
 import '../css/Organizations.css'
@@ -16,12 +17,16 @@ import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
 
+// import MapContainer from './MapContainer'
 
-
-
-
+const google = window.google
 
 class Organizations extends Component {
+
+    static defaultProps = {
+        center: {lat: 0, lng: 0},
+        zoom: 8
+      };
 
   componentWillMount() {
     this.setState ( {
@@ -29,7 +34,8 @@ class Organizations extends Component {
         choirGet:[],
         eventGet: [],
         events: {},
-        geocode: {}
+        geocode: {},
+        center: {}
       });
 
     $.ajax({
@@ -40,7 +46,7 @@ class Organizations extends Component {
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({orgGet: data});
-          // geocodeAddress(data.address)
+          this.geocodeAddress(data.address)
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -77,6 +83,35 @@ class Organizations extends Component {
 
     }
 
+    geocodeAddress(address) {
+
+        this.geocoder.geocode({ 'address': address }, function handleResults(results, status) {
+
+              if (status === google.maps.GeocoderStatus.OK) {
+                    this.state.center = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
+                    console.log(this.state.center)
+
+                    // this.setState({
+                    //   foundAddress: results[0].formatted_address,
+                    //   isGeocodingError: false
+                    // });
+
+              }
+
+        }.bind(this));
+    }
+
+
+
+    componentDidMount() {
+        
+        this.geocoder = new google.maps.Geocoder();
+
+        
+        
+    }
+
+
     constructor(props) {
         super(props);
 
@@ -88,39 +123,28 @@ class Organizations extends Component {
     }
 
 
-/* geocodeAddress(address) {
-        this.geocoder.geocode({ 'address': address }, function handleResults(results, status) {
-
-          if (status === google.maps.GeocoderStatus.OK) {
-            console.log(results)
-            this.map.setCenter(results[0].geometry.location);
-            this.marker.setPosition(results[0].geometry.location);
-
-          }
-
-          this.map.setCenter({
-            lat: latitude,
-            lng: longitude
-          });
-
-          this.marker.setPosition({
-            lat: latitude,
-            lng: longitude
-          });
-
-        }.bind(this));
-      } */
-
     onChangeHeaderTab(tabId) {
         this.setState({
             activeHeaderTab: tabId
         });
     }
 
-
     renderTabOverview() {
+        let eventItems;
+        eventItems = this.state.eventGet.map(event => {
+            console.log(event)
+            return (
+                <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
+            );
+        });
         return (
             <div>
+                <h4 style = {{marginLeft: '20px'}}>
+                    Upcoming Events:
+                </h4>
+                <Grid component="section" className="section--center" shadow={0} noSpacing>
+                        {eventItems.slice(0,4)}
+                
                 <List>
                   <ListItem>
                     <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
@@ -129,6 +153,14 @@ class Organizations extends Component {
                     <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
                   </ListItem>
                 </List>
+
+                    <div className="map">
+                        {/* <MapContainer initialCenter={{lat: 55, lng: -93}}/> */}
+                    </div>
+                </Grid>
+                    
+
+                        
             </div>
         );
     }
