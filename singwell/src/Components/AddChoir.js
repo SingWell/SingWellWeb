@@ -55,9 +55,7 @@ class AddChoir extends Component {
 	    this.onMinuteChangeEnd = this.onMinuteChangeEnd.bind(this);
 	    this.onTimeChangeEnd = this.onTimeChangeEnd.bind(this);
 	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);
-
-	    //this.onNameChange = this.onNameChange.bind(this);
-			
+	    			
 	}
 
   onHourChange(hourStart) {
@@ -184,54 +182,28 @@ class AddChoir extends Component {
 				1
 			]
 		}}, function() {
-			if(this.state.edit == true){
-				console.log("inside put statement");
-				$.ajax({
-					type: "PATCH",
-					url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID +"/",					
-					dataType: 'json',
-					//headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-					data: this.state.newChoir,
-					success: function(data) {
-						this.setState(
-							{
-								choirPut: data,
-								choirID: this.props.match.params.choirID,
-								fireRedirect: true
-							}, function(){
-								console.log(this.state);
-							})
-					}.bind(this),
-					error:function(xhr, status, err) {
-						console.log(err);
-						console.log(xhr.responsetext);
-					}
-				})
-			}
-			else{
-				console.log("inside post statement");
-				$.ajax({
-				  type: "POST",
-			      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/",
-			      dataType: 'json',
-			      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-			      data: this.state.newChoir,
-			      success: function(data) {
-			        this.setState(
-			        	{
-			        		choirPost: data,
-			        		choirID: data.id,
-			        		fireRedirect: true
-			        	}, function(){
-			          console.log(this.state);
-			        })
-			      }.bind(this),
-			      error: function(xhr, status, err) {
-			        console.log(err);
-			        console.log(xhr.responseText);
-			      }
-			    });
-		}
+			console.log("inside post statement");
+			$.ajax({
+			  type: "POST",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/",
+		      dataType: 'json',
+		      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+		      data: this.state.newChoir,
+		      success: function(data) {
+		        this.setState(
+		        	{
+		        		choirPost: data,
+		        		choirID: data.id,
+		        		fireRedirect: true
+		        	}, function(){
+		          console.log(this.state);
+		        })
+		      }.bind(this),
+		      error: function(xhr, status, err) {
+		        console.log(err);
+		        console.log(xhr.responseText);
+		      }
+		    });
 		});
   		e.preventDefault();
   	}
