@@ -14,7 +14,7 @@ import ImageEdit from 'material-ui/svg-icons/image/edit';
 
 import RosterItem from './RosterItem'
 
-
+import moment from 'moment'
 
 
 class Choir extends Component {
@@ -92,10 +92,10 @@ class Choir extends Component {
                 <ListItemContent icon="today">{this.state.weekday[this.state.choirGet.meeting_day - 1]}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer">{this.state.choirGet.meeting_day_start_hour}</ListItemContent>
+                <ListItemContent icon="timer">{moment(this.state.choirGet.meeting_day_start_hour, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer_off">{this.state.choirGet.meeting_day_end_hour}</ListItemContent>
+                <ListItemContent icon="timer_off">{moment(this.state.choirGet.meeting_day_end_hour, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
               <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/choirs/' +this.props.match.params.choirID + '/edit/')}>
                   <ImageEdit />
