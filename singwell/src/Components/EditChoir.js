@@ -15,6 +15,8 @@ import '../css/AddChoir.css'
 
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
+import diff from 'object-diff/';
+
 
 class EditChoir extends Component {
 
@@ -25,7 +27,10 @@ class EditChoir extends Component {
 	    let minuteStart = '';
 	    let hourEnd = '';
 	    let minuteEnd = '';
-	    let defaultName = '';
+	    let choirName = '';
+	    let mtgDay = '';
+	    let startTime = '';
+	    let endTime = '';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -41,6 +46,11 @@ class EditChoir extends Component {
 	      focusedEnd,
 	      timezone,
 	      showTimezone,
+
+	      choirName,
+	      mtgDay,
+	      startTime,
+	      endTime
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -55,7 +65,10 @@ class EditChoir extends Component {
 	    this.onTimeChangeEnd = this.onTimeChangeEnd.bind(this);
 	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);
 
-	    //this.onNameChange = this.onNameChange.bind(this);
+	    this.handleNameChange = this.handleNameChange.bind(this);
+	    this.handleDayChange = this.handleDayChange.bind(this);
+
+
 			
 	}
 
@@ -95,7 +108,6 @@ class EditChoir extends Component {
 	this.setState({ hourEnd, minuteEnd });
 	}
 
-
 	onFocusChangeEnd(focusedEnd) {
 	this.setState({ focusedEnd });
 	}
@@ -105,6 +117,18 @@ class EditChoir extends Component {
 	this.setState({ focusedEnd: !focusedEnd });
 	}
 
+	handleNameChange() {
+		this.setState({
+			choirName: this.refs.name.inputRef.value
+		})
+	}
+
+	handleDayChange() {
+		this.setState({
+			mtgDay: +this.refs.meetingDay.value
+		})
+	}
+
 	componentWillMount() {
 		this.setState ( {
 			newChoir:{},
@@ -112,30 +136,55 @@ class EditChoir extends Component {
 			fireRedirect: false,
 			choirID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
-			//edit: false,
- 			values: {}
+ 			//values: {}
+ 			delta: {}
 		});
 
+		// $.ajax({
+  //       type: "GET",
+  //       url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",
+  //       dataType: 'json',
+  //       cache: false, 
+  //       headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+  //       success: function(data) {
+  //         this.setState(
+  //         	{
+		// 		choirGet: data, 
+  //         	}, function() {
+  //           console.log(this.state)
+  //         });
+  //       }.bind(this),
+  //       error: function(xhr, status, err) {
+  //         console.log(err)
+  //       }
+  //     });
+	}
+
+	fetchList() {
 		$.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",
         dataType: 'json',
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
-          this.setState(
-          	{
-				choirGet: data, 
-          		//edit: true
+          this.setState({
+				choirName: data.name, 
+				mtgDay: data.meeting_day,
+				startTime: data.meeting_day_start_hour,
+				endTime: data.meeting_day_end_hour
           	}, function() {
             console.log(this.state)
-            //console.log("true")
           });
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err)
         }
       });
+	}
+
+	componentDidMount() {
+		this.fetchList()
 	}
 
 	static defaultProps = {
@@ -177,22 +226,21 @@ class EditChoir extends Component {
 
 	handleSubmit(e){
 		this.setState({newChoir:{
-			id: 13,
 			name: this.refs.name.inputRef.value,
 			meeting_day: +this.refs.meetingDay.value,
 			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
 			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
-			organization: +this.props.match.params.orgID,
+			organization: 1,
 			choristers: [
 				1
 			],
-			organization_name: "kfjabf"
-		}}, function() {
-			//console.log("inside put statement");
+		}, delta: diff(this.state.choirGet, this.state.newChoir)
+
+	}, function() {
 			console.log(this.state.newChoir);
 			$.ajax({
-				type: "PUT",
-				url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,					
+				type: "PATCH",
+				url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",					
 				dataType: "json",
 				//headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 				data: this.state.newChoir,
@@ -204,12 +252,17 @@ class EditChoir extends Component {
 							fireRedirect: true
 						}, function(){
 							console.log(this.state);
+							console.log(this.state.choirGet);
+							console.log(this.state.newChoir);
+							console.log(this.state.delta);
 						})
 				}.bind(this),
 				error:function(xhr, status, err) {
 					console.log(err);
-					console.log(xhr.responsetext);
-				}
+					console.log(xhr.responseText);
+					console.log(this);
+					console.log(xhr);
+				}.bind(this)
 			})
 		});
   		e.preventDefault();
@@ -222,6 +275,7 @@ class EditChoir extends Component {
   	const { choirID } = this.state;
   	const { buttonClasses } = this.state;
    	const { values } = this.state;
+   	const { choirGet } = this.state;
 
   	const {
       hourStart,
@@ -241,23 +295,26 @@ class EditChoir extends Component {
     return (
     	<div>
     	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Choir</CardTitle>
+		    <CardTitle>Edit Choir</CardTitle>
 		    <CardText className={"timePickerForm"}>
 		       <form onSubmit={this.handleSubmit.bind(this)}>
 			       <Textfield
-					    //onChange={() => {}}
 					    label="Name..."
 					    floatingLabel
 					    ref="name"
 					    style={{width: '200px'}}
 					    required={true}
-					    //onChange={this.onNameChange}
-					    value={this.defaultName}
+					    onChange={this.handleNameChange}
+					    value={this.state.choirName}
 					/>
 					<br/>
 					<label>Meeting Day</label>
 					<br/>
-		      		<select ref= "meetingDay">
+		      		<select 
+		      			ref= "meetingDay"
+		      			value={this.state.mtgDay}
+		      			onChange={this.handleDayChange}
+		      		>
 		      			{dayOptions}
 		      		</select>
 		      		{/*<SelectField
@@ -273,41 +330,43 @@ class EditChoir extends Component {
 		      		<br/>
 		      		<label>Meeting Start Time:</label>
 		      		<TimePicker
-			          focused={focusedStart}
-			          timezone={timezone}
-			          onFocusChange={this.onFocusChange}
-			          onHourChange={this.onHourChange}
-			          onMinuteChange={this.onMinuteChange}
-			          onTimeChange={this.onTimeChange}
-			          showTimezone={showTimezone}
-			          time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
+						focused={focusedStart}
+						timezone={timezone}
+						onFocusChange={this.onFocusChange}
+						onHourChange={this.onHourChange}
+						onMinuteChange={this.onMinuteChange}
+						onTimeChange={this.onTimeChange}
+						showTimezone={showTimezone}
+						time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
+						value={this.state.choirGet.meeting_day_start_hour}
 			        />
 			        <br/>
 		      		<br/>
 			        <label>Meeting End Time:</label>
 			        <TimePicker
-			          focused={focusedEnd}
-			          timezone={timezone}
-			          onFocusChange={this.onFocusChangeEnd}
-			          onHourChange={this.onHourChangeEnd}
-			          onMinuteChange={this.onMinuteChangeEnd}
-			          onTimeChange={this.onTimeChangeEnd}
-			          showTimezone={showTimezone}
-			          time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
+						focused={focusedEnd}
+						timezone={timezone}
+						onFocusChange={this.onFocusChangeEnd}
+						onHourChange={this.onHourChangeEnd}
+						onMinuteChange={this.onMinuteChangeEnd}
+						onTimeChange={this.onTimeChangeEnd}
+						showTimezone={showTimezone}
+						time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
+						value={this.state.choirGet.meeting_day_end_hour}
 			        />
 		      		<br/>
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
 		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
 		      	</form>
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/choirs/' + choirID}/>
+		          <Redirect to={from || '/choirs/' + choirID}/>
 		        )} 
 		    </CardText>
 		    <CardActions border>
 		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
 		    </CardActions>
 		</Card>
-	    <pre>{JSON.stringify(this.state)}</pre>
+	    {/*<pre>{JSON.stringify(this.state)}</pre>*/}
 		</div>
 
 

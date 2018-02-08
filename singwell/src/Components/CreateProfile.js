@@ -359,10 +359,10 @@ class CreateProfile extends Component {
 	      <Card shadow={0} style={{ margin: '10px'}}>
 		    <CardTitle>Create Profile </CardTitle>
 		    <CardText>
+		      <form onSubmit={this.handleSubmit.bind(this)}>
 		    	<Link to="/users/1">
 		    		<FlatButton label="skip this step" />
 		    	</Link>
-		       	{/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 		       	{/*<TextField
 				    onChange={() => {}}
 				    floatingLabelText="First Name..."
@@ -441,8 +441,9 @@ class CreateProfile extends Component {
 			        }}
 			    />
 				<br/>
-		      		<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>
-		      	{/*</form>*/}
+				<input className={this.state.buttonClasses} type="submit" value="Submit" />
+		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
+		      	</form>
 		      	{fireRedirect && (
 		          <Redirect to={from || '/organizations/1/'}/>
 		        )}

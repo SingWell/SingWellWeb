@@ -38,7 +38,7 @@ class Choir extends Component {
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID,
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID,
         dataType: 'json',
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
@@ -54,7 +54,7 @@ class Choir extends Component {
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/" + this.props.match.params.choirID + "/roster/",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/roster/",
         dataType: 'json',
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
@@ -97,7 +97,7 @@ class Choir extends Component {
               <ListItem>
                 <ListItemContent icon="timer_off">{this.state.choirGet.meeting_day_end_hour}</ListItemContent>
               </ListItem>
-              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/choirs/' +this.props.match.params.choirID + '/edit/')}>
+              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/choirs/' +this.props.match.params.choirID + '/edit/')}>
                   <ImageEdit />
               </IconButton>
             </List>
