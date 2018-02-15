@@ -280,6 +280,8 @@ class AddOrganization extends Component {
 			name: this.refs.name.inputRef.value,
 			description: this.refs.description.inputRef.value,
 			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
+			phone_number: this.refs.phoneNumber.inputRef.value,
+			email: this.refs.email.inputRef.value,
 			admins: [1]
 		}}, function() {
 			console.log(this.state.newOrganization)
@@ -294,7 +296,7 @@ class AddOrganization extends Component {
 		        	{
 		        		orgPost: data,
 		        		orgID: data.id,
-		        		fireRedirect: true 
+		        		fireRedirect: true
 		        	});
 		      }.bind(this),
 		      error: function(xhr, status, err) {

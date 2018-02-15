@@ -1,54 +1,104 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
-import { Card, CardTitle, CardText } from  'react-mdl';
-//import MuiThemeProvider from 'material-ui/styles';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import SelectField from 'material-ui/SelectField';
-import { MenuItem, TextField, RaisedButton, FlatButton } from 'material-ui/'
+import { Redirect } from 'react-router'
+import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    FooterDropDownSection } from  'react-mdl';
+import { Dropdown, SelectField, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
+import { MDLSelectField } from 'react-mdl-select';
 
 
-class CreateProfile extends Component {
+
+
+class EditOrganization extends Component {
 
 	constructor(){
 		super();
+
+		let orgName = '';
+		let orgAddress = '';
+		let orgDescription = '';
+
+		this.state = {
+			orgName, 
+			orgAddress,
+			orgDescription
+		}
+
+	   this.handleNameChange = this.handleNameChange.bind(this);
+	   this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+	   this.handleAddressChange = this.handleAddressChange.bind(this);
+	   this.handlePhoneChange = this.handlePhoneChange.bind(this);
+	   this.handleEmailChange = this.handleEmailChange.bind(this);
 		
+	}
+
+	handleNameChange() {
+		this.setState({
+			orgName: this.refs.name.inputRef.value
+		})
+	}
+
+	handleDescriptionChange() {
+		this.setState({
+			orgDescription: this.refs.description.inputRef.value
+		})
+	}
+
+	handleAddressChange() {
+		this.setState({
+			orgAddress: this.refs.streetAddress.inputRef.value
+		})
+	}
+
+	handlePhoneChange() {
+		this.setState({
+			orgPhone: this.refs.phoneNumber.inputRef.value
+		})
+	}
+
+	handleEmailChange() {
+		this.setState({
+			orgEmail: this.refs.email.inputRef.value
+		})
 	}
 
 	componentWillMount() {
 		this.setState ( {
+			newOrganization:{},
 			fireRedirect: false,
-			user: null,
+			orgID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
-
 		});
+
+		$.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID ,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({
+				orgName: data.name, 
+				orgAddress: data.address,
+				orgDescription: data.description,
+          	}, function() {
+            console.log(this.state)
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err)
+        }
+      });
 	}
 
-	static defaultProps ={
-		instruments: [
-		  'Bassoon',
-		  'Cello',
-		  'Clarinet',
-		  'English Horn',
-		  'Euphonium',
-		  'Flute',
-		  'French Horn',
-		  'Guitar',
-		  'Oboe',
-		  'Organ',
-		  'Percussion',
-		  'Piano',
-		  'Saxophone',
-		  'String Bass',
-		  'Trombone',
-		  'Trumpet',
-		  'Tuba',
-		  'Viola',
-		  'Violin'
-		],
+
+	static defaultProps = {
+		//         "name": "Alabama",
+		//         "abbreviation": "AL"
+		statesA:["AB", "BC"],
 		states: [
 		    {
 		        "name": "Alabama",
@@ -287,180 +337,146 @@ class CreateProfile extends Component {
 		        "abbreviation": "WY"
 		    }
 		]
-
 	}
 
-    handleChange = (event, index, values) => this.setState({values});
-
-	instrumentItems(values) {
-	    return this.props.instruments.map((instrument) => (
-			<MenuItem
-				key={instrument}
-				insetChildren={true}
-				checked={values && values.indexOf(instrument) > -1}
-				value={instrument}
-				primaryText={instrument}
-			/>
-    	));
-	}
-
-	stateItems(values) {
-		return this.props.states.map((state) => (
-			<MenuItem
-				key={state.name}
-				insetChildren={true}
-				checked={values && values.indexOf(state) > -1}
-				value={state.abbreviation}
-				primaryText={state.abbreviation}
-			/>
-		));
-	}
-  
 
 	handleSubmit(e){
-		this.setState({profile:{
-			//fname: this.refs.fname.value,
-			//lname: this.refs.lname.value,
-			//email: this.refs.email.value,
-			phone_number: this.refs.phone.value,
-			bio: this.refs.bio.value, 
-			address: this.refs.address.value,
-			city: this.refs.city.value,
-			state: this.refs.state.value,
-			zip_code: this.refs.state.value,
-			//instruments: this.refs.instruments.value,
-			date_of_birth: this.refs.dob.value,
-		}},
-			function() {
-			console.log(this.state.profile)
+		console.log()
+		this.setState({newOrganization:{
+			name: this.refs.name.inputRef.value,
+			description: this.refs.description.inputRef.value,
+			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
+			phone_number: this.refs.phoneNumber.inputRef.value,
+			email: this.refs.email.inputRef.value,
+			admins: [1]
+		}}, function() {
+			console.log(this.state.newOrganization)
 			$.ajax({
-			  type: "PUT",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile",
+			  type: "PATCH",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/",
 		      dataType: 'json',
-		      data: this.state.profile,
+		      //headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+		      data: this.state.newOrganization,
 		      success: function(data) {
 		        this.setState(
 		        	{
-		        		profilePost: data,
-		        		//user: 1,
+		        		orgPut: data,
+		        		orgID: this.props.match.params.orgID,
 		        		fireRedirect: true 
-		        	});
+		        	},function(){
+		        		console.log(this.state);
+		        		console.log(this.state.newOrganization);
+		        		console.log("success");
+		        		console.log(xhr);
+		        		console.log(xhr.responsetText);
+
+		        	})
 		      }.bind(this),
 		      error: function(xhr, status, err) {
-		        console.log(err);
+				console.log(err);
 				console.log(xhr.responseText);
 				console.log(this);
 				console.log(xhr);
-		      }
-		    });
+		      }.bind(this)
+		    })
 		});
   		e.preventDefault();
   	}
 
-  	render() {
-	  	const { from } = this.props.location.state || '/';
-	  	const { fireRedirect } = this.state;
-	  	const { values } = this.state;
+  render() {
+  	const { from } = this.props.location.state || '/';
+  	const { fireRedirect } = this.state;
+  	const { orgID } = this.state;
+  	const { buttonClasses } =this.state;
 
-	    return (
-	      <Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Create Profile </CardTitle>
+
+  	let stateOptions = this.props.states.map(state => {
+  		return <option key={state.name} value={state.abbreviation}>{state.abbreviation}</option>
+  	});
+
+    return (
+
+    	<Card shadow={0} style={{ margin: '10px'}}>
+		    <CardTitle>Edit Organization</CardTitle>
 		    <CardText>
-		      <form onSubmit={this.handleSubmit.bind(this)}>
-		    	<Link to="/users/1">
-		    		<FlatButton label="skip this step" />
-		    	</Link>
-		       	{/*<TextField
+		       <form onSubmit={this.handleSubmit.bind(this)}>
+		       <Textfield
 				    onChange={() => {}}
-				    floatingLabelText="First Name..."
+				    label="Name..."
+				    floatingLabel
 				    ref="name"
 				    style={{width: '200px'}}
+				    value={this.state.orgName}
+				    onChange={this.handleNameChange}
 				/>
-		      	<TextField
+		      		<Textfield
 				    onChange={() => {}}
-				    floatingLabelText="Last Name..."
+				    label="Description..."
+				    floatingLabel
 				    ref="description"
-				    style={{width: '200px'}}
-				/> */}
-				<TextField
-					floatingLabelText="Address..."
-					ref="address"
-					style={{width: '200px'}}
-				/>
-				<TextField
-					floatingLabelText="City..."
-					ref="city"
-					style={{width: '200px'}}
-				/>
-				<SelectField
-					floatingLabelText="State..."
-					ref="state"
-					value={this.state.values}
-					maxHeight={200}
-					style={{width: '200px'}}
-					onChange={this.handleChange}
-				>{this.stateItems(this.values)}
-				</SelectField>
-				<TextField
-					floatingLabelText="Zip..."
-					ref="zipcode"
-					type="number"
-					style={{width: '200px'}}
-				/>
-		      	<TextField
-				    onChange={() => {}}
-				    floatingLabelText="Bio..."
-				    ref="streetAddress"
 				    rows={3}
-				    multiLine={true}
 				    style={{width: '200px'}}
+				    value={this.state.orgDescription}
+				    onChange={this.handleDescriptionChange}
 				/>
-		      	{/*<TextField
+		      		<Textfield
 				    onChange={() => {}}
-				    floatingLabelText="Email..."
+				    label="Street Address..."
+				    floatingLabel
+				    ref="streetAddress"
+				    style={{width: '200px'}}
+				    value={this.state.orgAddress}
+				    onChange={this.handleAddressChange}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="City..."
+				    floatingLabel
 				    ref="city"
 				    style={{width: '200px'}}
-				/>*/}
-				{/*<SelectField
-			        multiple={true}
-			        floatingLabelText="Select your Instruments..."
-			        value={this.state.values}
-			        onChange={this.handleChange}
-			    >
-			        {this.instrumentItems(this.values)}
-				</SelectField>*/}
-
-		      	<TextField
+				/>
+		      		<div>
+			      		<label>State</label><br />
+			      		<select ref= "state">
+			      			{stateOptions}
+			      		</select>
+		      		</div>
+		      		<Textfield
 				    onChange={() => {}}
-				    floatingLabelText="Phone Number..."
-				    type="number"
-				    ref="phone"
+				    label="Zipcode..."
+				    floatingLabel
+				    ref="zipcode"
 				    style={{width: '200px'}}
 				/>
-	      		<TextField
-			        id="date"
-			        floatingLabelText="Birthday"
-			        type="text"
-			        hintText="mm/dd/yyyy"
-			        //className={classes.textField}
-			        inputlabelprops={{
-			          shrink: true
-			        }}
-			    />
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Phone Number..."
+				    floatingLabel
+				    ref="phoneNumber"
+				    style={{width: '200px'}}
+				    value={this.state.orgPhone}
+				    onChange={this.handlePhoneChange}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Email..."
+				    floatingLabel
+				    ref="email"
+				    style={{width: '200px'}}
+				    value={this.state.orgEmail}
+				    onChange={this.handleEmailChange}
+				/>
 				<br/>
-				<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
+		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
 		      	</form>
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/1/'}/>
-		        )}
+		          <Redirect to={from || '/organizations/' + orgID}/>
+		        )} 
 		    </CardText>
 		</Card>
+     
+    );
+  }
+}
 
-	    );
-	  }
-	}
-
-
-
-export default CreateProfile
+export default EditOrganization;

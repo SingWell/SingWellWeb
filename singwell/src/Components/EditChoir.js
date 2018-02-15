@@ -136,7 +136,6 @@ class EditChoir extends Component {
 			fireRedirect: false,
 			choirID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
- 			//values: {}
  			delta: {}
 		});
 
@@ -254,7 +253,6 @@ class EditChoir extends Component {
 							console.log(this.state);
 							console.log(this.state.choirGet);
 							console.log(this.state.newChoir);
-							console.log(this.state.delta);
 						})
 				}.bind(this),
 				error:function(xhr, status, err) {

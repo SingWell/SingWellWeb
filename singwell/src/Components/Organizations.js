@@ -58,7 +58,7 @@ class Organizations extends Component {
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/?organization=" + this.props.match.params.orgID,
         dataType: 'json',
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
@@ -72,7 +72,7 @@ class Organizations extends Component {
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/events/",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/?organization=" + this.props.match.params.orgID,
         dataType: 'json',
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
@@ -142,16 +142,13 @@ class Organizations extends Component {
         });
         return (
             <div>
-<<<<<<< HEAD
             <div>
-=======
                 <h4 style = {{marginLeft: '20px'}}>
                     Upcoming Events:
                 </h4>
                 <Grid component="section" className="section--center" shadow={0} noSpacing>
                         {eventItems.slice(0,4)}
                 
->>>>>>> 2463247ef1c3c0adcb36008af02ba8314bf5b964
                 <List>
                   <ListItem>
                     <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
@@ -170,7 +167,7 @@ class Organizations extends Component {
                         
             </div>
             <div>
-            <IconButton style={{display: 'inline'}} tooltip="edit" tooltipPosition="top-center" >
+            <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}>
                   <ImageEdit />
             </IconButton>
             </div>
