@@ -15,6 +15,8 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import classNames from 'classnames';
 
 import TextField from 'material-ui/TextField';
+import ChoirItem from './ChoirItem';
+
 
 
 
@@ -24,15 +26,19 @@ class Profile extends Component {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+        this.getChoirs = this.getChoirs.bind(this);
 
         this.state = {
-            activeHeaderTab: 0
+            activeHeaderTab: 0,
+            choirItems: [],
+            choirGet: {}
         };
     }
 
 	componentWillMount() {
 		this.setState ( {
-        userGet:{}
+        userGet:{},
+
       });
 
     $.ajax({
@@ -43,6 +49,7 @@ class Profile extends Component {
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({userGet: data});
+          this.getChoirs();
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -53,11 +60,44 @@ class Profile extends Component {
 
     onChangeHeaderTab(tabId) {
         this.setState({
-            activeHeaderTab: tabId
+            activeHeaderTab: tabId,
         });
     }
 
+    getChoirs() {
+        // let choirItems;
+        if(this.state.UserGet !== "undefined") {
+            this.state.choirItems = this.state.userGet.choirs.map(choir => {
+            console.log(choir)
+            $.ajax({
+              type: "GET",
+              url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + choir + "/",
+              dataType: 'json',
+              cache: false, 
+              headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+              success: function(data) {
+                this.setState({choirGet: data});
+                this.state.choirItems.push( <ChoirItem key= {this.state.choirGet.id} choir={this.state.choirGet} orgID={this.state.choirGet.organization} history={this.props.history}/> );
+                console.log(this.state.choirItems)                    
+              }.bind(this),
+              error: function(xhr, status, err) {
+                console.log(err);
+              }
+            });
+            
+        });
+
+        }
+        
+    }
+
     renderTabOverview() {
+        // console.log(this.state.userGet)
+        
+
+            
+        
+
         return (
           <div >
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.goBack()}>
@@ -71,6 +111,13 @@ class Profile extends Component {
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
               </ListItem>
             </List>
+
+
+            <Grid component="section" className="section--center" shadow={0} noSpacing>  
+                {this.state.choirItems.shift()}
+              
+            </Grid>
+
           </div>
         );
     }

@@ -15,6 +15,17 @@ import AutoComplete from 'material-ui/AutoComplete';
 
 import moment from 'moment'
 
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
+
+import RaisedButton from 'material-ui/RaisedButton';
+
 
 const musicLibrary = [
   "Lift Up Your Hearts - VOZ 580",
@@ -30,6 +41,7 @@ const musicLibrary = [
 
 
 
+
 class Event extends Component {
 
   constructor(props) {
@@ -38,19 +50,58 @@ class Event extends Component {
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
 
         this.state = {
-            activeHeaderTab: 0
+            activeHeaderTab: 0,
+            music: [],
+            key: "",
+            value: "",
+            checkboxes: false
         };
+
+        this.handleKeyChange = this.handleKeyChange.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
+
+     
+
+      
+
+
+    handleSubmit(e){
+            // e.preventDefault();
+            console.log(this.state.key, this.state.value)
+            var key = this.state.key
+            var obj = {}
+            obj[key] = this.state.value
+            this.state.music.push(obj)
+            console.log(this.state)
+            
+            this._generateRows()
+            
+        }
 
   componentWillMount() {
     this.setState ( {
         eventGet:{},
+        music: [
+          {"Choral Prelude" : "Lift Up Your Hearts - VOZ 580"},
+          {"Entrance": "Canticle of the Sun - RS2 677"},
+          {"Entrance 2" : "Wesley: Lead Me Lord"},
+          // "Mass of Renewal",
+          // "(Mass Part) - SS1 #21",
+          // "Jesus, the Lord - VOZ 509",
+          // "Wesley: Lead Me Lord",
+          // "Bread of Life - VOZ 814",
+          // "Lord of All Nations - RS2 810",
+          // "We Are Called - RS2 902"
+        ]
 
       });
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/events/" + this.props.match.params.eventID,
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/" + this.props.match.params.eventID,
         dataType: 'json',
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
@@ -74,6 +125,20 @@ class Event extends Component {
     }
 
 
+    _generateRows(){
+        return this.state.music.map(el => {
+          var arr = []
+          Object.keys(el).forEach((key) => {
+            arr.push(key)
+            arr.push(el[key])
+          })
+          return <TableRow key={arr[1]}>
+                    <TableRowColumn>{arr[0]}</TableRowColumn>
+                    <TableRowColumn>{arr[1]}</TableRowColumn>
+                </TableRow>
+          })
+      }
+
     renderTabOverview() {
         return (
           <div>
@@ -96,79 +161,71 @@ class Event extends Component {
     }
 
 
+    handleKeyChange = (searchText) => {
+
+      this.setState({key: searchText});
+    }
+
+    handleValueChange = (searchText) => {
+      this.setState({value: searchText});
+    }
+
+    handleSelect  = (chosenRequest, index) => { 
+      if(index === -1) {
+          this.handleSubmit()
+          this.setState( { value: '', key: '' }) 
+      }
+          
+    }
+
     renderProgram() {
+
+
+        
+
         return (
           <div style={{marginLeft: '20px'}}>
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
             </FABButton>
             <div >
-              <AutoComplete
-                hintText="Type anything"
-                filter={AutoComplete.caseInsensitiveFilter}
-                dataSource={musicLibrary}
-              /><br />
-              <TextField
-                defaultValue="Lift Up Your Hearts - VOZ 580"
-                floatingLabelText="Choral Prelude"
-              /><br />
-              <TextField
-                defaultValue="Canticle of the Sun - RS2 677"
-                floatingLabelText="Entrance"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Penitenial Rite"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Glory to God"
-              /><br />
-              <TextField
-                defaultValue="(Mass Part) - SS1 #21"
-                floatingLabelText="Gospel Acclimation"
-              /><br />
-              <TextField
-                defaultValue="Jesus, the Lord - VOZ 509"
-                floatingLabelText="Preparation"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Holy, Holy Holy"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Memorial Acclimation 2"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Amen"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Lamb of God"
-              /><br />
-              <TextField
-                defaultValue="Mass of Renewal"
-                floatingLabelText="Penitenial Rite"
-              /><br />
-              <TextField
-                defaultValue="Wesley: Lead Me Lord"
-                floatingLabelText="Communion"
-              /><br />
-              <TextField
-                defaultValue="Bread of Life - VOZ 814"
-                floatingLabelText="Communion"
-              /><br />
-              <TextField
-                defaultValue="Lord of All Nations - RS2 810"
-                floatingLabelText="Communion"
-              /><br />
-              <TextField
-                defaultValue="We Are Called - RS2 902"
-                floatingLabelText="Sending Forth"
-              /><br />
-              
+            <br/>
+              <Table>
+                  <TableHeader adjustForCheckbox={this.state.checkboxes} displaySelectAll={this.state.checkboxes}>
+                      {/* <TableRow>
+                          <TableHeaderColumn>Key</TableHeaderColumn>
+                          <TableHeaderColumn>Value</TableHeaderColumn>
+                      </TableRow> */}
+                      <TableRow key="input">
+                          <TableRowColumn>
+                            <AutoComplete
+                                floatingLabelText="Key"
+                                filter={AutoComplete.caseInsensitiveFilter}
+                                dataSource={musicLibrary}
+                                onNewRequest={this.handleSelect}
+                                onUpdateInput={this.handleKeyChange}
+                                searchText={this.state.key}
+                                fullWidth={true}
+                              />
+                          </TableRowColumn>
+                          <TableRowColumn>
+                              <AutoComplete
+                                floatingLabelText="Value"
+                                filter={AutoComplete.caseInsensitiveFilter}
+                                dataSource={musicLibrary}
+                                onNewRequest={this.handleSelect}
+                                onUpdateInput={this.handleValueChange}
+                                searchText={this.state.value}
+                                fullWidth={true}
+                              />
+                          </TableRowColumn>
+                      </TableRow>
+                  </TableHeader>
+                  <TableBody displayRowCheckbox={this.state.checkboxes}>
+                      
+                      {this._generateRows()}
+                  </TableBody>
+              </Table> 
             </div>
           </div>
         );

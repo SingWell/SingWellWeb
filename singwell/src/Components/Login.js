@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-
+import { Redirect } from 'react-router';
 import styles from '../css/login.css'
 
 import TextField from 'material-ui/TextField';
@@ -9,9 +9,71 @@ import TextField from 'material-ui/TextField';
 
 class Login extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            password: ''
+        };
+
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+      }
+
+
+    handleEmailChange(event) {
+        this.setState({email: event.target.value});
+      }
+
+      handlePasswordChange(event) {
+        this.setState({password: event.target.value});
+      }
+
+    handleSubmit(e){
+            this.setState({submit:{
+                email: this.state.email,
+                password: this.state.password,
+                // username: this.state.email
+            }}, function() {
+                console.log(this.state)
+                $.ajax({
+                  type: "POST",
+                  url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/login/",
+                  dataType: 'json',
+                  // headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                  data: this.state.submit,
+                  success: function(data) {
+                    this.setState(
+                        {
+                            user_id: data.user_id,
+                            fireRedirect: true
+                        }, function(){
+                      console.log(data);
+                    })
+                  }.bind(this),
+                  error: function(xhr, status, err) {
+                    console.log(err);
+                    console.log(xhr.responseText);
+                  }
+                });
+            });
+            e.preventDefault();
+        }
+
+        componentWillMount() {
+        this.setState ( {
+            fireRedirect: false,
+        });
+
+    }
 
 
     render() {
+
+        const { from } = this.props.location.state || '/';
+        const { fireRedirect } = this.state;
+
         $(function() {
 
            $(".input input").focus(function() {
@@ -50,7 +112,7 @@ class Login extends Component {
                  oX = parseInt($(this).offset().left),
                  oY = parseInt($(this).offset().top);
 
-              $(this).append('<span class="click-efect x-' + oX + ' y-' + oY + '" style="margin-left:' + (pX - oX) + 'px;margin-top:' + (pY - oY) + 'px;"></span>')
+              $(this).append('<span className={"click-efect x-' + oX + ' y-' + oY + '" style="margin-left:' + (pX - oX) + 'px;margin-top:' + (pY - oY) + 'px;"></span>')
               $('.x-' + oX + '.y-' + oY + '').animate({
                  "width": "500px",
                  "height": "500px",
@@ -66,7 +128,7 @@ class Login extends Component {
                  $(".shape").css({
                     "width": "100%",
                     "height": "100%",
-                    "transform": "rotate(0deg)"
+                    "transhtmlForm": "rotate(0deg)"
                  })
 
                  setTimeout(function() {
@@ -111,7 +173,7 @@ class Login extends Component {
                     $(".shape").css({
                        "width": "50%",
                        "height": "50%",
-                       "transform": "rotate(45deg)"
+                       "transhtmlForm": "rotate(45deg)"
                     })
 
                     $(".overbox .title").fadeIn(300);
@@ -132,59 +194,75 @@ class Login extends Component {
 
         });
     
+        
+
+
+
+
         return (
             <div>
-                <div class="materialContainer">
+                <div className={"materialContainer"}>
 
 
-                   <div class="box">
+                   <div className={"box"}>
+                    <form onSubmit={this.handleSubmit.bind(this)}>
+                      <div className={"title"}>LOGIN</div>
 
-                      <div class="title">LOGIN</div>
-
-                      <div class="input">
-                         <label for="name">Username</label>
-                         <input type="text" name="name" id="name"/>
-                         <span class="spin"></span>
+                      <div className={"input"}>
+                         <label htmlFor="name">Username</label>
+                         <input type="text" name="name" id="name" value={this.state.email} onChange={this.handleEmailChange}/>
+                         <span className={"spin"}></span>
                       </div>
 
-                      <div class="input">
-                         <label for="pass">Password</label>
-                         <input type="password" name="pass" id="pass"/>
-                         <span class="spin"></span>
+                      <div className={"input"}>
+                         <label htmlFor="pass">Password</label>
+                         <input type="password" name="pass" id="pass" value={this.state.password} onChange={this.handlePasswordChange}/>
+                         <span className={"spin"}></span>
                       </div>
 
-                      <div class="button login">
-                         <button><span>GO</span> <i class="fa fa-check"></i></button>
+                      <div className={"button login"}>
+                         <button type="submit"><span>GO</span> <i className={"fa fa-check"}></i></button>
                       </div>
-
-                      <a href="" class="pass-forgot">Forgot your password?</a>
+                    </form>
+                    {fireRedirect && (
+                      <Redirect to={from || '/profile/' + this.state.user_id}/>
+                    )} 
+                      <a href="" className={"pass-forgot"}>Forgot your password?</a>
 
                    </div>
 
-                   <div class="overbox">
-                      <div class="material-button alt-2"><span class="shape"></span></div>
+                   <div className={"overbox"}>
+                      <div className={"material-button alt-2"}><span className={"shape"}></span></div>
 
-                      <div class="title">REGISTER</div>
+                      <div className={"title"}>REGISTER</div>
 
-                      <div class="input">
-                         <label for="regname">Username</label>
+                      <div className={"input"} style={{width: '50%'}}>
+                         <label htmlFor="fname">First Name</label>
+                         <input type="text" name="fname" id="fname"/>
+                         <span className={"spin"}></span>
+                      </div>
+
+                      <div className={"input"} style={{width: '50%'}}>
+                         <label htmlFor="lname">Last Name</label>
+                         <input type="text" name="lname" id="lname"/>
+                         <span className={"spin"}></span>
+                      </div>
+
+                      <div className={"input"}>
+                         <label htmlFor="regname">Username</label>
                          <input type="text" name="regname" id="regname"/>
-                         <span class="spin"></span>
+                         <span className={"spin"}></span>
                       </div>
 
-                      <div class="input">
-                         <label for="regpass">Password</label>
+                      <div className={"input"}>
+                         <label htmlFor="regpass">Password</label>
                          <input type="password" name="regpass" id="regpass"/>
-                         <span class="spin"></span>
+                         <span className={"spin"}></span>
                       </div>
 
-                      <div class="input">
-                         <label for="reregpass">Repeat Password</label>
-                         <input type="password" name="reregpass" id="reregpass"/>
-                         <span class="spin"></span>
-                      </div>
+                      
 
-                      <div class="button">
+                      <div className={"button"}>
                          <button><span>NEXT</span></button>
                       </div>
 

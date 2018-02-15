@@ -167,13 +167,14 @@ class AddChoir extends Component {
 		}}, function() {
 			$.ajax({
 			  type: "POST",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/choirs/",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/",
 		      dataType: 'json',
 		      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 		      data: this.state.newChoir,
 		      success: function(data) {
 		        this.setState(
 		        	{
+		        		organization: this.props.match.params.orgID,
 		        		choirPost: data,
 		        		choirID: data.id,
 		        		fireRedirect: true

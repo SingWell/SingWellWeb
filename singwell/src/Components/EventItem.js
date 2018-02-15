@@ -29,7 +29,7 @@ class ChoirItem extends Component {
     //     });
 
     return (
-      <Cell col={3}>
+      <Cell col={4}>
         <Card shadow={0} style={{margin: '10px auto', minHeight:"0px"}} onClick={() => this.props.history.push('/organizations/' + this.props.event.organization + "/events/" + this.props.event.id)}>
             <CardTitle style={{}}>{this.props.event.name}</CardTitle>
             <CardText>
