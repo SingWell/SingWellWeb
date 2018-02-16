@@ -18,7 +18,7 @@ class ChoirItem extends Component {
 
   render() {
     const { weekday } = this.state
-    console.log(this.choir)
+    console.log(this.props.choir)
     return (
       <Cell col={6}>
         <Card shadow={0} style={{margin: '10px auto'}} onClick={() => this.props.history.push('/organizations/' + this.props.choir.organization + '/choirs/' + this.props.choir.id)}>

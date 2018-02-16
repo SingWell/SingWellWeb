@@ -17,6 +17,8 @@ import classNames from 'classnames';
 import TextField from 'material-ui/TextField';
 import ChoirItem from './ChoirItem';
 
+import ReactDOM from 'react-dom';
+
 
 
 
@@ -31,15 +33,12 @@ class Profile extends Component {
         this.state = {
             activeHeaderTab: 0,
             choirItems: [],
-            choirGet: {}
+            choirGet: {},
+            userGet:{},
         };
     }
 
 	componentWillMount() {
-		this.setState ( {
-        userGet:{},
-
-      });
 
     $.ajax({
         type: "GET",
@@ -56,18 +55,17 @@ class Profile extends Component {
         }
       });
 
-	}
-
-    onChangeHeaderTab(tabId) {
-        this.setState({
-            activeHeaderTab: tabId,
-        });
+        
     }
 
-    getChoirs() {
-        // let choirItems;
-        if(this.state.UserGet !== "undefined") {
-            this.state.choirItems = this.state.userGet.choirs.map(choir => {
+
+
+
+
+      getChoirs() {
+        let choirItems = [];
+        if(this.state.userGet !== "undefined") {
+          this.state.userGet.choirs.map(choir => {
             console.log(choir)
             $.ajax({
               type: "GET",
@@ -77,8 +75,11 @@ class Profile extends Component {
               headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
               success: function(data) {
                 this.setState({choirGet: data});
+                
+                // ReactDOM.render(<ChoirItem key= {this.state.choirGet.id} choir={this.state.choirGet} orgID={this.state.choirGet.organization} history={this.props.history}/>,document.getElementById('test'));
+                // return ( <ChoirItem key= {this.state.choirGet.id} choir={this.state.choirGet} orgID={this.state.choirGet.organization} history={this.props.history}/> );
                 this.state.choirItems.push( <ChoirItem key= {this.state.choirGet.id} choir={this.state.choirGet} orgID={this.state.choirGet.organization} history={this.props.history}/> );
-                console.log(this.state.choirItems)                    
+                // console.log(choirItems)                    
               }.bind(this),
               error: function(xhr, status, err) {
                 console.log(err);
@@ -86,16 +87,20 @@ class Profile extends Component {
             });
             
         });
-
+         console.log(this.state.choirItems)
+          // ReactDOM.render(<div>{choirItems}</div>,document.getElementById('test'));
         }
-        
+
+      }
+
+    onChangeHeaderTab(tabId) {
+        this.setState({
+            activeHeaderTab: tabId,
+        });
     }
 
-    renderTabOverview() {
-        // console.log(this.state.userGet)
-        
-
-            
+    
+    renderTabOverview() {            
         
 
         return (
@@ -111,20 +116,58 @@ class Profile extends Component {
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
               </ListItem>
             </List>
-
-
+            <div id="test">
+            </div>
             <Grid component="section" className="section--center" shadow={0} noSpacing>  
-                {this.state.choirItems.shift()}
-              
-            </Grid>
+                {this.state.choirItems}
+                
+            </Grid> 
 
           </div>
         );
     }
 
+    renderChoirs() {
+        let choirItems;
+        choirItems = this.state.userGet.choirs.map(choir => {
+            $.ajax({
+              type: "GET",
+              url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + choir + "/",
+              dataType: 'json',
+              cache: false, 
+              headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+              success: function(data) {
+                this.setState({choirGet: data});                  
+              }.bind(this),
+              error: function(xhr, status, err) {
+                console.log(err);
+              }
+            });
+            return (
+                <ChoirItem key= {this.state.choirGet.id} choir={this.state.choirGet} orgID={this.props.match.params.orgID} history={this.props.history}/>
+            );
+        });
+        return (
+                <div>
+                    <Grid component="section" className="section--center" shadow={0} noSpacing>
+                    <Cell col={12}>
+                        <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/choirs/')}>
+                            <Icon name="add" />
+                        </FABButton>
+                    </Cell>
+                    
+                        {choirItems}
+                        
+                    </Grid>
+                </div>
+            );
+
+    }
+
     renderActiveTabContent() {
         switch (this.state.activeHeaderTab) {
             case 0: return this.renderTabOverview();
+            case 1: return this.renderChoirs();
             default: return <div>Nothing to see here :-)</div>;
         }
     }
@@ -140,10 +183,11 @@ class Profile extends Component {
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderRow className="mdl-layout--large-screen-only">
                                 <h3>{this.state.userGet.first_name} {this.state.userGet.last_name}</h3>
-                            </HeaderRow>
+                            </HeaderRow>  
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
+                                <Tab>Choir</Tab>
                             </HeaderTabs>
                         </Header>
                         <Content component="main">
