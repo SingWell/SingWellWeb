@@ -1,64 +1,22 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import $ from 'jquery';
-import '../css/Organizations.css'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
-
 import { getColorClass, getTextColorClass } from '../css/palette';
-import { Link } from 'react-router-dom';
-
+import classNames from 'classnames';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
-import moment from 'moment';
+import RosterItem from './RosterItem'
 
-import MusicLibraryItem from './MusicLibraryItem'
-
-class MusicLibrary extends Component {
-
-    componentWillMount() {
-    this.setState ( {
-        orgGet:{},
-        musicGet: []
-      });
-
-    $.ajax({
-        type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID,
-        dataType: 'json',
-        cache: false, 
-        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-        success: function(data) {
-          this.setState({orgGet: data});
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.log(err);
-        }
-      });
-
-    $.ajax({
-        type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/?organization=" + this.props.match.params.orgID,
-        dataType: 'json',
-        cache: false, 
-        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-        success: function(data) {
-          this.setState({musicGet: data});
-          console.log(this.state.musicGet)
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.log(err);
-        }
-      });
-
-    }
+import moment from 'moment'
 
 
+class MusicPage extends Component {
 
-    constructor(props) {
+  constructor(props) {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
@@ -68,6 +26,31 @@ class MusicLibrary extends Component {
         };
     }
 
+  componentWillMount() {
+    this.setState ( {
+        musicGet:{},
+      });
+
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/" + this.props.match.params.musicID,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({musicGet: data}, function() {
+            console.log(this.state)
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });
+
+
+    }
+
+
 
     onChangeHeaderTab(tabId) {
         this.setState({
@@ -75,28 +58,31 @@ class MusicLibrary extends Component {
         });
     }
 
+
     renderTabOverview() {
-
-        let musicLibraryItems;
-        musicLibraryItems = this.state.musicGet.map(music => {
-            return (
-                <MusicLibraryItem key= {music.id} music={music} history={this.props.history}/>
-            );
-        });
-
+      const { weekday } = this.state
         return (
-            <div>
-                <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                    <Icon name="keyboard_arrow_left" />
-                </FABButton>
-                <List>
-                  { musicLibraryItems }
-                </List>
+          <div>
+            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+                <Icon name="keyboard_arrow_left" />
+            </FABButton>
+            <List>
+              <ListItem>
+                <ListItemContent icon="person">{this.state.musicGet.composer}</ListItemContent>
+              </ListItem>
+              <ListItem>
+                <ListItemContent icon="label">{this.state.musicGet.arranger}</ListItemContent>
+              </ListItem>
+              <ListItem>
+                <ListItemContent icon="star">{this.state.musicGet.publisher}</ListItemContent>
+              </ListItem>
+              <ListItem>
+                <ListItemContent icon="music_note">{this.state.musicGet.instrumentation}</ListItemContent>
+              </ListItem>
+            </List>
             </div>
         );
     }
-
-
 
     renderActiveTabContent() {
         switch (this.state.activeHeaderTab) {
@@ -105,18 +91,21 @@ class MusicLibrary extends Component {
         }
     }
 
-    
+
+
+
 
   render() {
-        
-      return (
+    
+    
+    return (
 
-                <div className={classNames('mdl-demo', 'mdl-base')}>
+      <div className={classNames('mdl-demo', 'mdl-base')}>
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderRow className="mdl-layout--large-screen-only">
-                                <h3>{this.state.orgGet.name}</h3>
+                                <h3>{this.state.musicGet.title}</h3>
                             </HeaderRow>
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
@@ -128,12 +117,11 @@ class MusicLibrary extends Component {
                                 {this.renderActiveTabContent()}
                             </div>
                         </Content>
-                    </Layout>
+                  </Layout>
                     
-                </div>
-
-        );
+      </div>
+      );
     }
 }
 
-export default MusicLibrary;
+export default MusicPage;

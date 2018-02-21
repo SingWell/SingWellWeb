@@ -27,17 +27,23 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 
 
-const musicLibrary = [
-  "Lift Up Your Hearts - VOZ 580",
-  "Canticle of the Sun - RS2 677",
-  "Mass of Renewal",
-  "(Mass Part) - SS1 #21",
-  "Jesus, the Lord - VOZ 509",
-  "Wesley: Lead Me Lord",
-  "Bread of Life - VOZ 814",
-  "Lord of All Nations - RS2 810",
-  "We Are Called - RS2 902"
-];
+// const musicLibrary = [
+//   "Lift Up Your Hearts - VOZ 580",
+//   "Canticle of the Sun - RS2 677",
+//   "Mass of Renewal",
+//   "(Mass Part) - SS1 #21",
+//   "Jesus, the Lord - VOZ 509",
+//   "Wesley: Lead Me Lord",
+//   "Bread of Life - VOZ 814",
+//   "Lord of All Nations - RS2 810",
+//   "We Are Called - RS2 902"
+// ];
+
+const keys = [ 
+  "Choral Prelude",
+  "Entrance",
+  "Mass of Renewal"
+]
 
 
 
@@ -54,7 +60,9 @@ class Event extends Component {
             music: [],
             key: "",
             value: "",
-            checkboxes: false
+            checkboxes: false,
+            musicGet: [],
+            musicLibrary: []
         };
 
         this.handleKeyChange = this.handleKeyChange.bind(this);
@@ -114,6 +122,28 @@ class Event extends Component {
           console.log(err);
         }
       });
+
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/?organization=" + this.props.match.params.orgID,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({musicGet: data}, function() {
+            console.log(this.state.musicGet)
+            this.state.musicGet.map(musicPiece => {
+              console.log(musicPiece)
+              this.state.musicLibrary.push(musicPiece.title)
+            });
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });
+
+
     }
 
     
@@ -181,8 +211,7 @@ class Event extends Component {
     renderProgram() {
 
 
-        
-
+      
         return (
           <div style={{marginLeft: '20px'}}>
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
@@ -201,7 +230,7 @@ class Event extends Component {
                             <AutoComplete
                                 floatingLabelText="Key"
                                 filter={AutoComplete.caseInsensitiveFilter}
-                                dataSource={musicLibrary}
+                                dataSource={keys}
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleKeyChange}
                                 searchText={this.state.key}
@@ -212,7 +241,7 @@ class Event extends Component {
                               <AutoComplete
                                 floatingLabelText="Value"
                                 filter={AutoComplete.caseInsensitiveFilter}
-                                dataSource={musicLibrary}
+                                dataSource={this.state.musicLibrary}
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleValueChange}
                                 searchText={this.state.value}

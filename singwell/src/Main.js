@@ -10,6 +10,8 @@ import CreateProfile from './Components/CreateProfile'
 import Profile from './Components/Profile'
 import Login from './Components/Login'
 import MusicLibrary from './Components/MusicLibrary'
+import MusicPage from './Components/MusicPage'
+import AddMusic from './Components/AddMusic'
 
 import $ from 'jquery';
 
@@ -30,7 +32,8 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID/events/:eventID' component={Event} />
 		      <Route exact path='/profile/:userID/edit' component={CreateProfile} />
 		      <Route exact path='/profile/:userID' component={Profile} />
-		      <Route exact path='/MusicLibrary/:orgID' component={MusicLibrary} />
+		      <Route exact path='/organizations/:orgID/music/:musicID' component={MusicPage} />
+		      <Route exact path='/organizations/:orgID/music/' component={AddMusic} />
 
 
 

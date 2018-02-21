@@ -19,8 +19,8 @@ class MusicLibraryItem extends Component {
   render() {
 
     return (
-      <ListItem twoLine style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/organizations/' + this.props.music.organization)}>
-        <ListItemContent avatar="person" subtitle={this.props.music.composer}>{this.props.music.title}</ListItemContent>
+      <ListItem twoLine style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/organizations/' + this.props.music.organization + "/music/" + this.props.music.id)}>
+        <ListItemContent avatar="music_note" subtitle={this.props.music.composer}>{this.props.music.title}</ListItemContent>
       </ListItem>
     );
   }

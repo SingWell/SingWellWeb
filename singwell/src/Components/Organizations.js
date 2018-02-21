@@ -17,6 +17,8 @@ import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
 
+import MusicLibraryItem from './MusicLibraryItem'
+
 // import MapContainer from './MapContainer'
 
 import GoogleMapReact from 'google-map-react';
@@ -39,7 +41,8 @@ class Organizations extends Component {
         eventGet: [],
         events: {},
         geocode: {},
-        center: {}
+        center: {},
+        musicGet: {}
       });
 
     $.ajax({
@@ -85,7 +88,23 @@ class Organizations extends Component {
         }
       });
 
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/?organization=" + this.props.match.params.orgID,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({musicGet: data});
+          console.log(this.state.musicGet)
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });
+
     }
+
 
     geocodeAddress(address) {
 
@@ -314,11 +333,35 @@ class Organizations extends Component {
         );
     }
 
+
+    renderMusicLibrary() {
+        
+        let musicLibraryItems;
+        musicLibraryItems = this.state.musicGet.map(music => {
+            return (
+                <MusicLibraryItem key= {music.id} music={music} history={this.props.history}/>
+            );
+        });
+
+        return (
+            <div>
+                <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/music')}>
+                    <Icon name="add" />
+                </FABButton>
+                <List>
+                  { musicLibraryItems }
+                </List>
+            </div>
+        );
+
+    }
+
     renderActiveTabContent() {
         switch (this.state.activeHeaderTab) {
             case 0: return this.renderTabOverview();
             case 1: return this.renderChoirs();
             case 2: return this.renderEvents();
+            case 3: return this.renderMusicLibrary();
             default: return <div>Nothing to see here :-)</div>;
         }
     }
@@ -342,6 +385,7 @@ class Organizations extends Component {
                                 <Tab>Overview</Tab>
                                 <Tab>Choirs</Tab>
                                 <Tab>Events</Tab>
+                                <Tab>Music Library</Tab>
                             </HeaderTabs>
                         </Header>
                         <Content component="main">
