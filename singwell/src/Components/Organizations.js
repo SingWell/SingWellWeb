@@ -22,13 +22,17 @@ import ImageEdit from 'material-ui/svg-icons/image/edit';
 
 // import MapContainer from './MapContainer'
 
+import GoogleMapReact from 'google-map-react';
+
 const google = window.google
+
+const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
 class Organizations extends Component {
 
     static defaultProps = {
-        center: {lat: 0, lng: 0},
-        zoom: 8
+        center: {lat: 33.0181518, lng: -96.71720429999999},
+        zoom: 12
       };
 
   componentWillMount() {
@@ -136,40 +140,80 @@ class Organizations extends Component {
         let eventItems;
         eventItems = this.state.eventGet.map(event => {
             console.log(event)
+            {/* sort(function (left, right) {
+                            return moment.utc(left.timeStamp).diff(moment.utc(right.timeStamp))
+                        }) */}
             return (
                 <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
             );
         });
+
         return (
             <div>
             <div>
                 <h4 style = {{marginLeft: '20px'}}>
+                    Announcements:
+                </h4>
+                
+                <Grid component="section" className="section--center"  noSpacing>
+                    <Cell col={6}>
+                        <Card shadow={0} style={{margin: '10px auto', minHeight:"0px"}}>
+                            <CardTitle style={{}}>Announcement 1</CardTitle>
+                            <CardText>
+                                Pig ham prosciutto ground round brisket biltong spare ribs jowl meatloaf rump drumstick salami doner capicola tri-tip.
+                            </CardText>
+                        </Card>
+                    </Cell>
+                    <Cell col={6}>
+                        <Card shadow={0} style={{margin: '10px auto', minHeight:"0px"}}>
+                            <CardTitle style={{}}>Announcement 2</CardTitle>
+                            <CardText>
+                                Bacon ipsum dolor amet fatback pork belly pork loin ribeye, cupim short ribs jowl frankfurter buffalo leberkas.
+                            </CardText>
+
+                        </Card>
+                    </Cell>    
+                
+                </Grid>
+
+                <h4 style = {{marginLeft: '20px'}}>
                     Upcoming Events:
                 </h4>
                 <Grid component="section" className="section--center" shadow={0} noSpacing>
-                        {eventItems.slice(0,4)}
-                
-                <List>
-                  <ListItem>
-                    <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
-                  </ListItem>
-                </List>
+                        {console.log(eventItems)}
+                        {eventItems.slice(0,3)}
+                <Cell col={12}>
+                    <List>
+                      <ListItem>
+                        <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
+                      </ListItem>
+                      <ListItem>
+                        <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
+                      </ListItem>
+                      <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}>
+                        <ImageEdit />
+                      </IconButton>
+                    </List>
 
-                    <div className="map">
-                        {/* <MapContainer initialCenter={{lat: 55, lng: -93}}/> */}
-                    </div>
+                        <div className="map" style={{height: "300px"}}>
+                        <GoogleMapReact
+                                bootstrapURLKeys={{ key: "AIzaSyDs9ev97Ko6vAon6w5wxflxhJBdcDhzXT0" }}
+                                defaultCenter={this.props.center}
+                                defaultZoom={this.props.zoom}
+                              >
+                                <AnyReactComponent
+                                  lat={this.state.center.lat}
+                                  lng={this.state.center.lng}
+                                  text={this.state.orgGet.description}
+                                />
+                              </GoogleMapReact>
+                            {/* <MapContainer initialCenter={{lat: 55, lng: -93}}/> */}
+                        </div>
+                </Cell>
                 </Grid>
-                    
-
                         
             </div>
             <div>
-            <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}>
-                  <ImageEdit />
-            </IconButton>
             </div>
             </div>
         );
@@ -178,7 +222,6 @@ class Organizations extends Component {
     renderChoirs() {
         let choirItems;
         choirItems = this.state.choirGet.map(choir => {
-            console.log(choir)
             return (
                 <ChoirItem key= {choir.id} choir={choir} orgID={this.props.match.params.orgID} history={this.props.history}/>
             );

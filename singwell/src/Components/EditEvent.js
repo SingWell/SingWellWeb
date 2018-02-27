@@ -26,7 +26,7 @@ import { FlatButton, RaisedButton } from 'material-ui/'
 
 
 
-class AddEvent extends Component {
+class EditEvent extends Component {
 
 	constructor(props) {
 		super(props);
@@ -34,6 +34,23 @@ class AddEvent extends Component {
 	    let hour = '';
 	    let minute = '';
 	    let date = '';
+
+	    let eventName = '';
+	    let eventDate = '';
+	    let eventTime = '';
+	    let eventLoc = '';
+	    let eventChoir = [];
+
+	    let defaultYear = '';
+	    let defaultMonth = '';
+	    let defaultDay = '';
+
+	    let defaultHour = '';
+	    let defaultMinute = '';
+	    let defaultSecond = '';
+
+	    let finalTime = '';
+
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -47,7 +64,23 @@ class AddEvent extends Component {
 	      timezone,
 	      showTimezone,
 	      choir: {},
-	      date
+	      date,
+
+	      eventName,
+	      eventDate,
+	      eventTime,
+	      eventLoc,
+	      eventChoir, 
+
+	      defaultYear,
+	      defaultMonth,
+	      defaultDay,
+
+	      defaultHour,
+	      defaultMinute,
+	      defaultSecond,
+
+	      finalTime
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -60,48 +93,134 @@ class AddEvent extends Component {
 	    this.onDateChange = this.onDateChange.bind(this);
 
 	    this.baseState = this.state;
+
+	    this.onNameChange = this.onNameChange.bind(this);
+	    this.onLocationChange = this.onLocationChange.bind(this);
+	    //this.onChoirChange = this.onChoirChange.bind(this);
 	}
 
 	onHourChange(hour) {
-	    this.setState({ hour });
-	  }
+	this.setState({ 
+		hour,
+		timeChange: true,
+		defaultHour: hour
+	});
+	}
 
-	  onMinuteChange(minute) {
-	    this.setState({ minute });
-	  }
+	onMinuteChange(minute) {
+	this.setState({ 
+		minute, 
+		timeChange: true,
+		defaultMinute: minute
+	});
+	}
 
-	  onTimeChange(time) {
-	    const [hour, minute] = time.split(':');
-	    this.setState({ hour, minute });
-	  }
+	onTimeChange(time) {
+	const [hour, minute] = time.split(':');
+	this.setState({ 
+		hour, 
+		minute, 
+		timeChange: true });
+	}
 
+	onFocusChange(focused) {
+	this.setState({ focused });
+	}
 
-	  onFocusChange(focused) {
-	    this.setState({ focused });
-	  }
+	handleFocusedChange() {
+	const { focused } = this.state;
+	this.setState({ focused: !focused });
+	}
 
-	  handleFocusedChange() {
-	    const { focused } = this.state;
-	    this.setState({ focused: !focused });
-	  }
+	callbackFunction(selected) {
+		 this.setState({choir: selected})
+	}
 
-	  callbackFunction(selected) {
-	   	 this.setState({choir: selected})
+	onDateChange(event, date) {
+		console.log(date);
+		let newDate = moment(date).format("YYYY-MM-DD");
+		let [year, month, day] = newDate.split("-");
+		console.log(year + " " + month + " " + day);
+		this.setState({
+			date: newDate,
+			defaultYear: +year, 
+			defaultMonth: +month-1,
+			defaultDay: +day
+		});
+	}
 
-	  }
+	onNameChange() {
+		this.setState({
+			eventName: this.refs.name.inputRef.value
+		})
+	}
 
-	  onDateChange(event, date) {
-	  	this.setState({date: moment(date).format("YYYY-MM-DD")});
-	  }
+	onLocationChange() {
+		this.setState({
+			eventLoc: this.refs.location.inputRef.value
+		})
+	}
+
+	// onChoirChange() {l
+	// 	this.setState({
+	// 		eventChoir: this.refs.location.
+	// 	})
+	// }
+
+	parseDate(date) {
+		if(date != null){
+		let [year, month, day] = this.state.eventDate.split("-");
+		this.setState({
+			defaultYear: +year,
+			defaultMonth: +month-1,
+			defaultDay: +day,
+			date: moment(date).format("YYYY-MM-DD")
+		});
+		}
+		console.log(this.state.defaultYear);
+		console.log(this.state.defaultMonth);
+		console.log(this.state.defaultDay);
+	}
+
+	parseTime(time) {
+		if(time!=null){
+		let [hour, minute, second] = this.state.eventTime.split(":");
+		this.setState({
+			defaultHour: +hour,
+			defaultMinute: +minute,
+			//defaultSecond: +second
+			hour: +hour,
+			minute: +minute
+		});
+		}
+		console.log("D Hour:" + this.state.defaultHour);
+		console.log("D Minute:" + this.state.defaultMinute);
+		console.log(this.state.defaultSecond);
+	}
+
+	// setTime() {
+	// 	if(this.state.timeChange == true){
+	// 		this.setState({
+	// 			finalTime: this.state.defaultHour + ":" + this.state.defaultMinute + ":00"
+	// 		});
+	// 	}
+	// 	else {
+	// 		this.setState({
+	// 			finalTime: this.state.hour + ":" + this.state.minute + ":00"
+	// 		})
+	// 	}
+	// }
 
 	componentWillMount() {
 		this.setState ( {
-			newEvent:{},
+			newEvent: {},
+			eventGet: {},
 			submitRedirect: false,
 			cancelRedirect: false,
 			eventID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
-			choirGet: []
+			choirGet: [],
+			timeChange: false
 		});
 
 		$.ajax({
@@ -116,11 +235,36 @@ class AddEvent extends Component {
 	        error: function(xhr, status, err) {
 	          console.log(err);
 	        }
-	      });
+	    });
 
+		$.ajax({
+	        type: "GET",
+	        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/" + this.props.match.params.eventID,
+	        dataType: 'json',
+	        cache: false, 
+	        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+	        success: function(data) {
+	          this.setState({
+	          	eventGet: data,
+	          	eventName: data.name,
+	          	eventDate: data.date,
+	          	eventTime: data.time,
+	          	eventLoc: data.location,
+	          	eventChoirs: data.choirs
+	          }, function() {
+	            console.log(this.state);
+	          });
+	        this.parseDate(data.date);
+	        this.parseTime(data.time);
+	        }.bind(this),
+	        error: function(xhr, status, err) {
+	          console.log(err);
+	        }
+      	});
 	}
 
 	handleSubmit(e){
+		//this.setTime();
 		console.log(+this.state.choir.value)
 		this.setState({newEvent:{
 			name: this.refs.name.inputRef.value,
@@ -134,8 +278,8 @@ class AddEvent extends Component {
 		}}, function() {
 			console.log(this.state.newEvent)
 			$.ajax({
-			  type: "POST",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/",
+			  type: "PATCH",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/" + this.props.match.params.eventID + "/",
 		      dataType: 'json',
 		      data: this.state.newEvent,
 		      success: function(data) {
@@ -149,6 +293,9 @@ class AddEvent extends Component {
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
+		        console.log(xhr.responseText);
+				console.log(this);
+				console.log(xhr);
 		      }
 		    });
 		});
@@ -161,8 +308,6 @@ class AddEvent extends Component {
   		)
   	}
 
-
-
   render() {
   	const { from } = this.props.location.state || '/';
   	const { submitRedirect } = this.state;
@@ -174,7 +319,7 @@ class AddEvent extends Component {
       minute,
       focused,
       timezone,
-      showTimezone,
+      showTimezone
     } = this.state;
 	console.log(this.state.choirGet)
 
@@ -183,49 +328,63 @@ class AddEvent extends Component {
         console.log(choir)
         return (
         	<option key={choir.id} dataValue={choir.id}>{choir.name}</option>
-            
         );
     });
 
-
+    const hourr=6;
+    const minutee=30;
 
     return (
 
     	<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
-		    <CardTitle>Add Event</CardTitle>
+		    <CardTitle>Edit Event</CardTitle>
 		    <CardText>
 		       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 			       <Textfield
-					    onChange={() => {}}
+					    //onChange={() => {}}
 					    label="Event name..."
 					    floatingLabel
 					    ref="name"
 					    style={{width: '200px'}}
+					    value={this.state.eventName}
+					    onChange={this.onNameChange}
 					/>
 					{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
-					<DatePicker floatingLabelText="Date of Event..." container="inline" onChange={this.onDateChange}/>
+					<DatePicker 
+						floatingLabelText="Date of Event..." 
+						container="inline" 
+						value={new Date(this.state.defaultYear, this.state.defaultMonth, this.state.defaultDay)}
+						onChange={this.onDateChange}
+					/>
 		      		<br/>
 		      		<br/>
 		      		<label>Event Time:</label>
 		      		<TimePicker
-			          focused={focused}
-			          timezone={timezone}
-			          onFocusChange={this.onFocusChange}
-			          onHourChange={this.onHourChange}
-			          onMinuteChange={this.onMinuteChange}
-			          onTimeChange={this.onTimeChange}
-			          showTimezone={showTimezone}
-			          time={hour && minute ? `${hour}:${minute}` : null}
+						focused={focused}
+						timezone={timezone}
+						onFocusChange={this.onFocusChange}
+						onHourChange={this.onHourChange}
+						onMinuteChange={this.onMinuteChange}
+						onTimeChange={this.onTimeChange}
+						showTimezone={showTimezone}
+						//time={hour && minute ? `${hour}:${minute}` : null}
+						time={`${this.state.defaultHour}:${this.state.defaultMinute}`}
+						//defaultTime={`${this.state.defaultHour}:${this.state.defaultMinute}`}
 			        />
 			        <br/>
 			        <Textfield
-					    onChange={() => {}}
+					    //onChange={() => {}}
 					    label="Location..."
 					    floatingLabel
 					    ref="location"
+					    value={this.state.eventLoc}
+					    onChange={this.onLocationChange}
 					/>
 					<br/>
-					<ReactMaterialSelect label="Choir..." onChange={this.callbackFunction}>
+					<ReactMaterialSelect 
+						label="Choir..." 
+						value={this.state.eventChoirs} 
+						onChange={this.callbackFunction}>
 		                {choirs}
 		            </ReactMaterialSelect>
 		      		<br/>
@@ -246,4 +405,4 @@ class AddEvent extends Component {
   }
 }
 
-export default AddEvent;
+export default EditEvent;

@@ -20,11 +20,15 @@ class EditOrganization extends Component {
 		let orgName = '';
 		let orgAddress = '';
 		let orgDescription = '';
+		let orgPhone = '';
+		let orgEmail = '';
 
 		this.state = {
 			orgName, 
+			orgDescription,
 			orgAddress,
-			orgDescription
+			orgPhone,
+			orgEmail
 		}
 
 	   this.handleNameChange = this.handleNameChange.bind(this);
@@ -84,8 +88,12 @@ class EditOrganization extends Component {
 				orgName: data.name, 
 				orgAddress: data.address,
 				orgDescription: data.description,
+				orgPhone: data.phone_number,
+				orgEmail: data.email
           	}, function() {
             console.log(this.state)
+            console.log("data");
+            console.log(data);
           });
         }.bind(this),
         error: function(xhr, status, err) {
@@ -346,7 +354,7 @@ class EditOrganization extends Component {
 			name: this.refs.name.inputRef.value,
 			description: this.refs.description.inputRef.value,
 			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
-			phone_number: this.refs.phoneNumber.inputRef.value,
+			phone_number: +this.refs.phoneNumber.inputRef.value,
 			email: this.refs.email.inputRef.value,
 			admins: [1]
 		}}, function() {
@@ -367,8 +375,7 @@ class EditOrganization extends Component {
 		        		console.log(this.state);
 		        		console.log(this.state.newOrganization);
 		        		console.log("success");
-		        		console.log(xhr);
-		        		console.log(xhr.responsetText);
+		        		
 
 		        	})
 		      }.bind(this),

@@ -192,6 +192,7 @@ class AddChoir extends Component {
 		      success: function(data) {
 		        this.setState(
 		        	{
+		        		organization: this.props.match.params.orgID,
 		        		choirPost: data,
 		        		choirID: data.id,
 		        		fireRedirect: true

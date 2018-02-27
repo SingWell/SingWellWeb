@@ -11,6 +11,8 @@ import Event from './Components/Event'
 import CreateProfile from './Components/CreateProfile'
 import Login from './Components/Login'
 import EditOrganization from './Components/EditOrganization'
+import EditProfile from './Components/EditProfile'
+import EditEvent from './Components/EditEvent'
 
 import $ from 'jquery';
 
@@ -32,10 +34,11 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID/choirs/:choirID/events' component={AddEvent} />
 		      <Route exact path='/organizations/:orgID/events/' component={AddEvent} />
 		      <Route exact path='/organizations/:orgID/events/:eventID' component={Event} />
-		      <Route exact path='/profile/:userID/create' component={CreateProfile} />
+		      <Route exact path='/profile/:userID/edit' component={EditProfile} />
 		      <Route exact path='/profile/:userID' component={Profile} />
 		      <Route exact path='/choirs/:choirID/edit' component={EditChoir} />
 		      <Route exact path='/organizations/:orgID/edit' component={EditOrganization} />
+		      <Route exact path='/organizations/:orgID/events/:eventID/edit' component={EditEvent} />
 	    	</Switch>
 	  	</main>
 	  );

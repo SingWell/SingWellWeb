@@ -31,6 +31,19 @@ class EditChoir extends Component {
 	    let mtgDay = '';
 	    let startTime = '';
 	    let endTime = '';
+
+	    let defaultStartHour = '';
+	    let defaultStartMinute = '';
+	    let defaultStartSecond = '';
+
+	    let defaultEndHour = '';
+	    let defaultEndMinute = '';
+	    let defaultEndSecond = '';
+
+	    let finalStartTime = '';
+	    let finalEndTime = '';
+
+
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -50,7 +63,18 @@ class EditChoir extends Component {
 	      choirName,
 	      mtgDay,
 	      startTime,
-	      endTime
+	      endTime,
+
+	      defaultStartHour,
+	      defaultStartMinute,
+	      defaultStartSecond,
+
+	      defaultEndHour,
+	      defaultEndMinute,
+	      defaultEndSecond,
+
+	      finalStartTime,
+	      finalEndTime
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -67,24 +91,29 @@ class EditChoir extends Component {
 
 	    this.handleNameChange = this.handleNameChange.bind(this);
 	    this.handleDayChange = this.handleDayChange.bind(this);
-
-
-			
+	
 	}
 
 	onHourChange(hourStart) {
-	this.setState({ hourStart });
+	this.setState({ 
+		hourStart,
+		defaultStartHour: hourStart,
+		timeChange: true
+		});
 	}
 
 	onMinuteChange(minuteStart) {
-	this.setState({ minuteStart });
+	this.setState({ 
+		minuteStart ,
+		defaultStartMinute: minuteStart,
+		timeChange: true
+	});
 	}
 
 	onTimeChange(time) {
 	const [hourStart, minuteStart] = time.split(':');
 	this.setState({ hourStart, minuteStart });
 	}
-
 
 	onFocusChange(focusedStart) {
 	this.setState({ focusedStart });
@@ -96,20 +125,28 @@ class EditChoir extends Component {
 	}
 
 	onHourChangeEnd(hourEnd) {
-	this.setState({ hourEnd });
+	this.setState({ 
+		hourEnd,
+		defaultEndHour: hourEnd,
+		timeChange: true
+	});
 	}
 
 	onMinuteChangeEnd(minuteEnd) {
-	this.setState({ minuteEnd });
+	this.setState({ 
+		minuteEnd,
+		defaultEndMinute: minuteEnd,
+		timeChange: true
+	});
 	}
 
 	onTimeChangeEnd(time) {
 	const [hourEnd, minuteEnd] = time.split(':');
-	this.setState({ hourEnd, minuteEnd });
+		this.setState({ hourEnd, minuteEnd });
 	}
 
 	onFocusChangeEnd(focusedEnd) {
-	this.setState({ focusedEnd });
+		this.setState({ focusedEnd });
 	}
 
 	handleFocusedChangeEnd() {
@@ -129,6 +166,47 @@ class EditChoir extends Component {
 		})
 	}
 
+	parseTime() {
+		let [starthour, startminute, startsecond] = this.state.startTime.split(":");
+		let [endhour, endminute, endsecond] = this.state.endTime.split(":");
+		this.setState({
+			defaultStartHour: +starthour,
+			defaultStartMinute: +startminute,
+			defaultEndHour: +endhour,
+			defaultEndMinute: +endminute,
+			hourStart: +starthour,
+			hourEnd: +endhour,
+			minuteStart: +startminute,
+			minuteEnd: +endminute
+		});
+		
+	}
+
+	setTime() {
+		if(this.state.timeChange == false){
+			console.log(this.state.defaultHour);
+			console.log(this.state.defaultMinute);
+			console.log(this.state.defaultSecond);
+			let hStart = this.state.defaultStartHour;
+			let mStart = this.state.defaultStartMinute;
+			let hEnd = this.state.defaultEndHour;
+			let mEnd = this.state.defaultEndMinute
+			console.log("inside timechage statement");
+			this.setState({
+				finalStartTime: hStart + ":" + mStart + ":00",
+				finalEndTime: hEnd + ":" + mEnd + ":00"
+			});
+		}
+		else {
+			this.setState({
+				finalStartTime: this.state.hourStart + ":" + this.state.minuteStart + ":00",
+				finalEndTime: this.state.hourEnd + ":" + this.state.minuteEnd + ":00"
+			})
+		}
+		console.log("START: " + this.state.finalStartTime);
+		console.log("END: " + this.state.finalEndTime);
+	}
+
 	componentWillMount() {
 		this.setState ( {
 			newChoir:{},
@@ -136,27 +214,10 @@ class EditChoir extends Component {
 			fireRedirect: false,
 			choirID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
- 			delta: {}
+ 			delta: {},
+ 			timeChange: false
 		});
 
-		// $.ajax({
-  //       type: "GET",
-  //       url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",
-  //       dataType: 'json',
-  //       cache: false, 
-  //       headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-  //       success: function(data) {
-  //         this.setState(
-  //         	{
-		// 		choirGet: data, 
-  //         	}, function() {
-  //           console.log(this.state)
-  //         });
-  //       }.bind(this),
-  //       error: function(xhr, status, err) {
-  //         console.log(err)
-  //       }
-  //     });
 	}
 
 	fetchList() {
@@ -168,13 +229,17 @@ class EditChoir extends Component {
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({
+          		choirGet: data,
 				choirName: data.name, 
 				mtgDay: data.meeting_day,
 				startTime: data.meeting_day_start_hour,
 				endTime: data.meeting_day_end_hour
+
           	}, function() {
-            console.log(this.state)
+            console.log(this.state);
+            console.log(this.state.choirGet);
           });
+        this.parseTime();
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err)
@@ -224,16 +289,19 @@ class EditChoir extends Component {
 	}
 
 	handleSubmit(e){
+		console.log("startTime:" + this.state.defaultStartTime);
 		this.setState({newChoir:{
 			name: this.refs.name.inputRef.value,
 			meeting_day: +this.refs.meetingDay.value,
 			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
 			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
+			//meeting_day_start_hour: startTime,
+			//meeting_day_end_hour: endTime,
 			organization: 1,
 			choristers: [
 				1
 			],
-		}, delta: diff(this.state.choirGet, this.state.newChoir)
+		}, 
 
 	}, function() {
 			console.log(this.state.newChoir);
@@ -272,8 +340,8 @@ class EditChoir extends Component {
   	const { fireRedirect } = this.state;
   	const { choirID } = this.state;
   	const { buttonClasses } = this.state;
-   	const { values } = this.state;
-   	const { choirGet } = this.state;
+   	//const { values } = this.state;
+   	//const { choirGet } = this.state;
 
   	const {
       hourStart,
@@ -335,8 +403,9 @@ class EditChoir extends Component {
 						onMinuteChange={this.onMinuteChange}
 						onTimeChange={this.onTimeChange}
 						showTimezone={showTimezone}
-						time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
-						value={this.state.choirGet.meeting_day_start_hour}
+						//time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
+						time={`${this.state.defaultStartHour}:${this.state.defaultStartMinute}`}
+						//value={this.state.choirGet.meeting_day_start_hour}
 			        />
 			        <br/>
 		      		<br/>
@@ -349,8 +418,9 @@ class EditChoir extends Component {
 						onMinuteChange={this.onMinuteChangeEnd}
 						onTimeChange={this.onTimeChangeEnd}
 						showTimezone={showTimezone}
-						time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
-						value={this.state.choirGet.meeting_day_end_hour}
+						//time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
+						time={`${this.state.defaultEndHour}:${this.state.defaultEndMinute}`}
+						//value={this.state.choirGet.meeting_day_end_hour}
 			        />
 		      		<br/>
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
@@ -359,6 +429,7 @@ class EditChoir extends Component {
 		      	{fireRedirect && (
 		          <Redirect to={from || '/choirs/' + choirID}/>
 		        )} 
+
 		    </CardText>
 		    <CardActions border>
 		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
@@ -378,7 +449,8 @@ class EditChoir extends Component {
 export default EditChoir;
 
 
-
+/*youre getting fucked by the values not being set, so maybe you need to set meeting day start value at beginning of program
+with values from get request, and then only when the user changes the time, you should update meeting day start value*/
 
 
 
