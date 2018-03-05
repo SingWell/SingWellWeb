@@ -3,9 +3,9 @@ import $ from 'jquery';
 import { Redirect } from 'react-router'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    Menu, Footer, FooterSection, FooterLinkList, Textfield,
     FooterDropDownSection } from  'react-mdl';
-import { Dropdown, SelectField, Option } from 'react-mdl-extra';
+import { Dropdown, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -22,7 +22,7 @@ import 'react-material-select/lib/css/reactMaterialSelect.css'
 // import ReactMaterialDatePicker from 'react-material-datepicker'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, MenuItem, SelectField } from 'material-ui/'
 
 
 
@@ -47,9 +47,7 @@ class EditEvent extends Component {
 
 	    let defaultHour = '';
 	    let defaultMinute = '';
-	    let defaultSecond = '';
-
-	    let finalTime = '';
+	    //let defaultSecond = '';
 
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
@@ -78,9 +76,9 @@ class EditEvent extends Component {
 
 	      defaultHour,
 	      defaultMinute,
-	      defaultSecond,
+	      //defaultSecond,
 
-	      finalTime
+	      //finalTime
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -102,7 +100,6 @@ class EditEvent extends Component {
 	onHourChange(hour) {
 	this.setState({ 
 		hour,
-		timeChange: true,
 		defaultHour: hour
 	});
 	}
@@ -110,7 +107,6 @@ class EditEvent extends Component {
 	onMinuteChange(minute) {
 	this.setState({ 
 		minute, 
-		timeChange: true,
 		defaultMinute: minute
 	});
 	}
@@ -120,7 +116,7 @@ class EditEvent extends Component {
 	this.setState({ 
 		hour, 
 		minute, 
-		timeChange: true });
+	});
 	}
 
 	onFocusChange(focused) {
@@ -149,23 +145,25 @@ class EditEvent extends Component {
 		});
 	}
 
-	onNameChange() {
+	onNameChange(event, value) {
 		this.setState({
-			eventName: this.refs.name.inputRef.value
+			eventName: value
 		})
 	}
 
-	onLocationChange() {
+	onLocationChange(event, value) {
 		this.setState({
-			eventLoc: this.refs.location.inputRef.value
+			eventLoc: value
 		})
 	}
 
-	// onChoirChange() {l
-	// 	this.setState({
-	// 		eventChoir: this.refs.location.
-	// 	})
-	// }
+	onChoirChange(event, values) {
+		this.setState({
+			eventChoir: values
+		})
+	}
+
+  	// handleChoirChange = (event, index, values) => this.setState({ eventChoir: values});
 
 	parseDate(date) {
 		if(date != null){
@@ -198,18 +196,17 @@ class EditEvent extends Component {
 		console.log(this.state.defaultSecond);
 	}
 
-	// setTime() {
-	// 	if(this.state.timeChange == true){
-	// 		this.setState({
-	// 			finalTime: this.state.defaultHour + ":" + this.state.defaultMinute + ":00"
-	// 		});
-	// 	}
-	// 	else {
-	// 		this.setState({
-	// 			finalTime: this.state.hour + ":" + this.state.minute + ":00"
-	// 		})
-	// 	}
-	// }
+	choirItems(values) {
+		return this.state.choirGet.map((choir) => (
+			<MenuItem
+				key={choir.id}
+				insetChildren={true}
+				checked={values && values.indexOf(choir) > -1}
+				value={choir.name}
+				primaryText={choir.name}
+			/>
+		));
+	}
 
 	componentWillMount() {
 		this.setState ( {
@@ -219,8 +216,7 @@ class EditEvent extends Component {
 			cancelRedirect: false,
 			eventID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
-			choirGet: [],
-			timeChange: false
+			choirGet: []
 		});
 
 		$.ajax({
@@ -264,13 +260,12 @@ class EditEvent extends Component {
 	}
 
 	handleSubmit(e){
-		//this.setTime();
 		console.log(+this.state.choir.value)
 		this.setState({newEvent:{
-			name: this.refs.name.inputRef.value,
+			name: this.state.eventName,
 			date: this.state.date,
 			time: this.state.hour + ":" + this.state.minute + ":00",
-			location: this.refs.location.inputRef.value,
+			location: this.state.eventLoc,
 			choirs: [
 				+this.state.choir.value
 			],
@@ -303,106 +298,111 @@ class EditEvent extends Component {
   	}
 
   	handleCancel(e){
-  		this.setState(
-  			{cancelRedirect: true}
-  		)
+  		this.setState({
+  			cancelRedirect: true
+  		})
   	}
 
-  render() {
-  	const { from } = this.props.location.state || '/';
-  	const { submitRedirect } = this.state;
-  	const { cancelRedirect } = this.state;
-  	const { eventID } = this.state;
-  	const { buttonClasses } = this.state
-  	const {
-      hour,
-      minute,
-      focused,
-      timezone,
-      showTimezone
-    } = this.state;
-	console.log(this.state.choirGet)
+	render() {
+		const { from } = this.props.location.state || '/';
+		const { submitRedirect } = this.state;
+		const { cancelRedirect } = this.state;
+		const { eventID } = this.state;
+		const { buttonClasses } = this.state;
+		const { values } = this.state;
+		const {
+			hour,
+			minute,
+			focused,
+			timezone,
+			showTimezone
+		} = this.state;
+		console.log(this.state.choirGet)
 
-    let choirs;
-    choirs = this.state.choirGet.map(choir => {
-        console.log(choir)
-        return (
-        	<option key={choir.id} dataValue={choir.id}>{choir.name}</option>
-        );
-    });
+		{/*let choirs;
+		choirs = this.state.choirGet.map(choir => {
+		    console.log(choir)
+		    return (
+		    	<option key={choir.id} dataValue={choir.id}>{choir.name}</option>
+		    );
+		});*/}
 
-    const hourr=6;
-    const minutee=30;
+		return (
 
-    return (
+			<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
+			    <CardTitle>Edit Event</CardTitle>
+			    <CardText>
+			       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
+				       <TextField
+						    //onChange={() => {}}
+						    floatingLabelText="Event name..."
+						    ref="name"
+						    style={{width: '200px'}}
+						    value={this.state.eventName}
+						    onChange={this.onNameChange}
+						/>
+						{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
+						<DatePicker 
+							floatingLabelText="Date of Event..." 
+							container="inline" 
+							value={new Date(this.state.defaultYear, this.state.defaultMonth, this.state.defaultDay)}
+							onChange={this.onDateChange}
+						/>
+			      		<br/>
+			      		<br/>
+			      		<label>Event Time:</label>
+			      		<TimePicker
+							focused={focused}
+							timezone={timezone}
+							onFocusChange={this.onFocusChange}
+							onHourChange={this.onHourChange}
+							onMinuteChange={this.onMinuteChange}
+							onTimeChange={this.onTimeChange}
+							showTimezone={showTimezone}
+							//time={hour && minute ? `${hour}:${minute}` : null}
+							time={`${this.state.defaultHour}:${this.state.defaultMinute}`}
+							//defaultTime={`${this.state.defaultHour}:${this.state.defaultMinute}`}
+				        />
+				        <br/>
+				        <TextField
+						    //onChange={() => {}}
+						    floatingLabelText="Location..."
+						    ref="location"
+						    value={this.state.eventLoc}
+						    onChange={this.onLocationChange}
+						/>
+						<br/>
+						{/*<ReactMaterialSelect 
+							label="Choir..." 
+							multi={true}
+							value={this.state.eventChoirs} 
+							onChange={this.callbackFunction}>
+			                {choirs}
+			            </ReactMaterialSelect>*/}
+			            <SelectField
+							floatingLabelText="Choir..."
+							multi={true}
+							//value={this.state.eventChoirs}
+							style={{width: '200px'}}
+							onChange={this.callbackFunction}>
+							{this.choirItems(this.values)}
+						</SelectField>
+			      		<br/>
+			      		<br/>
+			      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+			      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
+			      	{/*</form>*/}
+			      	{submitRedirect && (
+			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID } />
+			        )}
+			        {cancelRedirect && (
+			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID } />  
+			        )} 
+			    </CardText>
+			</Card>
+		 
+		);
+		}
+	}
 
-    	<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
-		    <CardTitle>Edit Event</CardTitle>
-		    <CardText>
-		       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
-			       <Textfield
-					    //onChange={() => {}}
-					    label="Event name..."
-					    floatingLabel
-					    ref="name"
-					    style={{width: '200px'}}
-					    value={this.state.eventName}
-					    onChange={this.onNameChange}
-					/>
-					{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
-					<DatePicker 
-						floatingLabelText="Date of Event..." 
-						container="inline" 
-						value={new Date(this.state.defaultYear, this.state.defaultMonth, this.state.defaultDay)}
-						onChange={this.onDateChange}
-					/>
-		      		<br/>
-		      		<br/>
-		      		<label>Event Time:</label>
-		      		<TimePicker
-						focused={focused}
-						timezone={timezone}
-						onFocusChange={this.onFocusChange}
-						onHourChange={this.onHourChange}
-						onMinuteChange={this.onMinuteChange}
-						onTimeChange={this.onTimeChange}
-						showTimezone={showTimezone}
-						//time={hour && minute ? `${hour}:${minute}` : null}
-						time={`${this.state.defaultHour}:${this.state.defaultMinute}`}
-						//defaultTime={`${this.state.defaultHour}:${this.state.defaultMinute}`}
-			        />
-			        <br/>
-			        <Textfield
-					    //onChange={() => {}}
-					    label="Location..."
-					    floatingLabel
-					    ref="location"
-					    value={this.state.eventLoc}
-					    onChange={this.onLocationChange}
-					/>
-					<br/>
-					<ReactMaterialSelect 
-						label="Choir..." 
-						value={this.state.eventChoirs} 
-						onChange={this.callbackFunction}>
-		                {choirs}
-		            </ReactMaterialSelect>
-		      		<br/>
-		      		<br/>
-		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
-		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
-		      	{/*</form>*/}
-		      	{submitRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID }/>
-		        )}
-		        {cancelRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID} />  
-		        )} 
-		    </CardText>
-		</Card>
-     
-    );
-  }
-}
-
-export default EditEvent;
+	export default EditEvent;

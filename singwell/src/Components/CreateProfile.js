@@ -398,8 +398,8 @@ class CreateProfile extends Component {
 					value={this.state.values}
 					maxHeight={200}
 					style={{width: '200px'}}
-					onChange={this.handleChange}
-				>{this.stateItems(this.values)}
+					onChange={this.handleChange} >
+						{this.stateItems(this.values)}
 				</SelectField>
 				<TextField
 					floatingLabelText="Zip..."

@@ -6,8 +6,7 @@ import { Card, CardTitle, CardText } from  'react-mdl';
 //import MuiThemeProvider from 'material-ui/styles';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import SelectField from 'material-ui/SelectField';
-import { MenuItem, TextField, RaisedButton, FlatButton } from 'material-ui/'
+import { MenuItem, TextField, RaisedButton, FlatButton, SelectField} from 'material-ui/'
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 
@@ -44,6 +43,7 @@ class EditProfile extends Component {
 		/*this.handleFNameChange = this.handleFNameChange.bind(this);
 		this.handleLNameChange = this.handleLNameChange.bind(this);
 		this.handleEmailChange = this.handleEmailChange.bind(this);*/
+
 		this.handlePhoneChange = this.handlePhoneChange.bind(this);
 		this.handleAddressChange = this.handleAddressChange.bind(this);
 		this.onBioChange = this.onBioChange.bind(this);
@@ -51,6 +51,8 @@ class EditProfile extends Component {
 		this.handleZipChange = this.handleZipChange.bind(this);
 		this.handleStateChange = this.handleStateChange.bind(this);
 		this.handleDobChange = this.handleDobChange.bind(this);
+
+		//this.stateItems = this.stateItems.bind(this);
 
 	}
 
@@ -73,52 +75,87 @@ class EditProfile extends Component {
 		})
 	}*/
 
-	handlePhoneChange() {
+	handlePhoneChange(event, value) {
 		this.setState({
-			phone: this.refs.phone.inputRef.value
+			phone: value
 		})
 	}
 
-	handleAddressChange() {
+	handleAddressChange(event, value) {
+		console.log(value)
 		this.setState({
-			address: this.refs.address.inputRef.value
+			address: value
 		})
 	}
 
-	onBioChange() {
+	onBioChange(event, value) {
 		this.setState({
-			bio: this.refs.bio.inputRef.value 
+			bio: value 
 		})
 	}
 
-	handleCityChange() {
+	handleCityChange(event, value) {
 		this.setState({
-			city: "Atlanta"
+			city: value
 		})
 	}
 
-	handleZipChange() {
+	handleZipChange(event, value) {
 		this.setState({
-			zip: this.refs.zip.inputRef.value
+			zip: value
 		})
 	}
 
-	handleStateChange() {
+	/*handleStateChange(event, value) {
 		this.setState({
-			state: this.refs.state.inputRef.value
+			state: value
+		})
+	}*/
+
+	handleStateChange = (event, index, value) => this.setState({ state: value});
+
+
+	handleDobChange(event, value) {
+		this.setState({
+			dob: value
 		})
 	}
 
-	handleDobChange() {
-		this.setState({
-			dob: this.refs.dob.inputRef.value
-		})
+  	handleCancel(e){
+		this.setState(
+			{cancelRedirect: true}
+		)
+  	}
+
+	instrumentItems(values) {
+	    return this.props.instruments.map((instrument) => (
+			<MenuItem
+				key={instrument}
+				insetChildren={true}
+				checked={values && values.indexOf(instrument) > -1}
+				value={instrument}
+				primaryText={instrument}
+			/>
+    	));
+	}
+
+	stateItems(values) {
+		return this.props.states.map((state) => (
+			<MenuItem
+				key={state.name}
+				insetChildren={true}
+				checked={values && values.indexOf(state) > -1}
+				value={state.abbreviation}
+				primaryText={state.abbreviation}
+			/>
+		));
 	}
 
 	componentWillMount() {
 		this.setState ({
 			profileGet: {},
 			fireRedirect: false,
+			cancelRedirect: false,
 			user: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
 		});
@@ -200,6 +237,7 @@ class EditProfile extends Component {
 		  'Viola',
 		  'Violin'
 		],
+
 		states: [
 		    {
 		        "name": "Alabama",
@@ -441,52 +479,26 @@ class EditProfile extends Component {
 
 	}
 
-    //handleChange = (event, index, values) => this.setState({values});
-
-	instrumentItems(values) {
-	    return this.props.instruments.map((instrument) => (
-			<MenuItem
-				key={instrument}
-				insetChildren={true}
-				checked={values && values.indexOf(instrument) > -1}
-				value={instrument}
-				primaryText={instrument}
-			/>
-    	));
-	}
-
-	stateItems(values) {
-		return this.props.states.map((state) => (
-			<MenuItem
-				key={state.name}
-				insetChildren={true}
-				checked={values && values.indexOf(state) > -1}
-				value={state.abbreviation}
-				primaryText={state.abbreviation}
-			/>
-		));
-	}
-  
 
 	handleSubmit(e){
 		this.setState({profile:{
 			//fname: this.refs.fname.value,
 			//lname: this.refs.lname.value,
 			//email: this.refs.email.inputRef.value
-			phone_number: this.refs.phone.inputRef.value,
-			bio: this.refs.bio.inputRef.value, 
-			address: this.refs.address.inputRef.value,
-			city: this.refs.city.inputRef.value,
-			state: this.refs.state.inputRef.value,
-			zip_code: this.refs.state.inputRef.value,
+			phone_number: this.state.phone,
+			bio: this.state.bio, 
+			address: this.state.address,
+			city: this.state.city,
+			state: this.state.state,
+			zip_code: this.state.zip,
 			//instruments: this.refs.instruments.value,
-			date_of_birth: this.refs.dob.value,
+			date_of_birth: this.state.dob,
 		}},
 			function() {
 			console.log(this.state.profile)
 			$.ajax({
 			  type: "PATCH",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile/",
 		      dataType: 'json',
 		      data: this.state.profile,
 		      success: function(data) {
@@ -499,7 +511,7 @@ class EditProfile extends Component {
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
-				console.log(xhr.responseText);
+				//console.log(xhr.responseText);
 				console.log(this);
 				console.log(xhr);
 		      }
@@ -511,6 +523,7 @@ class EditProfile extends Component {
   	render() {
 	  	const { from } = this.props.location.state || '/';
 	  	const { fireRedirect } = this.state;
+	  	const { cancelRedirect } = this.state;
 	  	const { values } = this.state;
 
 	    return (
@@ -518,7 +531,7 @@ class EditProfile extends Component {
 	      <Card shadow={0} style={{ margin: '10px'}}>
 		    <CardTitle>Edit Profile</CardTitle>
 		    <CardText>
-		      <form onSubmit={this.handleSubmit.bind(this)}>
+		      {/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 		       	{/*<TextField
 				    onChange={() => {}}
 				    floatingLabelText="First Name..."
@@ -549,6 +562,7 @@ class EditProfile extends Component {
 					value={this.state.address}
 					onChange={this.handleAddressChange}
 				/>
+
 				<TextField
 					floatingLabelText="City..."
 					ref="city"
@@ -558,12 +572,12 @@ class EditProfile extends Component {
 				/>
 				<SelectField
 					floatingLabelText="State..."
-					ref="state"
-					value={this.state.values}
-					maxHeight={200}
-					style={{width: '200px'}}
-					onChange={this.handleChange}
+					//ref="state"
+					//value={this.state.values}
+					//maxHeight={200}
 					value={this.state.state}
+					style={{width: '200px'}}
+					onChange={this.handleStateChange}
 				>{this.stateItems(this.values)}
 				</SelectField>
 				<TextField
@@ -589,7 +603,7 @@ class EditProfile extends Component {
 			        multiple={true}
 			        floatingLabelText="Select your Instruments..."
 			        value={this.state.values}
-			        onChange={this.handleChange}
+			        onChange={this.handleInstrumentChange}
 			    >
 			        {this.instrumentItems(this.values)}
 				</SelectField>*/}
@@ -616,12 +630,17 @@ class EditProfile extends Component {
 			       	onChange={this.state.handleDobChange}
 			    />
 				<br/>
-				<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
-		      	</form>
+				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+		      	<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
+				{/*<input className={this.state.buttonClasses} type="submit" value="Submit" />
+		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>
+		      	</form>*/}
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/1/'}/>
+		          <Redirect to={from || '/profile/4/'}/>
 		        )}
+		        {cancelRedirect && (
+		          <Redirect to={from || '/profile/4/'} />  
+		        )} 
 		    </CardText>
 		</Card>
 		</div>
