@@ -12,6 +12,8 @@ import Login from './Components/Login'
 import MusicLibrary from './Components/MusicLibrary'
 import MusicPage from './Components/MusicPage'
 import AddMusic from './Components/AddMusic'
+import AddMusicResource from './Components/AddMusicResource'
+import Register from './Components/Register'
 
 import $ from 'jquery';
 
@@ -34,6 +36,8 @@ class Main extends Component {
 		      <Route exact path='/profile/:userID' component={Profile} />
 		      <Route exact path='/organizations/:orgID/music/:musicID' component={MusicPage} />
 		      <Route exact path='/organizations/:orgID/music/' component={AddMusic} />
+		      <Route exact path='/organizations/:orgID/musicResource/:musicID' component={AddMusicResource} />
+		      <Route exact path='/register' component={Register} />
 
 
 

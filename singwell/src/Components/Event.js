@@ -27,27 +27,6 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 
 
-// const musicLibrary = [
-//   "Lift Up Your Hearts - VOZ 580",
-//   "Canticle of the Sun - RS2 677",
-//   "Mass of Renewal",
-//   "(Mass Part) - SS1 #21",
-//   "Jesus, the Lord - VOZ 509",
-//   "Wesley: Lead Me Lord",
-//   "Bread of Life - VOZ 814",
-//   "Lord of All Nations - RS2 810",
-//   "We Are Called - RS2 902"
-// ];
-
-const keys = [ 
-  "Choral Prelude",
-  "Entrance",
-  "Mass of Renewal"
-]
-
-
-
-
 class Event extends Component {
 
   constructor(props) {
@@ -67,44 +46,65 @@ class Event extends Component {
 
         this.handleKeyChange = this.handleKeyChange.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleNoteschange = this.handleNotesChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
     }
 
      
 
-      
-
 
     handleSubmit(e){
-            // e.preventDefault();
-            console.log(this.state.key, this.state.value)
-            var key = this.state.key
-            var obj = {}
-            obj[key] = this.state.value
-            this.state.music.push(obj)
-            console.log(this.state)
+            this.setState({programItem:{
+                "music_record": this.state.musicRecordID,
+                "order": 2,
+                "notes": this.state.notes,
+                "field_title": this.state.key
+            }}, function() {
+                console.log(this.state.programItem)
+                $.ajax({
+                  type: "POST",
+                  url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/" + this.props.match.params.eventID + "/program/",
+                  dataType: 'json',
+                  cache: false, 
+                  headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                  data: this.state.programItem,
+                  success: function(data) {
+                    this.setState({eventPost: data}, function() {
+                      console.log(this.state.eventPost)
+                    });
+                  }.bind(this),
+                  error: function(xhr, status, err) {
+                    console.log(err);
+                  }
+                });
+                console.log(this.state.key, this.state.value)
+                var key = this.state.key
+                var obj = {}
+                obj[key] = this.state.value
+                this.state.music.push(obj)
+                console.log(this.state)
+                
+                this._generateRows()
+
+
+            });
+            // e.preventDefault()
+
             
-            this._generateRows()
             
         }
 
   componentWillMount() {
     this.setState ( {
         eventGet:{},
+        program: [],
+        keys: [],
         music: [
           {"Choral Prelude" : "Lift Up Your Hearts - VOZ 580"},
           {"Entrance": "Canticle of the Sun - RS2 677"},
           {"Entrance 2" : "Wesley: Lead Me Lord"},
-          // "Mass of Renewal",
-          // "(Mass Part) - SS1 #21",
-          // "Jesus, the Lord - VOZ 509",
-          // "Wesley: Lead Me Lord",
-          // "Bread of Life - VOZ 814",
-          // "Lord of All Nations - RS2 810",
-          // "We Are Called - RS2 902"
         ]
-
       });
 
     $.ajax({
@@ -114,9 +114,16 @@ class Event extends Component {
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
-          this.setState({eventGet: data}, function() {
-            console.log(this.state)
-          });
+          this.setState({
+              eventGet: data,
+              program: data.program_music
+          }, function() {
+              this.state.program.map(programItem => {
+                  this.state.keys.push(programItem.field_title)
+              })
+              this.state.keys = $.unique(this.state.keys)
+              console.log(this.state.keys)
+          })
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -134,8 +141,9 @@ class Event extends Component {
             console.log(this.state.musicGet)
             this.state.musicGet.map(musicPiece => {
               console.log(musicPiece)
-              this.state.musicLibrary.push(musicPiece.title)
+              this.state.musicLibrary.push({title: musicPiece.title, id: musicPiece.id})
             });
+
           });
         }.bind(this),
         error: function(xhr, status, err) {
@@ -156,15 +164,16 @@ class Event extends Component {
 
 
     _generateRows(){
-        return this.state.music.map(el => {
-          var arr = []
-          Object.keys(el).forEach((key) => {
-            arr.push(key)
-            arr.push(el[key])
-          })
-          return <TableRow key={arr[1]}>
-                    <TableRowColumn>{arr[0]}</TableRowColumn>
-                    <TableRowColumn>{arr[1]}</TableRowColumn>
+        return this.state.program.map(programItem => {
+          // var arr = []
+          // Object.keys(el).forEach((key) => {
+          //   arr.push(key)
+          //   arr.push(el[key])
+          // })
+          return <TableRow key={programItem.id}>
+                    <TableRowColumn>{programItem.field_title}</TableRowColumn>
+                    <TableRowColumn>{programItem.title}</TableRowColumn>
+                    <TableRowColumn>{programItem.notes}</TableRowColumn>
                 </TableRow>
           })
       }
@@ -192,18 +201,30 @@ class Event extends Component {
 
 
     handleKeyChange = (searchText) => {
-
       this.setState({key: searchText});
     }
 
     handleValueChange = (searchText) => {
-      this.setState({value: searchText});
+      console.log(searchText)
+      this.setState({
+        value: searchText,
+        // musicRecord:
+      });
+    }
+
+    handleNotesChange = (searchText) => {
+      console.log(searchText)
+      this.setState({notes: searchText});
     }
 
     handleSelect  = (chosenRequest, index) => { 
+      console.log(chosenRequest, index)
+      this.setState({
+        musicRecordID: chosenRequest.id
+      })
       if(index === -1) {
           this.handleSubmit()
-          this.setState( { value: '', key: '' }) 
+          // this.setState( { value: '', key: '' }) 
       }
           
     }
@@ -221,33 +242,55 @@ class Event extends Component {
             <br/>
               <Table>
                   <TableHeader adjustForCheckbox={this.state.checkboxes} displaySelectAll={this.state.checkboxes}>
-                      {/* <TableRow>
-                          <TableHeaderColumn>Key</TableHeaderColumn>
-                          <TableHeaderColumn>Value</TableHeaderColumn>
-                      </TableRow> */}
                       <TableRow key="input">
                           <TableRowColumn>
                             <AutoComplete
-                                floatingLabelText="Key"
+                                floatingLabelText="Key..."
                                 filter={AutoComplete.caseInsensitiveFilter}
-                                dataSource={keys}
+                                dataSource={this.state.keys}
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleKeyChange}
-                                searchText={this.state.key}
+                                // searchText={this.state.key}
                                 fullWidth={true}
                               />
                           </TableRowColumn>
                           <TableRowColumn>
                               <AutoComplete
-                                floatingLabelText="Value"
+                                floatingLabelText="Value..."
                                 filter={AutoComplete.caseInsensitiveFilter}
                                 dataSource={this.state.musicLibrary}
+                                dataSourceConfig={ {text: 'title', value: 'id'} }
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleValueChange}
-                                searchText={this.state.value}
+                                // searchText={this.state.value}
                                 fullWidth={true}
                               />
                           </TableRowColumn>
+                           <TableRowColumn>
+                              <AutoComplete
+                                floatingLabelText="Value..."
+                                filter={AutoComplete.caseInsensitiveFilter}
+                                dataSource={['']}
+                                dataSourceConfig={ {text: 'title', value: 'id'} }
+                                onNewRequest={this.handleSelect}
+                                onUpdateInput={this.handleNotesChange}
+                                // searchText={this.state.value}
+                                fullWidth={true}
+                              />
+                              {/* <TextField
+                                floatingLabelText="Notes..."
+                                ref="notes"
+                                fullWidth={true}
+                                onKeyPress={(ev) => {
+                                    console.log(`Pressed keyCode ${ev.key}`);
+                                    if (ev.key === 'Enter') {
+                                        this.handleSelect()
+                                        ev.preventDefault();
+                                    }
+                                  }}
+                              /> */}
+                          </TableRowColumn>
+                           
                       </TableRow>
                   </TableHeader>
                   <TableBody displayRowCheckbox={this.state.checkboxes}>

@@ -8,6 +8,7 @@ import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
 import { Dropdown, SelectField, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import { MDLSelectField } from 'react-mdl-select';
+import styles from '../css/login.css'
 
 
 
@@ -317,7 +318,87 @@ class AddOrganization extends Component {
   	});
 
     return (
+    	<div className={"materialContainer"} style={{overflowY: "auto"}}>
+           <div className={"box"}>
+            <form onSubmit={this.handleSubmit.bind(this)}>
+              <div className={"title"}>ADD ORGANIZATION</div>
 
+              <Textfield
+				    onChange={() => {}}
+				    label="Name..."
+				    floatingLabel
+				    ref="name"
+				    style={{width: '200px'}}
+				/>
+		      	<Textfield
+				    onChange={() => {}}
+				    label="Description..."
+				    floatingLabel
+				    ref="description"
+				    rows={3}
+				    style={{width: '200px'}}
+				/>
+		      	<Textfield
+				    onChange={() => {}}
+				    label="Street Address..."
+				    floatingLabel
+				    ref="streetAddress"
+				    style={{width: '200px'}}
+				/>
+		      	<Textfield
+				    onChange={() => {}}
+				    label="City..."
+				    floatingLabel
+				    ref="city"
+				    style={{width: '200px'}}
+				/>
+		      		<div>
+			      		<label>State</label><br />
+			      		<select ref= "state">
+			      			{stateOptions}
+			      		</select>
+		      		</div>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Zipcode..."
+				    floatingLabel
+				    ref="zipcode"
+				    style={{width: '200px'}}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Phone Number..."
+				    floatingLabel
+				    ref="phoneNumber"
+				    style={{width: '200px'}}
+				/>
+		      		<Textfield
+				    onChange={() => {}}
+				    label="Email..."
+				    floatingLabel
+				    ref="email"
+				    style={{width: '200px'}}
+				/>
+
+              <div className={"button login"}>
+                 <button type="submit"><span>GO</span> <i className={"fa fa-check"}></i></button>
+              </div>
+            </form>
+            {fireRedirect && (
+		          <Redirect to={from || '/organizations/' + orgID}/>
+		        )} 
+
+
+           </div>
+
+        </div>
+   
+     
+    );
+  }
+}
+
+{/* 
     	<Card shadow={0} style={{ margin: '10px'}}>
 		    <CardTitle>Add Organization</CardTitle>
 		    <CardText>
@@ -337,14 +418,14 @@ class AddOrganization extends Component {
 				    rows={3}
 				    style={{width: '200px'}}
 				/>
-		      		<Textfield
+		      	<Textfield
 				    onChange={() => {}}
 				    label="Street Address..."
 				    floatingLabel
 				    ref="streetAddress"
 				    style={{width: '200px'}}
 				/>
-		      		<Textfield
+		      	<Textfield
 				    onChange={() => {}}
 				    label="City..."
 				    floatingLabel
@@ -385,10 +466,6 @@ class AddOrganization extends Component {
 		          <Redirect to={from || '/organizations/' + orgID}/>
 		        )} 
 		    </CardText>
-		</Card>
-     
-    );
-  }
-}
+		</Card> */}
 
 export default AddOrganization;

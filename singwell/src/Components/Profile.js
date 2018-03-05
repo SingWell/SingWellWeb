@@ -34,6 +34,7 @@ class Profile extends Component {
             choirItems: [],
             choirGet: [],
             userGet:{},
+            profile: {},
             choirsFlag: false
         };
     }
@@ -48,6 +49,8 @@ class Profile extends Component {
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({userGet: data});
+          console.log(this.state.userGet.profile.bio)
+          this.setState({profile: data.profile})
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -95,7 +98,7 @@ class Profile extends Component {
             </FABButton>
             <List>
               <ListItem>
-                <ListItemContent icon="account_circle">{this.state.userGet.username}</ListItemContent>
+                <ListItemContent icon="account_circle">{this.state.profile.bio}</ListItemContent>
               </ListItem>
               <ListItem>
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>

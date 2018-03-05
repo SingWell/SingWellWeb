@@ -9,9 +9,13 @@ import classNames from 'classnames';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
+import MusicResourceItem from './MusicResourceItem';
+
 import RosterItem from './RosterItem'
 
 import moment from 'moment'
+
+import YouTube from 'react-youtube';
 
 
 class MusicPage extends Component {
@@ -20,6 +24,7 @@ class MusicPage extends Component {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+        this.renderPDF = this.renderPDF.bind(this);
 
         this.state = {
             activeHeaderTab: 0
@@ -29,6 +34,7 @@ class MusicPage extends Component {
   componentWillMount() {
     this.setState ( {
         musicGet:{},
+        musicResourceGet: [],
       });
 
     $.ajax({
@@ -38,19 +44,31 @@ class MusicPage extends Component {
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
-          this.setState({musicGet: data}, function() {
-            console.log(this.state)
-          });
+          this.setState({musicGet: data});
+          this.setState({musicResourceGet: data.music_resources})
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
         }
       });
-
-
     }
 
-
+    renderPDF(id) {
+        $.ajax({
+          type: "GET",
+          url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/resource/?resource_id=" + id + "&record_id=" + this.props.match.params.musicID,
+          dataType: 'json',
+          cache: false, 
+          headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+          success: function(data) {
+            console.log(this.data)
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.log(err);
+          }
+        });
+    }
+    
 
     onChangeHeaderTab(tabId) {
         this.setState({
@@ -63,8 +81,12 @@ class MusicPage extends Component {
       const { weekday } = this.state
         return (
           <div>
+
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
+            </FABButton>
+            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/musicResource/' + this.props.match.params.musicID)}>
+                <Icon name="file_upload" />
             </FABButton>
             <List>
               <ListItem>
@@ -84,9 +106,53 @@ class MusicPage extends Component {
         );
     }
 
+    _onReady(event) {
+      // access to player in all event handlers via event.target
+      event.target.pauseVideo();
+    }
+
+    renderMusicResources() {
+
+        let musicResourceItems = [];
+        musicResourceItems = this.state.musicResourceGet.map(item => {
+            return (
+                <MusicResourceItem key={item.resource_id} musicResource={item} musicID={this.props.match.params.musicID} orgID={this.props.match.params.orgID} history={this.props.history} />
+            );
+        });
+
+        return (
+          <div>
+            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+                <Icon name="keyboard_arrow_left" />
+            </FABButton>
+            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/musicResource/' + this.props.match.params.musicID)}>
+                <Icon name="file_upload" />
+            </FABButton>
+            <div style={{padding: "25px"}}>
+              <h4> The Chainsmokers - Sick Boy</h4>
+              <YouTube
+                  videoId="eACohWVwTOc"
+                  opts={
+                    {
+                      height: '390',
+                      width: '100%',
+                      padding: '25px'
+                    }
+                  }
+                  onReady={this._onReady}
+                />
+              {musicResourceItems}
+
+
+            </div>
+          </div>
+        );
+    }
+
     renderActiveTabContent() {
         switch (this.state.activeHeaderTab) {
             case 0: return this.renderTabOverview();
+            case 1: return this.renderMusicResources();
             default: return <div>Nothing to see here :-)</div>;
         }
     }
@@ -110,6 +176,7 @@ class MusicPage extends Component {
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
+                                <Tab>Music Resources</Tab>
                             </HeaderTabs>
                         </Header>
                         <Content component="main">
