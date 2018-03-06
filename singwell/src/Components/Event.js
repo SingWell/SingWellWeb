@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions, Tooltip,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -193,11 +193,11 @@ class Event extends Component {
               <ListItem>
                 <ListItemContent icon="home">{this.state.eventGet.location}</ListItemContent>
               </ListItem>
-              {/*<ListItem>*/}
-              <IconButton style={{display: 'inline-block', color: 'black'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID + "/edit")}>
-                  <ImageEdit />
-              </IconButton>
-              {/*</ListItem>*/}
+              <Tooltip label="Edit Event" large>
+                  <ListItem>
+                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID + '/events/' + this.props.match.params.eventID + '/edit/')}></ListItemContent>
+                  </ListItem>
+              </Tooltip>
             </List>
             
             </div>

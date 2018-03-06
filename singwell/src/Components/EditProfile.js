@@ -639,10 +639,10 @@ class EditProfile extends Component {
 		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>
 		      	</form>*/}
 		      	{fireRedirect && (
-		          <Redirect to={from || '/profile/4/'}/>
+		          <Redirect to={from || '/profile/' + this.props.match.params.userID}/>
 		        )}
 		        {cancelRedirect && (
-		          <Redirect to={from || '/profile/4/'} />  
+		          <Redirect to={from || '/profile/' + this.props.match.params.userID} />  
 		        )} 
 		    </CardText>
 		</Card>

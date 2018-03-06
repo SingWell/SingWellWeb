@@ -352,7 +352,6 @@ class EditChoir extends Component {
 						onChange={this.handleNameChange}
 					/>
 					<br/>
-					<label>Meeting Day</label>
 					<br/>
 		      		<SelectField
 		      			floatingLabelText="Meeting Day"
@@ -393,10 +392,10 @@ class EditChoir extends Component {
 		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 		      	</form>
 		      	{fireRedirect && (
-		        	<Redirect to={from || '/choirs/' + choirID}/>
+		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.state.choirID}/>
 		        )} 
 		        {cancelRedirect && (
-		        	<Redirect to={from || '/choirs/' + this.props.match.params.choirID} />  
+		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.props.match.params.choirID} />  
 		        )} 
 
 		    </CardText>

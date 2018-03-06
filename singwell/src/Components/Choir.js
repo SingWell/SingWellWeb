@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, Tooltip,
     Menu, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -292,9 +292,11 @@ class Choir extends Component {
               <ListItem>
                 <ListItemContent icon="timer_off">{moment(this.state.choirGet.meeting_day_end_hour, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
-              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/choirs/' +this.props.match.params.choirID + '/edit/')}>
-                  <ImageEdit />
-              </IconButton>
+              <Tooltip label="Edit Choir" large>
+                  <ListItem>
+                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.props.match.params.choirID + '/edit/')}></ListItemContent>
+                  </ListItem>
+              </Tooltip>
             </List>
             </div>
         );
@@ -331,7 +333,7 @@ class Choir extends Component {
                 <Icon name="keyboard_arrow_left" />
             </FABButton>
             <div>
-              <RaisedButton label="Add Member" onClick={this.handleOpen} />
+              <RaisedButton label="Add Member" onClick={this.handleOpen} style={{margin: "10pt"}}/>
               <Dialog
                 title="Dialog With Actions"
                 actions={actions}
