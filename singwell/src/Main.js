@@ -34,7 +34,7 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID' component={Organizations} />
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
 		      <Route exact path='/choirs/:choirID' component={Choir} />
-		      <Route exact path='/profile/create' component={CreateProfile} />
+		      <Route exact path='/profile/:userID/create' component={CreateProfile} />
 		      <Route exact path='/viewprofile' component={Profile} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID/events' component={AddEvent} />
 		      <Route exact path='/organizations/:orgID/events/' component={AddEvent} />
