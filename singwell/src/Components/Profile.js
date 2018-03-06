@@ -38,26 +38,46 @@ class Profile extends Component {
             choirGet: [],
             userGet:{},
             profile: {},
-            choirsFlag: false
+            choirsFlag: false,
+
+            user: '',
+            phone_number: '',
+            address: '',
+            bio: '',
+            city: '',
+            state: '',
+            zip: '',
+            date_of_birth: '',
+            age: '',
         };
+
+        this.handleEdit = this.handleEdit.bind(this);
+    }
+
+    handleEdit() {
+      if(this.state.userGet.profile == null)
+        this.props.history.push('/profile/' + this.props.match.params.userID + '/create/')
+      else
+        this.props.history.push('/profile/' + this.props.match.params.userID + '/edit/')
+
     }
 
 	componentWillMount() {
 		this.setState ( {
         userGet:{},
-
     });
 
     $.ajax({
         type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID ,
         dataType: 'json',
         cache: false, 
-        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        //headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({userGet: data});
-          console.log(this.state.userGet.profile.bio)
+          //console.log(this.state.userGet.profile.bio)
           this.setState({profile: data.profile})
+          console.log(this.state)
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -72,6 +92,7 @@ class Profile extends Component {
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({choirGet: data});
+          console.log(this.state)
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -104,7 +125,7 @@ class Profile extends Component {
             </FABButton>
             <List>
               <ListItem>
-                <ListItemContent icon="account_circle">{this.state.profile.bio}</ListItemContent>
+                <ListItemContent icon="account_circle">{this.state.profile && this.state.profile.bio}</ListItemContent>
               </ListItem>
               <ListItem>
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
