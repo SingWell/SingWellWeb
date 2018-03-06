@@ -135,9 +135,6 @@ class Profile extends Component {
                     <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/profile/' + this.props.match.params.userID + '/edit/')}></ListItemContent>
                   </ListItem>
               </Tooltip>
-              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center"  onClick={this.handleEdit}>
-                  <ImageEdit />
-              </IconButton>
             </List>
             
             <h5 style= {{marginLeft: "20px"}}>

@@ -335,7 +335,7 @@ class Choir extends Component {
             <div>
               <RaisedButton label="Add Member" onClick={this.handleOpen} style={{margin: "10pt"}}/>
               <Dialog
-                title="Dialog With Actions"
+                title={this.state.choirGet.name} 
                 actions={actions}
                 modal={true}
                 open={this.state.open}
