@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList,
+    Menu, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import classNames from 'classnames';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
-import { IconButton, FontIcon } from 'material-ui/';
+import { IconButton, FontIcon, Dialog, FlatButton, RaisedButton, SelectField, MenuItem, DropDownMenu } from 'material-ui/';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 
 
@@ -20,20 +20,84 @@ import moment from 'moment'
 class Choir extends Component {
 
   constructor(props) {
-        super(props);
+      super(props);
 
-        this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+      let newMemberList = [];
+      let memberOfChoirs = [];
+      let newMember = '';
 
-        this.state = {
-            activeHeaderTab: 0
-        };
-    }
+      this.state = {
+          activeHeaderTab: 0,
+          newMemberList,
+          memberOfChoirs,
+          newMember
+      };
+
+      this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+
+      this.handleOpen = this.handleOpen.bind(this);
+      this.handleCancel = this.handleCancel.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleMemberChange = this.handleMemberChange.bind(this);
+  }
+
+  handleOpen() {
+      this.setState({
+        open: true
+      })
+  }
+
+  handleCancel() {
+      this.setState({
+        open: false
+      })
+  }
+
+  
+
+  handleMemberChange(event, value) {
+      console.log(this.state.newMemberList[value])
+      this.setState({
+          newMember: value
+      })
+      console.log("hello: " + this.state.newMember);
+  }
+
+  curateList() {
+      let users = this.state.userGet
+      let currentOrg = +this.state.choirGet.organization
+      for(var u in users){
+          for(var v in users[u].member_of_organizations){
+              if(currentOrg == users[u].member_of_organizations[v]){
+                  let user_in_org = users[u]
+                  //if theyre in the organizaton, need to add to newMemberList array of user objects. 
+                  this.state.newMemberList.push(user_in_org);
+              }
+          }
+      }
+      console.log(this.state);
+      // console.log(this.state.newMemberList)
+  }
+
+  userItems(values) {
+    return this.state.newMemberList.map((user) => (
+      <MenuItem
+        key={user.id}
+        insetChildren={true}
+        checked={values && values.indexOf(user) > -1}
+        value={this.state.newMemberList.indexOf(user)}
+        primaryText={user.first_name + " " + user.last_name}
+      />
+    ));
+  }
 
   componentWillMount() {
     this.setState ( {
         choirGet:{},
         rosterGet:[],
+        userGet: {},
         weekday: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        open: false
       });
 
     $.ajax({
@@ -59,7 +123,11 @@ class Choir extends Component {
         cache: false, 
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
-          this.setState({rosterGet: data}, function() {
+          this.setState({
+            rosterGet: data,
+            memberOfChoirs: data.choirs,
+
+          }, function() {
             console.log(this.state)
           });
         }.bind(this),
@@ -68,9 +136,147 @@ class Choir extends Component {
         }
       });
 
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/",
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({userGet: data}, function() {
+            this.curateList();
+            console.log(this.state);;
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });    
+
 
     }
 
+    handleSubmit(e) {
+      let index=this.state.newMember
+      let newMemberObject = this.state.newMemberList[index]
+      let newUserID = this.state.newMemberList[index].id
+      let newUsersCurrentChoirs = this.state.newMemberList[index].choirs;
+      newUsersCurrentChoirs.push(+this.props.match.params.choirID);
+      let newChoristers = this.state.choirGet.choristers
+      newChoristers.push(newUserID);
+      this.setState({
+          close: true,
+          newChoirMember: {
+              //patching to user object 
+              choirs: newUsersCurrentChoirs
+          },
+          newChoir: {
+              //patching to choir object 
+              choristers: newChoristers
+          },
+          newRosterItem: {
+            id: +newUserID,
+            email: this.state.newMemberList[index].email,
+            first_name: this.state.newMemberList[index].first_name,
+            last_name:this.state.newMemberList[index].last_name,
+            admin_of_organizations: this.state.newMemberList[index].admin_of_organizations,
+            owned_organizations: this.state.newMemberList[index].owned_organizations,
+            choirs: this.state.newMemberList[index].choirs,
+            member_of_organizations: this.state.newMemberList[index].member_of_organizations,
+            profile:{
+              user: this.state.newMemberList[index].profile.user,
+              phone_number: this.state.newMemberList[index].profile.phone_number,
+              address: this.state.newMemberList[index].profile.address,
+              bio: this.state.newMemberList[index].profile.bio,
+              city: this.state.newMemberList[index].profile.city,
+              zip_code: this.state.newMemberList[index].profile.zip_code,
+              state: this.state.newMemberList[index].profile.state,
+              date_of_birth: this.state.newMemberList[index].profile.date_of_birth,
+              age: this.state.newMemberList[index].profile.age,
+              profile_picture_link: this.state.newMemberList[index].profile.profile_picture_link
+            }}
+        }, function() {
+            console.log(this.state.newChoirMember);
+            $.ajax({
+                type: "PATCH",
+                url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + newUserID + "/",         
+                dataType: "json",
+                //headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                data: this.state.newChoirMember,
+                success: function(data) {
+                  this.setState(
+                    {
+                      memberPatch: data
+                    }, function(){
+                      console.log(this.state);
+                      //console.log(this.state.choirGet);
+                      console.log(this.state.newChoir);
+                    })
+                }.bind(this),
+                error:function(xhr, status, err) {
+                  console.log(err);
+                  console.log(xhr.responseText);
+                  console.log(this);
+                  console.log(xhr);
+                }.bind(this)
+          })
+
+            $.ajax({
+                type: "PATCH",
+                url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",         
+                dataType: "json",
+                //headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                data: this.state.newChoir,
+                success: function(data) {
+                  this.setState(
+                    {
+                      choirPatch: data
+                    }, function(){
+                      console.log(this.state);
+                      console.log(this.state.choirGet);
+                      console.log(this.state.newChoir);
+                    })
+                }.bind(this),
+                error:function(xhr, status, err) {
+                  console.log(err);
+                  console.log(xhr.responseText);
+                  console.log(this);
+                  console.log(xhr);
+                }.bind(this)
+            })
+
+            $.ajax({
+                type: "POST",
+                url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/roster/",
+                dataType: 'json',
+                //headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                data: this.state.newRosterItem,
+                success: function(data) {
+                  this.setState(
+                    {
+                      rosterPost: data,
+                      //orgID: data.id,
+                      //fireRedirect: true
+                    })
+                }.bind(this),
+                error: function(xhr, status, err) {
+                  console.log(err);
+                  console.log(xhr.responseText);
+                  console.log(this);
+                  console.log(xhr);
+                }.bind(this)
+            })
+
+        })
+
+        e.preventDefault();
+        //for users, we should only need to patch the choir array that holds choirIDs they are a part of 
+          //choirs is the array holding id's, url is users/userID/
+
+        //for choirs, just need to patch the array that has the members of the choir 
+          //array is called choristers, url is just choirs/choirID
+     
+  }
 
 
     onChangeHeaderTab(tabId) {
@@ -114,11 +320,45 @@ class Choir extends Component {
             );
         });
 
+      const values = this.state;
+
+      const actions = [
+        <FlatButton
+          label="Cancel"
+          primary={true}
+          onClick={this.handleCancel}
+        />,
+        <FlatButton
+          label="Submit"
+          primary={true}
+          //disabled={true}
+          onClick={this.handleSubmit}
+        />,
+      ];
+
         return (
           <div>
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
             </FABButton>
+            <div>
+              <RaisedButton label="Add Member" onClick={this.handleOpen} />
+              <Dialog
+                title="Dialog With Actions"
+                actions={actions}
+                modal={true}
+                open={this.state.open}
+              >
+              <SelectField
+                  floatingLabelText="Select New Member..."
+                  onChange={this.handleMemberChange}
+                  value={this.state.newMember}
+              >
+              {this.userItems(this.values)}
+              </SelectField>
+              </Dialog>
+            </div>
+
             <List>
               { rosterItems }
             </List>

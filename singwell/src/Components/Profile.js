@@ -20,6 +20,9 @@ import ChoirItem from './ChoirItem';
 import { IconButton, FontIcon } from 'material-ui/';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 
+import ReactDOM from 'react-dom';
+
+
 
 
 class Profile extends Component {
@@ -28,12 +31,14 @@ class Profile extends Component {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
-        this.getChoirs = this.getChoirs.bind(this);
 
         this.state = {
             activeHeaderTab: 0,
             choirItems: [],
-            choirGet: {}
+            choirGet: [],
+            userGet:{},
+            profile: {},
+            choirsFlag: false
         };
     }
 
@@ -42,6 +47,7 @@ class Profile extends Component {
         userGet:{},
 
     });
+
     $.ajax({
         type: "GET",
         url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
@@ -50,14 +56,30 @@ class Profile extends Component {
         headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
         success: function(data) {
           this.setState({userGet: data});
-          this.getChoirs();
+          console.log(this.state.userGet.profile.bio)
+          this.setState({profile: data.profile})
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
         }
       });
 
-  }
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/?user=" + this.props.match.params.userID,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({choirGet: data});
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });
+
+        
+    }
 
     onChangeHeaderTab(tabId) {
         this.setState({
@@ -65,39 +87,15 @@ class Profile extends Component {
         });
     }
 
-    getChoirs() {
-        // let choirItems;
-        if(this.state.UserGet !== "undefined") {
-            this.state.choirItems = this.state.userGet.choirs.map(choir => {
-            console.log(choir)
-            $.ajax({
-              type: "GET",
-              url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + choir + "/",
-              dataType: 'json',
-              cache: false, 
-              headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-              success: function(data) {
-                this.setState({choirGet: data});
-                this.state.choirItems.push( <ChoirItem key= {this.state.choirGet.id} choir={this.state.choirGet} orgID={this.state.choirGet.organization} history={this.props.history}/> );
-                console.log(this.state.choirItems)                    
-              }.bind(this),
-              error: function(xhr, status, err) {
-                console.log(err);
-              }
-            });
-            
+    
+    renderTabOverview() {            
+        
+        let choirItems = [];
+        choirItems = this.state.choirGet.map(choir => {
+            return (
+                <ChoirItem key= {choir.id} choir={choir} orgID={this.props.match.params.orgID} history={this.props.history}/>
+            );
         });
-
-        }
-        
-    }
-
-    renderTabOverview() {
-        // console.log(this.state.userGet)
-        
-
-            
-        
 
         return (
           <div >
@@ -106,7 +104,7 @@ class Profile extends Component {
             </FABButton>
             <List>
               <ListItem>
-                <ListItemContent icon="account_circle">{this.state.userGet.username}</ListItemContent>
+                <ListItemContent icon="account_circle">{this.state.profile.bio}</ListItemContent>
               </ListItem>
               <ListItem>
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
@@ -115,12 +113,14 @@ class Profile extends Component {
                   <ImageEdit />
               </IconButton>
             </List>
-
-
+            
+            <h5 style= {{marginLeft: "20px"}}>
+              Choirs:
+            </h5>
             <Grid component="section" className="section--center" shadow={0} noSpacing>  
-                {this.state.choirItems.shift()}
-              
-            </Grid>
+                 {choirItems} 
+                
+            </Grid> 
 
           </div>
         );
@@ -144,7 +144,7 @@ class Profile extends Component {
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderRow className="mdl-layout--large-screen-only">
                                 <h3>{this.state.userGet.first_name} {this.state.userGet.last_name}</h3>
-                            </HeaderRow>
+                            </HeaderRow>  
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>

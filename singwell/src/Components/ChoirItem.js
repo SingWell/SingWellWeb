@@ -21,7 +21,7 @@ class ChoirItem extends Component {
 
   render() {
     const { weekday } = this.state
-    console.log(this.choir)
+    console.log(this.props.choir)
     return (
       <Cell col={6}>
 

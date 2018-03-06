@@ -8,7 +8,7 @@ import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
 
 
 
-class RosterItem extends Component {
+class MusicLibraryItem extends Component {
 
   componentWillMount() {
     this.setState ( {
@@ -18,16 +18,13 @@ class RosterItem extends Component {
 
   render() {
 
-    // need to link th username to their profile page
-
     return (
-
-      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
-        <ListItemContent avatar="person" >{this.props.person.first_name} {this.props.person.last_name}</ListItemContent>
+      <ListItem twoLine style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/organizations/' + this.props.music.organization + "/music/" + this.props.music.id)}>
+        <ListItemContent avatar="music_note" subtitle={this.props.music.composer}>{this.props.music.title}</ListItemContent>
       </ListItem>
     );
   }
 
 }
 
-export default RosterItem;
+export default MusicLibraryItem;

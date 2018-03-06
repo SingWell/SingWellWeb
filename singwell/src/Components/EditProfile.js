@@ -106,13 +106,15 @@ class EditProfile extends Component {
 		})
 	}
 
-	/*handleStateChange(event, value) {
+	handleStateChange(event, value) {
+		console.log(value);
+		let state = this.props.states[value].name
 		this.setState({
-			state: value
+			state: state
 		})
-	}*/
+	}
 
-	handleStateChange = (event, index, value) => this.setState({ state: value});
+	//handleStateChange = (event, index, value) => this.setState({ state: value});
 
 
 	handleDobChange(event, value) {
@@ -145,7 +147,7 @@ class EditProfile extends Component {
 				key={state.name}
 				insetChildren={true}
 				checked={values && values.indexOf(state) > -1}
-				value={state.abbreviation}
+				value={state.name}
 				primaryText={state.abbreviation}
 			/>
 		));
@@ -481,26 +483,27 @@ class EditProfile extends Component {
 
 
 	handleSubmit(e){
-		this.setState({profile:{
-			//fname: this.refs.fname.value,
-			//lname: this.refs.lname.value,
-			//email: this.refs.email.inputRef.value
-			phone_number: this.state.phone,
-			bio: this.state.bio, 
-			address: this.state.address,
-			city: this.state.city,
-			state: this.state.state,
-			zip_code: this.state.zip,
-			//instruments: this.refs.instruments.value,
-			date_of_birth: this.state.dob,
-		}},
+		this.setState({update: {
+			profile:{
+				//fname: this.refs.fname.value,
+				//lname: this.refs.lname.value,
+				//email: this.refs.email.inputRef.value
+				phone_number: this.state.phone,
+				bio: this.state.bio, 
+				address: this.state.address,
+				city: this.state.city,
+				state: this.state.state,
+				zip_code: this.state.zip,
+				//instruments: this.refs.instruments.value,
+				date_of_birth: this.state.dob
+		}}},
 			function() {
-			console.log(this.state.profile)
+			console.log(this.state.update)
 			$.ajax({
 			  type: "PATCH",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile/",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
 		      dataType: 'json',
-		      data: this.state.profile,
+		      data: this.state.update,
 		      success: function(data) {
 		        this.setState(
 		        	{
@@ -573,7 +576,7 @@ class EditProfile extends Component {
 				<SelectField
 					floatingLabelText="State..."
 					//ref="state"
-					//value={this.state.values}
+					//value="AK"
 					//maxHeight={200}
 					value={this.state.state}
 					style={{width: '200px'}}

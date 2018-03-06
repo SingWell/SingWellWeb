@@ -142,7 +142,6 @@ class EditChoir extends Component {
 	}
 
 	handleNameChange(event, value) {
-		console.log(value)
 		this.setState({
 			choirName: value
 		})
@@ -355,13 +354,6 @@ class EditChoir extends Component {
 					<br/>
 					<label>Meeting Day</label>
 					<br/>
-		      		{/*<select 
-		      			ref= "meetingDay"
-		      			value={this.state.mtgDay}
-		      			onChange={this.handleDayChange}
-		      		>
-		      			{dayOptions}
-		      		</select>*/}
 		      		<SelectField
 		      			floatingLabelText="Meeting Day"
 						value={this.state.mtgDay}

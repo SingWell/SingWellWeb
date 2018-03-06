@@ -39,7 +39,7 @@ class EditEvent extends Component {
 	    let eventDate = '';
 	    let eventTime = '';
 	    let eventLoc = '';
-	    let eventChoir = [];
+	    let eventChoir = '';
 
 	    let defaultYear = '';
 	    let defaultMonth = '';
@@ -87,14 +87,14 @@ class EditEvent extends Component {
 	    this.onTimeChange = this.onTimeChange.bind(this);
 	    this.handleFocusedChange = this.handleFocusedChange.bind(this);	
 
-	    this.callbackFunction = this.callbackFunction.bind(this);
+	    //this.callbackFunction = this.callbackFunction.bind(this);
 	    this.onDateChange = this.onDateChange.bind(this);
 
 	    this.baseState = this.state;
 
 	    this.onNameChange = this.onNameChange.bind(this);
 	    this.onLocationChange = this.onLocationChange.bind(this);
-	    //this.onChoirChange = this.onChoirChange.bind(this);
+	    this.onChoirChange = this.onChoirChange.bind(this);
 	}
 
 	onHourChange(hour) {
@@ -128,9 +128,9 @@ class EditEvent extends Component {
 	this.setState({ focused: !focused });
 	}
 
-	callbackFunction(selected) {
-		 this.setState({choir: selected})
-	}
+	// callbackFunction(selected) {
+	// 	 this.setState({choir: selected})
+	// }
 
 	onDateChange(event, date) {
 		console.log(date);
@@ -157,9 +157,9 @@ class EditEvent extends Component {
 		})
 	}
 
-	onChoirChange(event, values) {
+	onChoirChange(event, value) {
 		this.setState({
-			eventChoir: values
+			eventChoir: value
 		})
 	}
 
@@ -226,7 +226,10 @@ class EditEvent extends Component {
 	        cache: false, 
 	        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 	        success: function(data) {
-	          this.setState({choirGet: data});
+	          this.setState({
+	          	choirGet: data,
+	          	eventChoir: data.name
+	          });
 	        }.bind(this),
 	        error: function(xhr, status, err) {
 	          console.log(err);
@@ -267,7 +270,7 @@ class EditEvent extends Component {
 			time: this.state.hour + ":" + this.state.minute + ":00",
 			location: this.state.eventLoc,
 			choirs: [
-				+this.state.choir.value
+				+this.state.choir
 			],
 			organization: this.props.match.params.orgID
 		}}, function() {
@@ -382,9 +385,9 @@ class EditEvent extends Component {
 			            <SelectField
 							floatingLabelText="Choir..."
 							multi={true}
-							//value={this.state.eventChoirs}
+							value={this.state.eventChoir}
 							style={{width: '200px'}}
-							onChange={this.callbackFunction}>
+							onChange={this.onChoirChange}>
 							{this.choirItems(this.values)}
 						</SelectField>
 			      		<br/>

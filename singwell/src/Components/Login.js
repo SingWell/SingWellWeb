@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import styles from '../css/login.css'
+import { Link } from 'react-router-dom';
 
-import TextField from 'material-ui/TextField';
+// import TextField from 'material-ui/TextField';
+import { MenuItem, TextField, RaisedButton, FlatButton } from 'material-ui/'
+
 
 
 
@@ -229,43 +232,9 @@ class Login extends Component {
                     )} 
                       <a href="" className={"pass-forgot"}>Forgot your password?</a>
 
-                   </div>
-
-                   <div className={"overbox"}>
-                      <div className={"material-button alt-2"}><span className={"shape"}></span></div>
-
-                      <div className={"title"}>REGISTER</div>
-
-                      <div className={"input"} style={{width: '50%'}}>
-                         <label htmlFor="fname">First Name</label>
-                         <input type="text" name="fname" id="fname"/>
-                         <span className={"spin"}></span>
-                      </div>
-
-                      <div className={"input"} style={{width: '50%'}}>
-                         <label htmlFor="lname">Last Name</label>
-                         <input type="text" name="lname" id="lname"/>
-                         <span className={"spin"}></span>
-                      </div>
-
-                      <div className={"input"}>
-                         <label htmlFor="regname">Username</label>
-                         <input type="text" name="regname" id="regname"/>
-                         <span className={"spin"}></span>
-                      </div>
-
-                      <div className={"input"}>
-                         <label htmlFor="regpass">Password</label>
-                         <input type="password" name="regpass" id="regpass"/>
-                         <span className={"spin"}></span>
-                      </div>
-
-                      
-
-                      <div className={"button"}>
-                         <button><span>NEXT</span></button>
-                      </div>
-
+                      <Link to="/register" className={"pass-forgot"} style={{paddingTop: "10px"}}>
+                        Don't have an account? Sign up!
+                      </Link>
 
                    </div>
 
@@ -273,12 +242,6 @@ class Login extends Component {
             </div>
           );
     }
-
-    
-
-
-
-
 }
 
 export default Login
