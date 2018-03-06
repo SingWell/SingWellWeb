@@ -3,21 +3,92 @@ import $ from 'jquery';
 import { Redirect } from 'react-router'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    Menu, Footer, FooterSection, FooterLinkList, Textfield,
     FooterDropDownSection } from  'react-mdl';
-import { Dropdown, SelectField, Option } from 'react-mdl-extra';
+import { Dropdown, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import { MDLSelectField } from 'react-mdl-select';
-import styles from '../css/login.css'
+import { TextField, SelectField, MenuItem } from 'material-ui/';
 
 
 
 
-class AddOrganization extends Component {
+class EditOrganization extends Component {
 
 	constructor(){
 		super();
+
+		let orgName = '';
+		let orgAddress = '';
+		let orgState = '';
+		let orgDescription = '';
+		let orgPhone = '';
+		let orgEmail = '';
+
+		this.state = {
+			orgName, 
+			orgDescription,
+			orgAddress,
+			orgState,
+			orgPhone,
+			orgEmail
+		}
+
+	   this.handleNameChange = this.handleNameChange.bind(this);
+	   this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+	   this.handleAddressChange = this.handleAddressChange.bind(this);
+	   this.handleStateChange = this.handleStateChange.bind(this);
+	   this.handlePhoneChange = this.handlePhoneChange.bind(this);
+	   this.handleEmailChange = this.handleEmailChange.bind(this);
 		
+	}
+
+	handleNameChange(event, value) {
+		this.setState({
+			orgName: value
+		})
+	}
+
+	handleDescriptionChange(event, value) {
+		this.setState({
+			orgDescription: value
+		})
+	}
+
+	handleAddressChange(event, value) {
+		this.setState({
+			orgAddress: value
+		})
+	}
+
+	handleStateChange(event, value) {
+		this.setState({
+			orgState: value
+		})
+	}
+
+	handlePhoneChange(event, value) {
+		this.setState({
+			orgPhone: value
+		})
+	}
+
+	handleEmailChange(event, value) {
+		this.setState({
+			orgEmail: value
+		})
+	}
+
+	stateItems(values) {
+		return this.props.states.map((state) => (
+			<MenuItem
+				key={state.name}
+				insetChildren={true}
+				checked={values && values.indexOf(state) > -1}
+				value={state.abbreviation}
+				primaryText={state.abbreviation}
+			/>
+		));
 	}
 
 	componentWillMount() {
@@ -27,6 +98,36 @@ class AddOrganization extends Component {
 			orgID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
 		});
+	}
+
+	fetchList() {
+		$.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID ,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({
+				orgName: data.name, 
+				orgAddress: data.address,
+				orgDescription: data.description,
+				orgPhone: data.phone_number,
+				orgEmail: data.email
+          	}, function() {
+            console.log(this.state)
+            console.log("data");
+            console.log(data);
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err)
+        }
+      });
+	}
+
+	componentDidMount() {
+		this.fetchList()
 	}
 
 
@@ -278,32 +379,42 @@ class AddOrganization extends Component {
 	handleSubmit(e){
 		console.log()
 		this.setState({newOrganization:{
-			name: this.refs.name.inputRef.value,
-			description: this.refs.description.inputRef.value,
+			name: this.state.orgName,
+			description: this.state.orgDescription,
 			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
-			phone_number: this.refs.phoneNumber.inputRef.value,
+			state: this.state.orgState,
+			phone_number: +this.refs.phoneNumber.inputRef.value,
 			email: this.refs.email.inputRef.value,
 			admins: [1]
 		}}, function() {
 			console.log(this.state.newOrganization)
 			$.ajax({
-			  type: "POST",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/",
+			  type: "PATCH",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/organizations/" + this.props.match.params.orgID + "/",
 		      dataType: 'json',
-		      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+		      //headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 		      data: this.state.newOrganization,
 		      success: function(data) {
 		        this.setState(
 		        	{
-		        		orgPost: data,
-		        		orgID: data.id,
-		        		fireRedirect: true
-		        	});
+		        		orgPut: data,
+		        		orgID: this.props.match.params.orgID,
+		        		fireRedirect: true 
+		        	},function(){
+		        		console.log(this.state);
+		        		console.log(this.state.newOrganization);
+		        		console.log("success");
+		        		
+
+		        	})
 		      }.bind(this),
 		      error: function(xhr, status, err) {
-		        console.log(err);
-		      }
-		    });
+				console.log(err);
+				console.log(xhr.responseText);
+				console.log(this);
+				console.log(xhr);
+		      }.bind(this)
+		    })
 		});
   		e.preventDefault();
   	}
@@ -313,135 +424,62 @@ class AddOrganization extends Component {
   	const { fireRedirect } = this.state;
   	const { orgID } = this.state;
   	const { buttonClasses } =this.state;
+  	const { values } = this.state;
 
 
-  	let stateOptions = this.props.states.map(state => {
-  		return <option key={state.name} value={state.abbreviation}>{state.abbreviation}</option>
-  	});
+  	// let stateOptions = this.props.states.map(state => {
+  	// 	return <option key={state.name} value={state.abbreviation}>{state.abbreviation}</option>
+  	// });
 
     return (
-    	<div className={"materialContainer"} style={{overflowY: "auto"}}>
-           <div className={"box"}>
-            <form onSubmit={this.handleSubmit.bind(this)}>
-              <div className={"title"}>ADD ORGANIZATION</div>
-
-              <Textfield
-				    onChange={() => {}}
-				    label="Name..."
-				    floatingLabel
-				    ref="name"
-				    style={{width: '200px'}}
-				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="Description..."
-				    floatingLabel
-				    ref="description"
-				    rows={3}
-				    style={{width: '200px'}}
-				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="Street Address..."
-				    floatingLabel
-				    ref="streetAddress"
-				    style={{width: '200px'}}
-				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="City..."
-				    floatingLabel
-				    ref="city"
-				    style={{width: '200px'}}
-				/>
-		      		<div>
-			      		<label>State</label><br />
-			      		<select ref= "state">
-			      			{stateOptions}
-			      		</select>
-		      		</div>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Zipcode..."
-				    floatingLabel
-				    ref="zipcode"
-				    style={{width: '200px'}}
-				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Phone Number..."
-				    floatingLabel
-				    ref="phoneNumber"
-				    style={{width: '200px'}}
-				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Email..."
-				    floatingLabel
-				    ref="email"
-				    style={{width: '200px'}}
-				/>
-
-              <div className={"button login"}>
-                 <button type="submit"><span>GO</span> <i className={"fa fa-check"}></i></button>
-              </div>
-            </form>
-            {fireRedirect && (
-		          <Redirect to={from || '/organizations/' + orgID}/>
-		        )} 
-
-
-           </div>
-
-        </div>
-   
-     
-    );
-  }
-}
-
-{/* 
+    	<div>
     	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Organization</CardTitle>
+		    <CardTitle>Edit Organization</CardTitle>
 		    <CardText>
 		       <form onSubmit={this.handleSubmit.bind(this)}>
-		       <Textfield
-				    onChange={() => {}}
-				    label="Name..."
-				    floatingLabel
-				    ref="name"
-				    style={{width: '200px'}}
-				    required={true}
-				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="Description..."
-				    floatingLabel
-				    ref="description"
-				    rows={3}
-				    style={{width: '200px'}}
-				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="Street Address..."
-				    floatingLabel
-				    ref="streetAddress"
-				    style={{width: '200px'}}
-				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="City..."
-				    floatingLabel
-				    ref="city"
-				    style={{width: '200px'}}
-				/>
-		      		<div>
+					<TextField 
+						floatingLabelText="Name..."
+						ref="name"
+						style={{width: '200px'}}
+						value={this.state.orgName}
+						onChange={this.handleNameChange}		
+					/>
+		      		<TextField
+					    floatingLabelText="Description..."
+					    ref="description"
+					    rows={3}
+					    style={{width: '200px'}}
+					    value={this.state.orgDescription}
+					    onChange={this.handleDescriptionChange}
+					/>
+		      		<TextField
+					    floatingLabelText="Street Address..."
+					    ref="streetAddress"
+					    style={{width: '200px'}}
+					    value={this.state.orgAddress}
+					    onChange={this.handleAddressChange}
+					/>
+		      		<TextField
+					    floatingLabelText="City..."
+					    ref="city"
+					    style={{width: '200px'}}
+					    value="Not filled"
+					    onChange={this.handleCityChange}
+					/>
+		      		{/*<div>
 			      		<label>State</label><br />
 			      		<select ref= "state">
 			      			{stateOptions}
 			      		</select>
-		      		</div>
-		      		<Textfield
+		      		</div>*/}
+		      		<SelectField
+		      			floatingLabelText="State..."
+						//value={this.state.value}
+						style={{width: '200px', color: 'blue'}}
+						onChange={this.handleStateChange}
+		      		>{this.stateItems(this.values)}
+		      		</SelectField>
+		      		{/*<Textfield
 				    onChange={() => {}}
 				    label="Zipcode..."
 				    floatingLabel
@@ -454,7 +492,8 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="phoneNumber"
 				    style={{width: '200px'}}
-				    required={true}
+				    value={this.state.orgPhone}
+				    onChange={this.handlePhoneChange}
 				/>
 		      		<Textfield
 				    onChange={() => {}}
@@ -462,8 +501,9 @@ class AddOrganization extends Component {
 				    floatingLabel
 				    ref="email"
 				    style={{width: '200px'}}
-				    required={true}
-				/>
+				    value={this.state.orgEmail}
+				    onChange={this.handleEmailChange}
+				/>*/}
 				<br/>
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
 		      	</form>
@@ -471,6 +511,11 @@ class AddOrganization extends Component {
 		          <Redirect to={from || '/organizations/' + orgID}/>
 		        )} 
 		    </CardText>
-		</Card> */}
+		</Card>
+		</div>
+     
+    );
+  }
+}
 
-export default AddOrganization;
+export default EditOrganization;
