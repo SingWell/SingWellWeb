@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { Card, CardTitle, CardText } from  'react-mdl';
+import { Card, CardTitle } from  'react-mdl';
 //import MuiThemeProvider from 'material-ui/styles';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { MenuItem, TextField, RaisedButton, FlatButton, SelectField} from 'material-ui/'
+import { MenuItem, TextField, RaisedButton, FlatButton, SelectField, CardText} from 'material-ui/'
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 
@@ -17,8 +17,8 @@ class EditProfile extends Component {
 		super(props);
 
 		/*let fname = ''; 
-		let lname = ''; 
-		let	email = ''; */
+		let lname = ''; */
+		let	email = ''; 
 		let	phone = ''; 
 		let	address = ''; 
 		let	bio = ''; 
@@ -46,7 +46,7 @@ class EditProfile extends Component {
 
 		this.handlePhoneChange = this.handlePhoneChange.bind(this);
 		this.handleAddressChange = this.handleAddressChange.bind(this);
-		this.onBioChange = this.onBioChange.bind(this);
+		this.handleBioChange = this.handleBioChange.bind(this);
 		this.handleCityChange = this.handleCityChange.bind(this);
 		this.handleZipChange = this.handleZipChange.bind(this);
 		this.handleStateChange = this.handleStateChange.bind(this);
@@ -88,7 +88,7 @@ class EditProfile extends Component {
 		})
 	}
 
-	onBioChange(event, value) {
+	handleBioChange(event, value) {
 		this.setState({
 			bio: value 
 		})
@@ -113,9 +113,6 @@ class EditProfile extends Component {
 			state: state
 		})
 	}
-
-	//handleStateChange = (event, index, value) => this.setState({ state: value});
-
 
 	handleDobChange(event, value) {
 		this.setState({
@@ -174,7 +171,16 @@ class EditProfile extends Component {
             this.setState({
           		email: data.email,
           		fname: data.first_name,
-          		lname: data.last_name
+          		lname: data.last_name,
+          		//profileGet: data.profile,
+				phone: data.profile.phone_number, 
+				address: data.profile.address,
+				bio: data.profile.bio,
+				city: data.profile.city,
+				zip: data.profile.zip_code,
+				state: data.profile.state,
+				dob: data.profile.date_of_birth
+
           	}, function() {
             	console.log(this.state)
             	console.log(data)
@@ -184,33 +190,6 @@ class EditProfile extends Component {
           console.log(err)
         }
       	});
-
-		$.ajax({
-        type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile",
-        dataType: 'json',
-        cache: false, 
-        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-        success: function(data) {
-          this.setState({
-          	    profileGet: data,
-				phone: data.phone_number, 
-				address: data.address,
-				bio: data.bio,
-				city: data.city,
-				zip: data.zip_code,
-				state: data.state,
-				dob: data.date_of_birth
-          	}, function() {
-            	console.log(this.state.city);
-            	console.log("PROFILE BELOW");
-            	console.log(data);
-          });
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.log(err)
-        }
-      });
 	}
 
 	componentDidMount() {
@@ -483,11 +462,9 @@ class EditProfile extends Component {
 
 
 	handleSubmit(e){
-		this.setState({update: {
+		this.setState({updateProfile: {
 			profile:{
-				//fname: this.refs.fname.value,
-				//lname: this.refs.lname.value,
-				//email: this.refs.email.inputRef.value
+				user: +this.props.match.params.userID,
 				phone_number: this.state.phone,
 				bio: this.state.bio, 
 				address: this.state.address,
@@ -495,19 +472,21 @@ class EditProfile extends Component {
 				state: this.state.state,
 				zip_code: this.state.zip,
 				//instruments: this.refs.instruments.value,
-				date_of_birth: this.state.dob
+				date_of_birth: this.state.dob,
+				age: '',
+				profile_picture_link: ''
 		}}},
 			function() {
-			console.log(this.state.update)
+			console.log(this.state)
 			$.ajax({
 			  type: "PATCH",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
 		      dataType: 'json',
-		      data: this.state.update,
+		      data: this.state.updateProfile.profile,
 		      success: function(data) {
 		        this.setState(
 		        	{
-		        		profilePost: data,
+		        		profilePatch: data,
 		        		//user: 1,
 		        		fireRedirect: true 
 		        	});
@@ -600,7 +579,7 @@ class EditProfile extends Component {
 				    multiLine={true}
 				    style={{width: '200px'}}
 				    value={this.state.bio}
-				    onChange={this.onBioChange}
+				    onChange={this.handleBioChange}
 				/>
 				{/*<SelectField
 			        multiple={true}
@@ -614,23 +593,18 @@ class EditProfile extends Component {
 		      	<TextField
 				    onChange={() => {}}
 				    floatingLabelText="Phone Number..."
-				    type="number"
 				    ref="phone"
 				    style={{width: '200px'}}
 				    value={this.state.phone}
-				    onChange={this.state.handlePhoneChange}
+				    onChange={this.handlePhoneChange}
 				/>
 	      		<TextField
 			        ref="dob"
 			        floatingLabelText="Birthday"
-			        type="text"
+			        style={{width: '200px'}}
 			        hintText="mm/dd/yyyy"
-			        //className={classes.textField}
-			        inputlabelprops={{
-			          shrink: true
-			        }}
 			        value={this.state.dob}
-			       	onChange={this.state.handleDobChange}
+			       	onChange={this.handleDobChange}
 			    />
 				<br/>
 				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
