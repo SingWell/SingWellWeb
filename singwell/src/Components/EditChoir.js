@@ -15,7 +15,7 @@ import '../css/AddChoir.css';
 
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
-import diff from 'object-diff/';
+// import diff from 'object-diff/';
 
 
 class EditChoir extends Component {

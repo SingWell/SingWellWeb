@@ -14,8 +14,10 @@ class App extends Component {
     return (
       <div className="App" style={{display: "flex"}}>
         <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
-	        <Sidebar />
-	        <Main />
+          <div>
+            <Sidebar />
+            <Main />
+          </div>
 	    </MuiThemeProvider>
       </div>
     );

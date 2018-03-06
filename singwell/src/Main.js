@@ -33,7 +33,7 @@ class Main extends Component {
 		      <Route exact path='/' component={AddOrganization} />
 		      <Route exact path='/organizations/:orgID' component={Organizations} />
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
-		      <Route exact path='/choirs/:choirID' component={Choir} />
+		      <Route exact path='/organizations/:orgID/choirs/:choirID' component={Choir} />
 		      <Route exact path='/profile/create' component={CreateProfile} />
 		      <Route exact path='/viewprofile' component={Profile} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID/events' component={AddEvent} />
@@ -41,7 +41,7 @@ class Main extends Component {
 		      <Route exact path='/organizations/:orgID/events/:eventID' component={Event} />
 		      <Route exact path='/profile/:userID/edit' component={EditProfile} />
 		      <Route exact path='/profile/:userID' component={Profile} />
-		      <Route exact path='/choirs/:choirID/edit' component={EditChoir} />
+		      <Route exact path='/organizations/:orgID/choirs/:choirID/edit' component={EditChoir} />
 		      <Route exact path='/organizations/:orgID/edit' component={EditOrganization} />
 		      <Route exact path='/organizations/:orgID/events/:eventID/edit' component={EditEvent} />
 		      <Route exact path='/organizations/:orgID/music/:musicID' component={MusicPage} />
