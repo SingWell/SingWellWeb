@@ -8,7 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import Card from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions, Tooltip,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -130,6 +130,11 @@ class Profile extends Component {
               <ListItem>
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
               </ListItem>
+              <Tooltip label="Edit Profile" large>
+                  <ListItem>
+                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/profile/' + this.props.match.params.userID + '/edit/')}></ListItemContent>
+                  </ListItem>
+              </Tooltip>
               <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center"  onClick={this.handleEdit}>
                   <ImageEdit />
               </IconButton>

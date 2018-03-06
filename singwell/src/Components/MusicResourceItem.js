@@ -67,7 +67,7 @@ class MusicResourceItem extends Component {
         >
           <Page pageNumber={this.state.pageNumber} />
         </Document> 
-        <div className="pdf-controls">
+        <div className="pdf-controls" style={{paddingLeft: "156pt"}}>
           <IconButton
               iconClassName="material-icons"
               disabled={pageNumber <= 1}

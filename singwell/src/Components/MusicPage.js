@@ -129,10 +129,10 @@ class MusicPage extends Component {
                 <Icon name="file_upload" />
             </FABButton>
             <div style={{padding: "25px"}}>
-              <h4> The Chainsmokers - Sick Boy</h4>
+              <h4> Bach - Jesu, Joy of Man's Desiring by Bach</h4>
               <div className="video-wrapper">
                 <YouTube
-                    videoId="eACohWVwTOc"
+                    videoId="S6OgZCCoXWc"
                     opts={
                       {
                         height: '390',
