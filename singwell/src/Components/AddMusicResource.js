@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
     FooterDropDownSection } from  'react-mdl';
 import { SelectField, Option } from 'react-mdl-extra';
@@ -21,14 +21,10 @@ import {blue500, red500, greenA200} from 'material-ui/styles/colors';
 
 import { TextField } from 'material-ui/'
 
+import IconButton from 'material-ui/IconButton';
+
 
 class AddMusicResource extends Component {
-
-	constructor(props: any)
-    {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-    }
 
 
 	componentWillMount() {
@@ -42,6 +38,21 @@ class AddMusicResource extends Component {
 			fileToSend: {},
 			file: new FormData()
 		});
+
+	}
+
+	removeFile(file, event) {
+		var i = this.state.filesToBeSent.indexOf(file);
+
+	    if (i < 0)
+	        return;
+
+	    this.setState((prevState) => {
+	        return {
+	            filesToBeSent: prevState.filesToBeSent.filter((element, index) => index !== i),
+	            filesPreview: prevState.filesPreview.filter((element, index) => index !== i)
+	        };
+	    });
 
 	}
 
@@ -60,6 +71,12 @@ class AddMusicResource extends Component {
 	      filesPreview.push(
 	      	<div key={i}>
 	        	{filesToBeSent[i].name}
+	        	<IconButton
+		              iconClassName="material-icons"
+		              onClick={this.removeFile.bind(this, filesToBeSent[i])}
+		            >
+		              close
+		        </IconButton>
 	        </div>
 	      )
 	    }
@@ -122,7 +139,7 @@ class AddMusicResource extends Component {
 		                <div>Try dropping some files here, or click to select files to upload.</div>
 		            </Dropzone>
 		            <div>
-				         Files to be printed are:
+				         Files to be uploaded are:
 				         {this.state.filesPreview}
 			        </div>
 					

@@ -130,17 +130,19 @@ class MusicPage extends Component {
             </FABButton>
             <div style={{padding: "25px"}}>
               <h4> The Chainsmokers - Sick Boy</h4>
-              <YouTube
-                  videoId="eACohWVwTOc"
-                  opts={
-                    {
-                      height: '390',
-                      width: '100%',
-                      padding: '25px'
+              <div className="video-wrapper">
+                <YouTube
+                    videoId="eACohWVwTOc"
+                    opts={
+                      {
+                        height: '390',
+                        width: '100%',
+                        padding: '25px'
+                      }
                     }
-                  }
-                  onReady={this._onReady}
-                />
+                    onReady={this._onReady}
+                  />
+              </div>
               {musicResourceItems}
 
 
