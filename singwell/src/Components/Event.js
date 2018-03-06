@@ -27,6 +27,10 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 
+import { Link } from 'react-router-dom';
+
+import EventTableItem from './EventTableItem';
+
 
 class Event extends Component {
 
@@ -42,7 +46,8 @@ class Event extends Component {
             value: "",
             checkboxes: false,
             musicGet: [],
-            musicLibrary: []
+            musicLibrary: [],
+            rows: [],
         };
 
         this.handleKeyChange = this.handleKeyChange.bind(this);
@@ -56,7 +61,7 @@ class Event extends Component {
     handleSubmit(e){
             this.setState({programItem:{
                 "music_record": this.state.musicRecordID,
-                "order": 2,
+                "order": this.state.program.length + 1,
                 "notes": this.state.notes,
                 "field_title": this.state.key
             }}, function() {
@@ -69,22 +74,21 @@ class Event extends Component {
                   headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
                   data: this.state.programItem,
                   success: function(data) {
-                    this.setState({eventPost: data}, function() {
-                      console.log(this.state.eventPost)
-                    });
+                      this.state.program.push(data)
+                      this.forceUpdate()
                   }.bind(this),
                   error: function(xhr, status, err) {
                     console.log(err);
                   }
                 });
-                console.log(this.state.key, this.state.value)
-                var key = this.state.key
-                var obj = {}
-                obj[key] = this.state.value
-                this.state.music.push(obj)
-                console.log(this.state)
+                // console.log(this.state.key, this.state.value)
+                // var key = this.state.key
+                // var obj = {}
+                // obj[key] = this.state.value
+                // this.state.music.push(obj)
+                // console.log(this.state)
                 
-                this._generateRows()
+                
 
 
             });
@@ -97,6 +101,7 @@ class Event extends Component {
   componentWillMount() {
     this.setState ( {
         eventGet:{},
+        eventPost: {},
         program: [],
         keys: [],
         music: [
@@ -122,6 +127,7 @@ class Event extends Component {
               })
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
+              // this.state.rows = this._generateRows();
           })
         }.bind(this),
         error: function(xhr, status, err) {
@@ -163,11 +169,6 @@ class Event extends Component {
 
     _generateRows(){
         return this.state.program.map(programItem => {
-          // var arr = []
-          // Object.keys(el).forEach((key) => {
-          //   arr.push(key)
-          //   arr.push(el[key])
-          // })
           return <TableRow key={programItem.id}>
                     <TableRowColumn>{programItem.field_title}</TableRowColumn>
                     <TableRowColumn>{programItem.title}</TableRowColumn>
@@ -212,7 +213,6 @@ class Event extends Component {
       console.log(searchText)
       this.setState({
         value: searchText,
-        // musicRecord:
       });
     }
 
@@ -228,13 +228,23 @@ class Event extends Component {
       })
       if(index === -1) {
           this.handleSubmit()
-          // this.setState( { value: '', key: '' }) 
+          this.setState( { value: '', key: '', notes: '' }) 
       }
           
     }
 
     renderProgram() {
 
+          this.state.rows = this.state.program.map(programItem => {
+            return (
+                <EventTableItem programItem={programItem} key={programItem.id} orgID={this.props.match.params.orgID}></EventTableItem>
+              )
+            {/* return <TableRow key={programItem.id}>
+                      <TableRowColumn>{programItem.field_title}</TableRowColumn>
+                      <TableRowColumn><Link to={'/organizations/' + this.props.match.params.orgID + '/music/' + programItem.music_record}>{programItem.title}</Link></TableRowColumn>
+                      <TableRowColumn>{programItem.notes}</TableRowColumn>
+                  </TableRow> */}
+          })
 
       
         return (
@@ -254,7 +264,7 @@ class Event extends Component {
                                 dataSource={this.state.keys}
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleKeyChange}
-                                // searchText={this.state.key}
+                                searchText={this.state.key}
                                 fullWidth={true}
                               />
                           </TableRowColumn>
@@ -266,40 +276,27 @@ class Event extends Component {
                                 dataSourceConfig={ {text: 'title', value: 'id'} }
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleValueChange}
-                                // searchText={this.state.value}
+                                searchText={this.state.value}
                                 fullWidth={true}
                               />
                           </TableRowColumn>
                            <TableRowColumn>
                               <AutoComplete
-                                floatingLabelText="Value..."
+                                floatingLabelText="Notes..."
                                 filter={AutoComplete.caseInsensitiveFilter}
                                 dataSource={['']}
-                                dataSourceConfig={ {text: 'title', value: 'id'} }
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleNotesChange}
-                                // searchText={this.state.value}
+                                searchText={this.state.notes}
                                 fullWidth={true}
                               />
-                              {/* <TextField
-                                floatingLabelText="Notes..."
-                                ref="notes"
-                                fullWidth={true}
-                                onKeyPress={(ev) => {
-                                    console.log(`Pressed keyCode ${ev.key}`);
-                                    if (ev.key === 'Enter') {
-                                        this.handleSelect()
-                                        ev.preventDefault();
-                                    }
-                                  }}
-                              /> */}
+                              
                           </TableRowColumn>
                            
                       </TableRow>
                   </TableHeader>
                   <TableBody displayRowCheckbox={this.state.checkboxes}>
-                      
-                      {this._generateRows()}
+                      {this.state.rows}
                   </TableBody>
               </Table> 
             </div>
