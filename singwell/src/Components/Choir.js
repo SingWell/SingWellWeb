@@ -70,13 +70,11 @@ class Choir extends Component {
           for(var v in users[u].member_of_organizations){
               if(currentOrg == users[u].member_of_organizations[v]){
                   let user_in_org = users[u]
-                  //if theyre in the organizaton, need to add to newMemberList array of user objects. 
                   this.state.newMemberList.push(user_in_org);
               }
           }
       }
       console.log(this.state);
-      // console.log(this.state.newMemberList)
   }
 
   userItems(values) {
@@ -165,7 +163,7 @@ class Choir extends Component {
       let newChoristers = this.state.choirGet.choristers
       newChoristers.push(newUserID);
       this.setState({
-          close: true,
+          open: false,
           newChoirMember: {
               //patching to user object 
               choirs: newUsersCurrentChoirs
@@ -175,7 +173,7 @@ class Choir extends Component {
               choristers: newChoristers
           },
           newRosterItem: {
-            id: +newUserID,
+            user_id: +newUserID,
             email: this.state.newMemberList[index].email,
             first_name: this.state.newMemberList[index].first_name,
             last_name:this.state.newMemberList[index].last_name,
@@ -209,7 +207,6 @@ class Choir extends Component {
                       memberPatch: data
                     }, function(){
                       console.log(this.state);
-                      //console.log(this.state.choirGet);
                       console.log(this.state.newChoir);
                     })
                 }.bind(this),
@@ -255,8 +252,6 @@ class Choir extends Component {
                   this.setState(
                     {
                       rosterPost: data,
-                      //orgID: data.id,
-                      //fireRedirect: true
                     })
                 }.bind(this),
                 error: function(xhr, status, err) {
@@ -270,12 +265,6 @@ class Choir extends Component {
         })
 
         e.preventDefault();
-        //for users, we should only need to patch the choir array that holds choirIDs they are a part of 
-          //choirs is the array holding id's, url is users/userID/
-
-        //for choirs, just need to patch the array that has the members of the choir 
-          //array is called choristers, url is just choirs/choirID
-     
   }
 
 
