@@ -10,3 +10,7 @@
 .demo-tabs .content {
     height: 100px;
 }
+
+.DayPicker-Months, .DayPicker, .DayPicker-Month, .DayPicker-wrapper {
+	width: 100%;
+}

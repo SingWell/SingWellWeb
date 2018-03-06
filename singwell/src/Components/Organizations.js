@@ -29,6 +29,12 @@ const google = window.google
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
+
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+const fromMonth = new Date(currentYear, currentMonth);
+const toMonth = new Date(currentYear + 10, 11);
+
 class Organizations extends Component {
 
     static defaultProps = {
@@ -141,10 +147,15 @@ class Organizations extends Component {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+        this.handleYearMonthChange = this.handleYearMonthChange.bind(this);
 
         this.state = {
-            activeHeaderTab: 0
+            activeHeaderTab: 0,
+            monthData: currentMonth,
+            month: fromMonth,
+            year: currentYear
         };
+        console.log(this.state.monthData, this.state.year)
     }
 
 
@@ -279,6 +290,16 @@ class Organizations extends Component {
     }
 
 
+    handleYearMonthChange(month) {
+        console.log(month)
+            this.setState({ month });
+            this.setState({
+                year: moment(month).year(),
+                monthData:moment(month).month()
+            })
+            console.log(this.state.year, this.state.monthData)
+          }
+
     renderEvents() {
         const {events} = this.state
         this.state.events = {};
@@ -297,6 +318,48 @@ class Organizations extends Component {
         console.log(events)
 
 
+        function YearMonthForm({ date, localeUtils, onChange }) {
+              const months = localeUtils.getMonths();
+
+              const years = [];
+              for (let i = fromMonth.getFullYear() - 1; i <= toMonth.getFullYear(); i += 1) {
+                years.push(i);
+              }
+
+              const handleChange = function handleChange(e) {
+                const { year, month } = e.target.form;
+
+                // this.setState({
+                //     "year": year.value,
+                //     "month": month.value
+                // })
+
+                // console.log(this.state.month, this.state.year)
+                onChange(new Date(year.value, month.value));
+              };
+
+              return (
+                <form className="DayPicker-Caption">
+                  <select name="month" onChange={handleChange} value={date.getMonth()}>
+                    {months.map((month, i) => (
+                      <option key={month} value={i}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                  <select name="year" onChange={handleChange} value={date.getFullYear()}>
+                    {years.map(year => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              );
+            }
+
+        
+
         function renderDay(day) {
           const date = day.getDate();
           const dateStyle = {
@@ -307,6 +370,7 @@ class Organizations extends Component {
             fontSize: 20,
           };
           const containerStyle = { 
+            width: '100%',
             margin:'2px',
             border: '1px solid #3a87ad',
             borderRadius: '3px',
@@ -346,13 +410,21 @@ class Organizations extends Component {
                             <Icon name="add" />
                         </FABButton>
                     </Cell>
-                    
                         <DayPicker
-                          canChangeMonth={false}
+                          canChangeMonth={true}
                           className="Birthdays"
                           renderDay={renderDay.bind(this)}
-                        />
-                                  
+                          month={this.state.month}
+                          fromMonth={fromMonth}
+                          toMonth={toMonth}
+                          captionElement={({ date, localeUtils }) => (
+                            <YearMonthForm
+                              date={date}
+                              localeUtils={localeUtils}
+                              onChange={this.handleYearMonthChange}
+                            />
+                          )}
+                        />       
                     </Grid>
                 </div>
         );
