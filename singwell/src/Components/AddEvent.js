@@ -21,7 +21,8 @@ import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 // import ReactMaterialDatePicker from 'react-material-datepicker'
 
-import DatePicker from 'material-ui/DatePicker';
+import DatePicker from 'material-ui/DatePicker'
+import { FlatButton, RaisedButton } from 'material-ui/'
 
 
 
@@ -57,6 +58,8 @@ class AddEvent extends Component {
 
 	    this.callbackFunction = this.callbackFunction.bind(this);
 	    this.onDateChange = this.onDateChange.bind(this);
+
+	    this.baseState = this.state;
 	}
 
 	onHourChange(hour) {
@@ -94,7 +97,8 @@ class AddEvent extends Component {
 	componentWillMount() {
 		this.setState ( {
 			newEvent:{},
-			fireRedirect: false,
+			submitRedirect: false,
+			cancelRedirect: false,
 			eventID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
 			choirGet: []
@@ -115,10 +119,6 @@ class AddEvent extends Component {
 	      });
 
 	}
-
-
-	
-
 
 	handleSubmit(e){
 		console.log(+this.state.choir.value)
@@ -144,7 +144,7 @@ class AddEvent extends Component {
 		        		organization: this.props.match.params.orgID,
 		        		eventPost: data,
 		        		eventID: data.id,
-		        		fireRedirect: true
+		        		submitRedirect: true
 		        	});
 		      }.bind(this),
 		      error: function(xhr, status, err) {
@@ -155,9 +155,18 @@ class AddEvent extends Component {
   		e.preventDefault();
   	}
 
+  	handleCancel(e){
+  		this.setState(
+  			{cancelRedirect: true}
+  		)
+  	}
+
+
+
   render() {
   	const { from } = this.props.location.state || '/';
-  	const { fireRedirect } = this.state;
+  	const { submitRedirect } = this.state;
+  	const { cancelRedirect } = this.state;
   	const { eventID } = this.state;
   	const { buttonClasses } = this.state
   	const {
@@ -185,7 +194,7 @@ class AddEvent extends Component {
     	<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
 		    <CardTitle>Add Event</CardTitle>
 		    <CardText>
-		       <form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>
+		       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 			       <Textfield
 					    onChange={() => {}}
 					    label="Event name..."
@@ -221,10 +230,14 @@ class AddEvent extends Component {
 		            </ReactMaterialSelect>
 		      		<br/>
 		      		<br/>
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      	</form>
-		      	{fireRedirect && (
+		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
+		      	{/*</form>*/}
+		      	{submitRedirect && (
 		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID }/>
+		        )}
+		        {cancelRedirect && (
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID} />  
 		        )} 
 		    </CardText>
 		</Card>

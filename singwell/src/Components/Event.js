@@ -25,6 +25,7 @@ import {
 } from 'material-ui/Table';
 
 import RaisedButton from 'material-ui/RaisedButton';
+import ImageEdit from 'material-ui/svg-icons/image/edit';
 
 import { Link } from 'react-router-dom';
 
@@ -55,8 +56,6 @@ class Event extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
     }
-
-     
 
 
     handleSubmit(e){
@@ -160,7 +159,6 @@ class Event extends Component {
 
     }
 
-    
 
     onChangeHeaderTab(tabId) {
         this.setState({
@@ -195,7 +193,13 @@ class Event extends Component {
               <ListItem>
                 <ListItemContent icon="home">{this.state.eventGet.location}</ListItemContent>
               </ListItem>
+              {/*<ListItem>*/}
+              <IconButton style={{display: 'inline-block', color: 'black'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID + "/edit")}>
+                  <ImageEdit />
+              </IconButton>
+              {/*</ListItem>*/}
             </List>
+            
             </div>
         );
     }

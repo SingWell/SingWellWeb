@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import $ from 'jquery';
 import '../css/Organizations.css'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 
@@ -17,6 +17,8 @@ import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
 
+import { IconButton, FontIcon } from 'material-ui/';
+import ImageEdit from 'material-ui/svg-icons/image/edit';
 import MusicLibraryItem from './MusicLibraryItem'
 
 // import MapContainer from './MapContainer'
@@ -166,6 +168,7 @@ class Organizations extends Component {
 
         return (
             <div>
+            <div>
                 <h4 style = {{marginLeft: '20px'}}>
                     Announcements:
                 </h4>
@@ -185,6 +188,7 @@ class Organizations extends Component {
                             <CardText>
                                 Bacon ipsum dolor amet fatback pork belly pork loin ribeye, cupim short ribs jowl frankfurter buffalo leberkas.
                             </CardText>
+
                         </Card>
                     </Cell>    
                 
@@ -204,6 +208,9 @@ class Organizations extends Component {
                       <ListItem>
                         <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
                       </ListItem>
+                      <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}>
+                        <ImageEdit />
+                      </IconButton>
                     </List>
 
                         <div className="map" style={{height: "300px"}}>
@@ -222,9 +229,10 @@ class Organizations extends Component {
                         </div>
                 </Cell>
                 </Grid>
-                    
-
                         
+            </div>
+            <div>
+            </div>
             </div>
         );
     }

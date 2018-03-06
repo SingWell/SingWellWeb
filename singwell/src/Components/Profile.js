@@ -8,7 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import Card from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -17,6 +17,9 @@ import classNames from 'classnames';
 import TextField from 'material-ui/TextField';
 import ChoirItem from './ChoirItem';
 
+import { IconButton, FontIcon } from 'material-ui/';
+import ImageEdit from 'material-ui/svg-icons/image/edit';
+
 import ReactDOM from 'react-dom';
 
 
@@ -24,7 +27,7 @@ import ReactDOM from 'react-dom';
 
 class Profile extends Component {
 
-	constructor(props) {
+  constructor(props) {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
@@ -40,6 +43,10 @@ class Profile extends Component {
     }
 
 	componentWillMount() {
+		this.setState ( {
+        userGet:{},
+
+    });
 
     $.ajax({
         type: "GET",
@@ -74,7 +81,6 @@ class Profile extends Component {
         
     }
 
-
     onChangeHeaderTab(tabId) {
         this.setState({
             activeHeaderTab: tabId,
@@ -103,6 +109,9 @@ class Profile extends Component {
               <ListItem>
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
               </ListItem>
+              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/profile/' + this.props.match.params.userID + '/edit/')}>
+                  <ImageEdit />
+              </IconButton>
             </List>
             
             <h5 style= {{marginLeft: "20px"}}>

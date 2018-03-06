@@ -3,18 +3,19 @@ import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    Menu, Footer, FooterSection, FooterLinkList, Textfield,
     FooterDropDownSection } from  'react-mdl';
-import { SelectField, Option } from 'react-mdl-extra';
+import { Option } from 'react-mdl-extra';
+import { MenuItem, RaisedButton, SelectField } from 'material-ui/';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 import '../css/AddChoir.css'
 
-import Moment from 'react-moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
-
-// import WeekdayPicker from "react-weekday-picker";
+import 'object-diff';
 
 class AddChoir extends Component {
 
@@ -25,6 +26,7 @@ class AddChoir extends Component {
 	    let minuteStart = '';
 	    let hourEnd = '';
 	    let minuteEnd = '';
+	    let defaultName = '';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -53,8 +55,7 @@ class AddChoir extends Component {
 	    this.onMinuteChangeEnd = this.onMinuteChangeEnd.bind(this);
 	    this.onTimeChangeEnd = this.onTimeChangeEnd.bind(this);
 	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);
-		
-		
+	    			
 	}
 
   onHourChange(hourStart) {
@@ -103,7 +104,7 @@ class AddChoir extends Component {
     this.setState({ focusedEnd: !focusedEnd });
   }
 
-  
+
 
 	componentWillMount() {
 		this.setState ( {
@@ -111,8 +112,10 @@ class AddChoir extends Component {
 			fireRedirect: false,
 			choirID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
+			edit: false,
+			values: {},
+			title: "Add Choir"
 		});
-
 	}
 
 	static defaultProps = {
@@ -152,7 +155,21 @@ class AddChoir extends Component {
 		  showTimezone: false
 	}
 
-	
+	// handleChange(event, index, values){
+	// 	this.setState({values});
+	// }
+
+	/*setWeekdays(values) {
+		return this.props.days.map((day) => (
+			<MenuItem
+				key={day.number}
+				//insetChildren={true}
+				checked={values && values.indexOf(day) > -1}
+				value={day.name}
+				//primaryText={day.name}
+			/>
+		));
+	}*/
 
 	handleSubmit(e){
 		this.setState({newChoir:{
@@ -165,6 +182,7 @@ class AddChoir extends Component {
 				1
 			]
 		}}, function() {
+			console.log("inside post statement");
 			$.ajax({
 			  type: "POST",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/",
@@ -193,12 +211,11 @@ class AddChoir extends Component {
 
   render() {
 
-  	
-
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
   	const { choirID } = this.state;
-  	const { buttonClasses } = this.state
+  	const { buttonClasses } = this.state;
+   	const { values } = this.state;
 
   	const {
       hourStart,
@@ -217,15 +234,18 @@ class AddChoir extends Component {
 
     return (
     	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Choir</CardTitle>
+		    <CardTitle>{this.state.title}</CardTitle>
 		    <CardText className={"timePickerForm"}>
 		       <form onSubmit={this.handleSubmit.bind(this)}>
 			       <Textfield
-					    onChange={() => {}}
+					    //onChange={() => {}}
 					    label="Name..."
 					    floatingLabel
 					    ref="name"
 					    style={{width: '200px'}}
+					    required={true}
+					    //onChange={this.onNameChange}
+					    value={this.defaultName}
 					/>
 					<br/>
 					<label>Meeting Day</label>
@@ -233,6 +253,15 @@ class AddChoir extends Component {
 		      		<select ref= "meetingDay">
 		      			{dayOptions}
 		      		</select>
+		      		{/*<SelectField
+		      			floatingLabelText="Meeting Day"
+						ref="state"
+						value={this.state.values}
+						maxHeight={200}
+						style={{width: '200px', color: 'blue'}}
+						//onChange={this.handleChange}
+		      		>{this.setWeekdays(this.values)}
+		      		</SelectField>*/}
 		      		<br/>
 		      		<br/>
 		      		<label>Meeting Start Time:</label>
@@ -261,6 +290,7 @@ class AddChoir extends Component {
 			        />
 		      		<br/>
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
+		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
 		      	</form>
 		      	{fireRedirect && (
 		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/choirs/' + choirID}/>

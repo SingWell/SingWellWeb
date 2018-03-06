@@ -6,25 +6,215 @@ import { Card, CardTitle, CardText } from  'react-mdl';
 //import MuiThemeProvider from 'material-ui/styles';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import SelectField from 'material-ui/SelectField';
-import { MenuItem, TextField, RaisedButton, FlatButton } from 'material-ui/'
+import { MenuItem, TextField, RaisedButton, FlatButton, SelectField} from 'material-ui/'
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 
-class CreateProfile extends Component {
 
-	constructor(){
-		super();
-		
+class EditProfile extends Component {
+
+	constructor(props){
+		super(props);
+
+		/*let fname = ''; 
+		let lname = ''; 
+		let	email = ''; */
+		let	phone = ''; 
+		let	address = ''; 
+		let	bio = ''; 
+		let	city = ''; 
+		let	zip = ''; 
+		let	state = ''; 
+		let	dob = ''; 
+
+		this.state = {
+			/*fname, 
+			lname,
+			email,*/
+			phone,
+			address,
+			bio,
+			city,
+			zip,
+			state,
+			dob
+		};
+
+		/*this.handleFNameChange = this.handleFNameChange.bind(this);
+		this.handleLNameChange = this.handleLNameChange.bind(this);
+		this.handleEmailChange = this.handleEmailChange.bind(this);*/
+
+		this.handlePhoneChange = this.handlePhoneChange.bind(this);
+		this.handleAddressChange = this.handleAddressChange.bind(this);
+		this.onBioChange = this.onBioChange.bind(this);
+		this.handleCityChange = this.handleCityChange.bind(this);
+		this.handleZipChange = this.handleZipChange.bind(this);
+		this.handleStateChange = this.handleStateChange.bind(this);
+		this.handleDobChange = this.handleDobChange.bind(this);
+
+		//this.stateItems = this.stateItems.bind(this);
+
+	}
+
+	/*handleFNameChange() {
+		console.log(this.refs.fname);
+		this.setState({
+			fname: this.refs.fname.inputRef.value
+		})
+	}
+
+	handleLNameChange() {
+		this.setState({
+			lname: this.refs.lname.inputRef.value
+		})
+	}
+
+	handleEmailChange() {
+		this.setState({
+			email: this.refs.email.inputRef.value
+		})
+	}*/
+
+	handlePhoneChange(event, value) {
+		this.setState({
+			phone: value
+		})
+	}
+
+	handleAddressChange(event, value) {
+		console.log(value)
+		this.setState({
+			address: value
+		})
+	}
+
+	onBioChange(event, value) {
+		this.setState({
+			bio: value 
+		})
+	}
+
+	handleCityChange(event, value) {
+		this.setState({
+			city: value
+		})
+	}
+
+	handleZipChange(event, value) {
+		this.setState({
+			zip: value
+		})
+	}
+
+	handleStateChange(event, value) {
+		console.log(value);
+		let state = this.props.states[value].name
+		this.setState({
+			state: state
+		})
+	}
+
+	//handleStateChange = (event, index, value) => this.setState({ state: value});
+
+
+	handleDobChange(event, value) {
+		this.setState({
+			dob: value
+		})
+	}
+
+  	handleCancel(e){
+		this.setState(
+			{cancelRedirect: true}
+		)
+  	}
+
+	instrumentItems(values) {
+	    return this.props.instruments.map((instrument) => (
+			<MenuItem
+				key={instrument}
+				insetChildren={true}
+				checked={values && values.indexOf(instrument) > -1}
+				value={instrument}
+				primaryText={instrument}
+			/>
+    	));
+	}
+
+	stateItems(values) {
+		return this.props.states.map((state) => (
+			<MenuItem
+				key={state.name}
+				insetChildren={true}
+				checked={values && values.indexOf(state) > -1}
+				value={state.name}
+				primaryText={state.abbreviation}
+			/>
+		));
 	}
 
 	componentWillMount() {
-		this.setState ( {
+		this.setState ({
+			profileGet: {},
 			fireRedirect: false,
+			cancelRedirect: false,
 			user: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
-
 		});
+	}
+
+	fetchList() {
+		$.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID ,
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+            this.setState({
+          		email: data.email,
+          		fname: data.first_name,
+          		lname: data.last_name
+          	}, function() {
+            	console.log(this.state)
+            	console.log(data)
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err)
+        }
+      	});
+
+		$.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile",
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({
+          	    profileGet: data,
+				phone: data.phone_number, 
+				address: data.address,
+				bio: data.bio,
+				city: data.city,
+				zip: data.zip_code,
+				state: data.state,
+				dob: data.date_of_birth
+          	}, function() {
+            	console.log(this.state.city);
+            	console.log("PROFILE BELOW");
+            	console.log(data);
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err)
+        }
+      });
+	}
+
+	componentDidMount() {
+		this.fetchList();
 	}
 
 	static defaultProps ={
@@ -49,6 +239,7 @@ class CreateProfile extends Component {
 		  'Viola',
 		  'Violin'
 		],
+
 		states: [
 		    {
 		        "name": "Alabama",
@@ -290,54 +481,29 @@ class CreateProfile extends Component {
 
 	}
 
-    handleChange = (event, index, values) => this.setState({values});
-
-	instrumentItems(values) {
-	    return this.props.instruments.map((instrument) => (
-			<MenuItem
-				key={instrument}
-				insetChildren={true}
-				checked={values && values.indexOf(instrument) > -1}
-				value={instrument}
-				primaryText={instrument}
-			/>
-    	));
-	}
-
-	stateItems(values) {
-		return this.props.states.map((state) => (
-			<MenuItem
-				key={state.name}
-				insetChildren={true}
-				checked={values && values.indexOf(state) > -1}
-				value={state.abbreviation}
-				primaryText={state.abbreviation}
-			/>
-		));
-	}
-  
 
 	handleSubmit(e){
-		this.setState({profile:{
-			//fname: this.refs.fname.value,
-			//lname: this.refs.lname.value,
-			//email: this.refs.email.value,
-			phone_number: this.refs.phone.value,
-			bio: this.refs.bio.value, 
-			address: this.refs.address.value,
-			city: this.refs.city.value,
-			state: this.refs.state.value,
-			zip_code: this.refs.state.value,
-			//instruments: this.refs.instruments.value,
-			date_of_birth: this.refs.dob.value,
-		}},
+		this.setState({update: {
+			profile:{
+				//fname: this.refs.fname.value,
+				//lname: this.refs.lname.value,
+				//email: this.refs.email.inputRef.value
+				phone_number: this.state.phone,
+				bio: this.state.bio, 
+				address: this.state.address,
+				city: this.state.city,
+				state: this.state.state,
+				zip_code: this.state.zip,
+				//instruments: this.refs.instruments.value,
+				date_of_birth: this.state.dob
+		}}},
 			function() {
-			console.log(this.state.profile)
+			console.log(this.state.update)
 			$.ajax({
-			  type: "PUT",
-		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/profile",
+			  type: "PATCH",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
 		      dataType: 'json',
-		      data: this.state.profile,
+		      data: this.state.update,
 		      success: function(data) {
 		        this.setState(
 		        	{
@@ -348,7 +514,7 @@ class CreateProfile extends Component {
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
-				console.log(xhr.responseText);
+				//console.log(xhr.responseText);
 				console.log(this);
 				console.log(xhr);
 		      }
@@ -360,72 +526,87 @@ class CreateProfile extends Component {
   	render() {
 	  	const { from } = this.props.location.state || '/';
 	  	const { fireRedirect } = this.state;
+	  	const { cancelRedirect } = this.state;
 	  	const { values } = this.state;
 
 	    return (
+	    <div>
 	      <Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Create Profile </CardTitle>
+		    <CardTitle>Edit Profile</CardTitle>
 		    <CardText>
-		      <form onSubmit={this.handleSubmit.bind(this)}>
-		    	<Link to="/users/1">
-		    		<FlatButton label="skip this step" />
-		    	</Link>
+		      {/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 		       	{/*<TextField
 				    onChange={() => {}}
 				    floatingLabelText="First Name..."
 				    ref="name"
 				    style={{width: '200px'}}
+				    value={this.state.tfname}
+				    onChange={this.handleFNameChange.bind(this)}
 				/>
 		      	<TextField
-				    onChange={() => {}}
 				    floatingLabelText="Last Name..."
 				    ref="description"
 				    style={{width: '200px'}}
-				/> */}
+				    value={this.state.tlname}
+				    onChange={this.handleLNameChange.bind(this)}
+				/> 
+				<TextField
+					//onChange={() => {}}
+					floatingLabelText="Email..."
+					ref="email"
+					style={{width: '200px'}}
+					value={this.state.temail}
+					onChange={this.handleEmailChange.bind(this)}
+				/>*/}
 				<TextField
 					floatingLabelText="Address..."
 					ref="address"
 					style={{width: '200px'}}
+					value={this.state.address}
+					onChange={this.handleAddressChange}
 				/>
+
 				<TextField
 					floatingLabelText="City..."
 					ref="city"
 					style={{width: '200px'}}
+					value={this.state.city}
+					onChange={this.handleCityChange}
 				/>
 				<SelectField
 					floatingLabelText="State..."
-					ref="state"
-					value={this.state.values}
-					maxHeight={200}
+					//ref="state"
+					//value="AK"
+					//maxHeight={200}
+					value={this.state.state}
 					style={{width: '200px'}}
-					onChange={this.handleChange} >
-						{this.stateItems(this.values)}
+					onChange={this.handleStateChange}
+				>{this.stateItems(this.values)}
 				</SelectField>
 				<TextField
 					floatingLabelText="Zip..."
-					ref="zipcode"
+					ref="zip"
 					type="number"
 					style={{width: '200px'}}
+					value={this.state.zip}
+					onChange={this.handleZipChange}
 				/>
 		      	<TextField
-				    onChange={() => {}}
+				    //onChange={() => {}}
 				    floatingLabelText="Bio..."
-				    ref="streetAddress"
+				    //ref="bio"
+				    ref={(input) => { this.bioInput = input; }}
 				    rows={3}
 				    multiLine={true}
 				    style={{width: '200px'}}
+				    value={this.state.bio}
+				    onChange={this.onBioChange}
 				/>
-		      	{/*<TextField
-				    onChange={() => {}}
-				    floatingLabelText="Email..."
-				    ref="city"
-				    style={{width: '200px'}}
-				/>*/}
 				{/*<SelectField
 			        multiple={true}
 			        floatingLabelText="Select your Instruments..."
 			        value={this.state.values}
-			        onChange={this.handleChange}
+			        onChange={this.handleInstrumentChange}
 			    >
 			        {this.instrumentItems(this.values)}
 				</SelectField>*/}
@@ -436,9 +617,11 @@ class CreateProfile extends Component {
 				    type="number"
 				    ref="phone"
 				    style={{width: '200px'}}
+				    value={this.state.phone}
+				    onChange={this.state.handlePhoneChange}
 				/>
 	      		<TextField
-			        id="date"
+			        ref="dob"
 			        floatingLabelText="Birthday"
 			        type="text"
 			        hintText="mm/dd/yyyy"
@@ -446,21 +629,28 @@ class CreateProfile extends Component {
 			        inputlabelprops={{
 			          shrink: true
 			        }}
+			        value={this.state.dob}
+			       	onChange={this.state.handleDobChange}
 			    />
 				<br/>
-				<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
-		      	</form>
+				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+		      	<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
+				{/*<input className={this.state.buttonClasses} type="submit" value="Submit" />
+		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>
+		      	</form>*/}
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/1/'}/>
+		          <Redirect to={from || '/profile/4/'}/>
 		        )}
+		        {cancelRedirect && (
+		          <Redirect to={from || '/profile/4/'} />  
+		        )} 
 		    </CardText>
 		</Card>
-
+		</div>
 	    );
 	  }
 	}
 
 
 
-export default CreateProfile
+export default EditProfile
