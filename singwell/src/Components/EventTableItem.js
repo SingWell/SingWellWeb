@@ -14,7 +14,7 @@ import {
 } from 'material-ui/Table';
 
 
-
+// TODO: Change to ProgramTableItem
 class EventTableItem extends Component {
 
   render() {
@@ -22,9 +22,9 @@ class EventTableItem extends Component {
     return (
 
       <TableRow key={this.props.programItem.id}>
-                      <TableRowColumn>{this.props.programItem.field_title}</TableRowColumn>
-                      <TableRowColumn><Link to={'/organizations/' + this.props.orgID + '/music/' + this.props.programItem.music_record}>{this.props.programItem.title}</Link></TableRowColumn>
-                      <TableRowColumn>{this.props.programItem.notes}</TableRowColumn>
+                      <TableRowColumn style={{fontSize: '16pt'}}>{this.props.programItem.field_title}</TableRowColumn>
+                      <TableRowColumn style={{fontSize: '16pt'}}><Link style={{color: 'rgb(0, 0, 240)'}} to={'/organizations/' + this.props.orgID + '/music/' + this.props.programItem.music_record}>{this.props.programItem.title}</Link></TableRowColumn>
+                      <TableRowColumn style={{fontSize: '16pt'}}>{this.props.programItem.notes}</TableRowColumn>
       </TableRow>
     );
   }

@@ -179,19 +179,16 @@ class Event extends Component {
 
     renderTabOverview() {
         return (
-          <div>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                <Icon name="keyboard_arrow_left" />
-            </FABButton>
+          <div className="title__padding">
             <List>
               <ListItem>
-                <ListItemContent icon="today">{moment(this.state.eventGet.date).format("MMM Do, YYYY") }</ListItemContent>
+                <ListItemContent icon="today"><b>Event Date: </b>{moment(this.state.eventGet.date).format("MMM Do, YYYY") }</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer">{moment(this.state.eventGet.time, "H:m:s").format('LT')}</ListItemContent>
+                <ListItemContent icon="timer"><b>Event Time: </b>{moment(this.state.eventGet.time, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="home">{this.state.eventGet.location}</ListItemContent>
+                <ListItemContent icon="home"><b>Event Location: </b>{this.state.eventGet.location}</ListItemContent>
               </ListItem>
               <Tooltip label="Edit Event" large>
                   <ListItem>
@@ -248,10 +245,7 @@ class Event extends Component {
 
       
         return (
-          <div style={{marginLeft: '20px'}}>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                <Icon name="keyboard_arrow_left" />
-            </FABButton>
+          <div className="title__padding" style={{paddingRight: '20px'}}>
             <div >
             <br/>
               <Table>
@@ -266,11 +260,12 @@ class Event extends Component {
                                 onUpdateInput={this.handleKeyChange}
                                 searchText={this.state.key}
                                 fullWidth={true}
+                                style={{marginTop: '0'}}
                               />
                           </TableRowColumn>
                           <TableRowColumn>
                               <AutoComplete
-                                floatingLabelText="Value..."
+                                floatingLabelText="Piece Title..."
                                 filter={AutoComplete.caseInsensitiveFilter}
                                 dataSource={this.state.musicLibrary}
                                 dataSourceConfig={ {text: 'title', value: 'id'} }
@@ -278,6 +273,7 @@ class Event extends Component {
                                 onUpdateInput={this.handleValueChange}
                                 searchText={this.state.value}
                                 fullWidth={true}
+                                style={{marginTop: '0'}}
                               />
                           </TableRowColumn>
                            <TableRowColumn>
@@ -289,6 +285,7 @@ class Event extends Component {
                                 onUpdateInput={this.handleNotesChange}
                                 searchText={this.state.notes}
                                 fullWidth={true}
+                                style={{marginTop: '0'}}
                               />
                               
                           </TableRowColumn>
@@ -323,11 +320,13 @@ class Event extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding">
                                 <h3>{this.state.eventGet.name}</h3>
                             </HeaderRow>
-                            <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <FABButton className="back-button"  colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+                                <Icon name="keyboard_arrow_left" />
+                            </FABButton>
+                            <HeaderTabs className={getTextColorClass('primary-dark'), 'title__padding'} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                                 <Tab>Program</Tab>
                             </HeaderTabs>

@@ -59,15 +59,17 @@ class MusicResourceItem extends Component {
 
     return (
 
-      <div>
-        <h4>{this.props.musicResource.title}</h4>
+      <div style={{display: "flex", alignItems: 'center', flexDirection: "column"}}>
+                     <h4>{this.props.musicResource.title}</h4>
+               
         <Document
           file={`data:application/pdf;base64,${this.state.base64}`}
           onLoadSuccess={this.onDocumentLoad}
         >
           <Page pageNumber={this.state.pageNumber} />
         </Document> 
-        <div className="pdf-controls" style={{paddingLeft: "156pt"}}>
+        <div className="pdf-controls" >
+          
           <IconButton
               iconClassName="material-icons"
               disabled={pageNumber <= 1}
@@ -75,6 +77,7 @@ class MusicResourceItem extends Component {
             >
               arrow_back
           </IconButton>
+
           <span>Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}</span>
           <IconButton
               iconClassName="material-icons"
@@ -83,8 +86,8 @@ class MusicResourceItem extends Component {
             >
               arrow_forward
           </IconButton>
-        </div>
-      </div>
+          </div>
+</div>
     );
   }
 

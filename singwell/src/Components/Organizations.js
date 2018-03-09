@@ -184,9 +184,8 @@ class Organizations extends Component {
         });
 
         return (
-            <div>
-            <div>
-                <h4 style = {{marginLeft: '20px'}}>
+            <div >
+                <h4 className="title__padding">
                     Announcements:
                 </h4>
                 
@@ -211,14 +210,14 @@ class Organizations extends Component {
                 
                 </Grid>
 
-                <h4 style = {{marginLeft: '20px'}}>
+                <h4 className="title__padding">
                     Upcoming Events:
                 </h4>
                 <Grid component="section" className="section--center" shadow={0} noSpacing>
                         {console.log(eventItems)}
                         {eventItems.slice(0,3)}
                 <Cell col={12}>
-                    <List>
+                    <List className="title__padding">
                       <ListItem>
                         <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
                       </ListItem>
@@ -232,7 +231,7 @@ class Organizations extends Component {
                         <ListItemContent icon="email">{this.state.orgGet.email}</ListItemContent>
                       </ListItem>
                       <ListItem>
-                        <ListItemContent icon="link"><a href={this.state.orgGet.website_url}>{this.state.orgGet.website_url}</a></ListItemContent>
+                        <ListItemContent icon="link"><a style={{color: "rgb(0, 0, 240)"}} href={this.state.orgGet.website_url}>{this.state.orgGet.website_url}</a></ListItemContent>
                       </ListItem>
                       <Tooltip label="Edit Org" large>
                           <ListItem>
@@ -258,9 +257,6 @@ class Organizations extends Component {
                 </Cell>
                 </Grid>
                         
-            </div>
-            <div>
-            </div>
             </div>
         );
     }
@@ -364,13 +360,13 @@ class Organizations extends Component {
           const date = day.getDate();
           const dateStyle = {
             position: 'absolute',
-            color: 'lightgray',
+            // color: 'lightgray',
             bottom: 0,
-            right: 0,
+            right: '5px',
             fontSize: 20,
           };
           const containerStyle = { 
-            width: '100%',
+            // width: '100%',
             margin:'2px',
             border: '1px solid #3a87ad',
             borderRadius: '3px',
@@ -385,8 +381,10 @@ class Organizations extends Component {
          }
           const cellStyle = {
             height: 150,
-            width: 160,
+            width: 150,
             position: 'relative',
+            borderStyle: 'solid',
+            borderWidth: '1px'
           };
 
           return (
@@ -403,8 +401,8 @@ class Organizations extends Component {
         }
 
         return (
-            <div>
-                    <Grid component="section" className="section--center" shadow={0} noSpacing>
+            <div className="title__margin">
+                    <Grid component="section" className="section--center" noSpacing>
                     <Cell col={12}>
                         <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events')}>
                             <Icon name="add" />
@@ -441,7 +439,7 @@ class Organizations extends Component {
         });
 
         return (
-            <div>
+            <div className="title__padding">
                 <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/music')}>
                     <Icon name="add" />
                 </FABButton>
@@ -474,11 +472,11 @@ class Organizations extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding">
                                 <h3>{this.state.orgGet.name}</h3>
                             </HeaderRow>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <HeaderTabs className={getTextColorClass('primary-dark'), "title__padding"} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                                 <Tab>Choirs</Tab>
                                 <Tab>Events</Tab>

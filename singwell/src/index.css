@@ -3,3 +3,18 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.title__padding {
+	padding-left: 70pt !important;
+}
+
+.title__margin {
+	margin-left: 70pt !important;
+}
+
+.back-button {
+	margin: 10pt !important;
+	position: relative !important; 
+	top: 40pt; 
+	z-index: 99;
+}

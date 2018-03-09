@@ -81,25 +81,18 @@ class MusicPage extends Component {
       const { weekday } = this.state
         return (
           <div>
-
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                <Icon name="keyboard_arrow_left" />
-            </FABButton>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/musicResource/' + this.props.match.params.musicID)}>
-                <Icon name="file_upload" />
-            </FABButton>
-            <List>
+            <List className="title__padding">
               <ListItem>
-                <ListItemContent icon="person">{this.state.musicGet.composer}</ListItemContent>
+                <ListItemContent icon="person"><b>Composer: </b>{this.state.musicGet.composer}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="label">{this.state.musicGet.arranger}</ListItemContent>
+                <ListItemContent icon="label"><b>Arranger: </b>{this.state.musicGet.arranger}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="star">{this.state.musicGet.publisher}</ListItemContent>
+                <ListItemContent icon="star"><b>Producer: </b>{this.state.musicGet.publisher}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="music_note">{this.state.musicGet.instrumentation}</ListItemContent>
+                <ListItemContent icon="music_note"><b>Instrumentation: </b>{this.state.musicGet.instrumentation}</ListItemContent>
               </ListItem>
             </List>
             </div>
@@ -122,14 +115,14 @@ class MusicPage extends Component {
 
         return (
           <div>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                <Icon name="keyboard_arrow_left" />
-            </FABButton>
+          
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/musicResource/' + this.props.match.params.musicID)}>
                 <Icon name="file_upload" />
             </FABButton>
-            <div style={{padding: "25px"}}>
+            <div>
+            <div style={{display: "flex", alignItems: 'center', flexDirection: "column"}}> 
               <h4> Bach - Jesu, Joy of Man's Desiring by Bach</h4>
+              </div>
               <div className="video-wrapper">
                 <YouTube
                     videoId="S6OgZCCoXWc"
@@ -172,11 +165,13 @@ class MusicPage extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding">
                                 <h3>{this.state.musicGet.title}</h3>
                             </HeaderRow>
-                            <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <FABButton className="back-button"  colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+                                <Icon name="keyboard_arrow_left" />
+                            </FABButton>
+                            <HeaderTabs className={getTextColorClass('primary-dark'), "title__padding"} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                                 <Tab>Music Resources</Tab>
                             </HeaderTabs>
