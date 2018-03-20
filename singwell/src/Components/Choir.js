@@ -333,13 +333,13 @@ class Choir extends Component {
             <div>
               <RaisedButton label="Add Member" onClick={this.handleOpen} />
               <Dialog
-                title="Dialog With Actions"
+                title="Add Member to Choir"
                 actions={actions}
                 modal={true}
                 open={this.state.open}
               >
               <SelectField
-                  floatingLabelText="Select New Member..."
+                  floatingLabelText="Select Name..."
                   onChange={this.handleMemberChange}
                   value={this.state.newMember}
               >

@@ -21,7 +21,9 @@ import diff from 'object-diff/';
 class EditChoir extends Component {
 
 	constructor(props) {
+		
 		super(props);
+
 		const { defaultTime, focusedStart, focusedEnd, showTimezone, timezone } = props;
 	    let hourStart = '';
 	    let minuteStart = '';
@@ -282,7 +284,7 @@ class EditChoir extends Component {
 				type: "PATCH",
 				url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",					
 				dataType: "json",
-				//headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+				headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 				data: this.state.newChoir,
 				success: function(data) {
 					this.setState(

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, ListItemContent, CardText, CardActions,
     Menu, Footer, FooterSection, FooterLinkList, Textfield,
     FooterDropDownSection } from  'react-mdl';
 import { Dropdown, Option } from 'react-mdl-extra';
@@ -22,7 +22,7 @@ import 'react-material-select/lib/css/reactMaterialSelect.css'
 // import ReactMaterialDatePicker from 'react-material-datepicker'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton, TextField, MenuItem, SelectField } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, Dialog, RadioButton, RadioButtonGroup, List, ListItem, Checkbox } from 'material-ui/'
 
 
 
@@ -95,6 +95,9 @@ class EditEvent extends Component {
 	    this.onNameChange = this.onNameChange.bind(this);
 	    this.onLocationChange = this.onLocationChange.bind(this);
 	    this.onChoirChange = this.onChoirChange.bind(this);
+
+	    this.handleOpen = this.handleOpen.bind(this);
+	    this.handleClose = this.handleClose.bind(this);
 	}
 
 	onHourChange(hour) {
@@ -163,6 +166,18 @@ class EditEvent extends Component {
 		})
 	}
 
+	handleOpen() {
+    	this.setState({
+    		open: true
+    	});
+  	};
+
+  	handleClose() {
+    	this.setState({
+    		open: false
+    	});
+  	};
+
   	// handleChoirChange = (event, index, values) => this.setState({ eventChoir: values});
 
 	parseDate(date) {
@@ -198,7 +213,12 @@ class EditEvent extends Component {
 
 	choirItems(values) {
 		return this.state.choirGet.map((choir) => (
-			<MenuItem
+			<ListItem
+				leftCheckbox={
+					<Checkbox 
+					//onCheck=
+					/>
+				}
 				key={choir.id}
 				insetChildren={true}
 				checked={values && values.indexOf(choir) > -1}
@@ -216,7 +236,8 @@ class EditEvent extends Component {
 			cancelRedirect: false,
 			eventID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
-			choirGet: []
+			choirGet: [],
+			open: false
 		});
 
 		$.ajax({
@@ -322,6 +343,33 @@ class EditEvent extends Component {
 		} = this.state;
 		console.log(this.state.choirGet)
 
+		const actions = [
+	      <FlatButton
+	        label="Cancel"
+	        primary={true}
+	        onClick={this.handleClose}
+	      />,
+	      <FlatButton
+	        label="Submit"
+	        primary={true}
+	        keyboardFocused={true}
+	        onClick={this.handleClose}
+	      />,
+	    ];
+
+	    const radios = [];
+	    for (let i = 0; i < 30; i++) {
+	      radios.push(
+	        <RadioButton
+	          key={i}
+	          value={`value${i + 1}`}
+	          label={`Option ${i + 1}`}
+	          //style={styles.radioButton}
+	        />
+	      );
+	    }
+
+
 		{/*let choirs;
 		choirs = this.state.choirGet.map(choir => {
 		    console.log(choir)
@@ -340,7 +388,7 @@ class EditEvent extends Component {
 						    //onChange={() => {}}
 						    floatingLabelText="Event name..."
 						    ref="name"
-						    style={{width: '200px'}}
+						    //style={{width: '200px'}}
 						    value={this.state.eventName}
 						    onChange={this.onNameChange}
 						/>
@@ -384,12 +432,32 @@ class EditEvent extends Component {
 			            </ReactMaterialSelect>*/}
 			            <SelectField
 							floatingLabelText="Choir..."
-							multi={true}
+							//multi={true}
 							value={this.state.eventChoir}
 							style={{width: '200px'}}
 							onChange={this.onChoirChange}>
 							{this.choirItems(this.values)}
 						</SelectField>
+
+						<RaisedButton label="Add/Remove Choirs" onClick={this.handleOpen} />
+				        <Dialog
+				          title="Scrollable Dialog"
+				          actions={actions}
+				          modal={false}
+				          open={this.state.open}
+				          onRequestClose={this.handleClose}
+				          autoScrollBodyContent={true}
+				          style={{width: "200px"}}
+				        >
+				          <List 
+				          name="shipSpeed"
+				          //defaultSelected="not_light"
+				          >
+				            {this.choirItems(this.values)}
+				          </List>
+				        </Dialog>
+
+
 			      		<br/>
 			      		<br/>
 			      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>

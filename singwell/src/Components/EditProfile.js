@@ -153,6 +153,7 @@ class EditProfile extends Component {
 	componentWillMount() {
 		this.setState ({
 			profileGet: {},
+			updateProfile: {},
 			fireRedirect: false,
 			cancelRedirect: false,
 			user: null,
@@ -472,24 +473,27 @@ class EditProfile extends Component {
 				state: this.state.state,
 				zip_code: this.state.zip,
 				//instruments: this.refs.instruments.value,
-				date_of_birth: this.state.dob,
-				age: '',
-				profile_picture_link: ''
-		}}},
+				date_of_birth: this.state.dob
+		}
+		}},
 			function() {
-			console.log(this.state)
+			console.log(this.state.updateProfile)
 			$.ajax({
 			  type: "PATCH",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
 		      dataType: 'json',
-		      data: this.state.updateProfile.profile,
+		      data: this.state.updateProfile,
 		      success: function(data) {
 		        this.setState(
 		        	{
 		        		profilePatch: data,
-		        		//user: 1,
-		        		fireRedirect: true 
+		        		profilePatch2: this.state.updateProfile,
+		        		//user: this.props.match.params.userID,
+		        		fireRedirect: true
 		        	});
+		        console.log(data)
+		        //console.log(this.state)
+		        console.log(this.state.updateProfile)
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);

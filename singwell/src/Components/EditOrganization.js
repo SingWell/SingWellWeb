@@ -403,8 +403,7 @@ class EditOrganization extends Component {
 		        	},function(){
 		        		console.log(this.state);
 		        		console.log(this.state.newOrganization);
-		        		console.log("success");
-		        		
+		        		console.log("success");	
 
 		        	})
 		      }.bind(this),
