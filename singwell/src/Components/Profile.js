@@ -8,7 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import Card from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions, Tooltip,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -121,22 +121,30 @@ class Profile extends Component {
 
         return (
           <div >
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.goBack()}>
+            {/* <FABButton style={{margin: '10px'}} colored ripple onClick={() => this.props.history.goBack()}>
                 <Icon name="keyboard_arrow_left" />
-            </FABButton>
-            <List>
+            </FABButton> */}
+            <List style={{paddingLeft: '90px'}}>
               <ListItem>
                 <ListItemContent icon="account_circle">{this.state.profile && this.state.profile.bio}</ListItemContent>
               </ListItem>
               <ListItem>
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
               </ListItem>
-              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center"  onClick={this.handleEdit}>
-                  <ImageEdit />
-              </IconButton>
+              <ListItem>
+                <ListItemContent icon="home">{this.state.profile.address}, {this.state.profile.city}</ListItemContent>
+              </ListItem>
+              <ListItem>
+                <ListItemContent icon="cake">{this.state.profile.date_of_birth}</ListItemContent>
+              </ListItem>
+              <Tooltip label="Edit Profile" large >
+                  <ListItem>
+                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/profile/' + this.props.match.params.userID + '/edit/')}></ListItemContent>
+                  </ListItem>
+              </Tooltip>
             </List>
             
-            <h5 style= {{marginLeft: "20px"}}>
+            <h5 style= {{marginLeft: "110px"}}>
               Choirs:
             </h5>
             <Grid component="section" className="section--center" shadow={0} noSpacing>  
@@ -164,11 +172,13 @@ class Profile extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding"  >
                                 <h3>{this.state.userGet.first_name} {this.state.userGet.last_name}</h3>
                             </HeaderRow>  
-                            <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <FABButton className="back-button"  colored ripple onClick={() => this.props.history.goBack()}>
+                                <Icon name="keyboard_arrow_left" />
+                            </FABButton>
+                            <HeaderTabs  className={getTextColorClass('primary-dark'), 'title__padding'} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                             </HeaderTabs>
                         </Header>
@@ -182,10 +192,6 @@ class Profile extends Component {
       </div>
       );
     }
-
-    
-
-
 
 
 }

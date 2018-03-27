@@ -10,3 +10,33 @@
 .demo-tabs .content {
     height: 100px;
 }
+
+.DayPicker-Months, .DayPicker, .DayPicker-Month, .DayPicker-wrapper {
+	width: 100%;
+}
+
+.DayPicker-Day {
+	padding: 0 !important;
+}
+
+.DayPicker-Month {
+	display: initial !important;
+}
+
+
+.DayPicker-Day--today > div > div:nth-child(1) {
+	background: orangered !important;
+	color: white;
+	line-height: 25px;
+	width: 25px;
+	height: 25px;
+	bottom: 2px !important;
+	right: 5px !important;
+	border-radius: 25px;
+
+
+}
+
+.DayPicker-Day--today {
+	color: inherit !important;
+}

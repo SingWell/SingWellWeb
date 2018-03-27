@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
+/*import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, ListItemContent, CardText, CardActions,
     Menu, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Dropdown, Option } from 'react-mdl-extra';
+    FooterDropDownSection } from  'react-mdl';*/
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -22,7 +21,8 @@ import 'react-material-select/lib/css/reactMaterialSelect.css'
 // import ReactMaterialDatePicker from 'react-material-datepicker'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, Dialog, RadioButton, RadioButtonGroup, List, ListItem, Checkbox } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, Dialog, 
+	RadioButton, RadioButtonGroup, List, ListItem, Checkbox, Card, CardText, CardTitle } from 'material-ui/'
 
 
 
@@ -39,7 +39,7 @@ class EditEvent extends Component {
 	    let eventDate = '';
 	    let eventTime = '';
 	    let eventLoc = '';
-	    let eventChoir = '';
+	    let choirs = [];
 
 	    let defaultYear = '';
 	    let defaultMonth = '';
@@ -61,14 +61,13 @@ class EditEvent extends Component {
 	      focused,
 	      timezone,
 	      showTimezone,
-	      choir: {},
 	      date,
 
 	      eventName,
 	      eventDate,
 	      eventTime,
 	      eventLoc,
-	      eventChoir, 
+	      choirs, 
 
 	      defaultYear,
 	      defaultMonth,
@@ -94,7 +93,7 @@ class EditEvent extends Component {
 
 	    this.onNameChange = this.onNameChange.bind(this);
 	    this.onLocationChange = this.onLocationChange.bind(this);
-	    this.onChoirChange = this.onChoirChange.bind(this);
+	    //this.onChoirChange = this.onChoirChange.bind(this);
 
 	    this.handleOpen = this.handleOpen.bind(this);
 	    this.handleClose = this.handleClose.bind(this);
@@ -160,11 +159,14 @@ class EditEvent extends Component {
 		})
 	}
 
-	onChoirChange(event, value) {
-		this.setState({
-			eventChoir: value
-		})
-	}
+	// onChoirChange(event, values) {
+	// 	this.setState({
+	// 		choirs: values
+	// 	})
+	// }
+
+	handleChange = (event, index, choirs) => this.setState({choirs});
+
 
 	handleOpen() {
     	this.setState({
@@ -213,20 +215,15 @@ class EditEvent extends Component {
 
 	choirItems(values) {
 		return this.state.choirGet.map((choir) => (
-			<ListItem
-				leftCheckbox={
-					<Checkbox 
-					//onCheck=
-					/>
-				}
+			<MenuItem
 				key={choir.id}
 				insetChildren={true}
 				checked={values && values.indexOf(choir) > -1}
-				value={choir.name}
+				value={choir.id - 1}
 				primaryText={choir.name}
 			/>
 		));
-	}
+	  }
 
 	componentWillMount() {
 		this.setState ( {
@@ -270,7 +267,7 @@ class EditEvent extends Component {
 	          	eventDate: data.date,
 	          	eventTime: data.time,
 	          	eventLoc: data.location,
-	          	eventChoirs: data.choirs
+	          	choirs: data.choirs
 	          }, function() {
 	            console.log(this.state);
 	          });
@@ -284,15 +281,15 @@ class EditEvent extends Component {
 	}
 
 	handleSubmit(e){
-		console.log(+this.state.choir.value)
+		console.log(this.state.choirs)
 		this.setState({newEvent:{
 			name: this.state.eventName,
 			date: this.state.date,
 			time: this.state.hour + ":" + this.state.minute + ":00",
 			location: this.state.eventLoc,
-			choirs: [
-				+this.state.choir
-			],
+			choirs: 
+				this.state.choirs
+	,
 			organization: this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
@@ -308,6 +305,8 @@ class EditEvent extends Component {
 		        		eventPost: data,
 		        		eventID: data.id,
 		        		submitRedirect: true
+		        	}, function () {
+		        		console.log(this.state);
 		        	});
 		      }.bind(this),
 		      error: function(xhr, status, err) {
@@ -333,7 +332,7 @@ class EditEvent extends Component {
 		const { cancelRedirect } = this.state;
 		const { eventID } = this.state;
 		const { buttonClasses } = this.state;
-		const { values } = this.state;
+		const { choirs } = this.state;
 		const {
 			hour,
 			minute,
@@ -341,7 +340,6 @@ class EditEvent extends Component {
 			timezone,
 			showTimezone
 		} = this.state;
-		console.log(this.state.choirGet)
 
 		const actions = [
 	      <FlatButton
@@ -380,8 +378,8 @@ class EditEvent extends Component {
 
 		return (
 
-			<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
-			    <CardTitle>Edit Event</CardTitle>
+			<Card shadow={0} style={{ margin: '10px'}}>
+			    <CardTitle title="Edit Event" />
 			    <CardText>
 			       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 				       <TextField
@@ -431,43 +429,23 @@ class EditEvent extends Component {
 			                {choirs}
 			            </ReactMaterialSelect>*/}
 			            <SelectField
-							floatingLabelText="Choir..."
-							//multi={true}
-							value={this.state.eventChoir}
-							style={{width: '200px'}}
-							onChange={this.onChoirChange}>
-							{this.choirItems(this.values)}
+			          		floatingLabelText="Add Choirs"
+							value={choirs}
+							style={{width: '200px', color: 'blue'}}
+							onChange={this.handleChange}
+							multiple={true}
+							>{this.choirItems(this.choirs)}
 						</SelectField>
-
-						<RaisedButton label="Add/Remove Choirs" onClick={this.handleOpen} />
-				        <Dialog
-				          title="Scrollable Dialog"
-				          actions={actions}
-				          modal={false}
-				          open={this.state.open}
-				          onRequestClose={this.handleClose}
-				          autoScrollBodyContent={true}
-				          style={{width: "200px"}}
-				        >
-				          <List 
-				          name="shipSpeed"
-				          //defaultSelected="not_light"
-				          >
-				            {this.choirItems(this.values)}
-				          </List>
-				        </Dialog>
-
-
 			      		<br/>
 			      		<br/>
 			      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
 			      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 			      	{/*</form>*/}
 			      	{submitRedirect && (
-			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID } />
+			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID } />
 			        )}
 			        {cancelRedirect && (
-			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID } />  
+			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID } />  
 			        )} 
 			    </CardText>
 			</Card>

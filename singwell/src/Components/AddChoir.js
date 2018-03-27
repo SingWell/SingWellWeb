@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Option } from 'react-mdl-extra';
-import { MenuItem, RaisedButton, SelectField } from 'material-ui/';
+import { MenuItem, RaisedButton, FlatButton, SelectField, TextField, 
+	Card, CardText, CardTitle } from 'material-ui/';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { getColorClass, getTextColorClass } from '../css/palette';
+import TimePicker from 'react-times';
+
 
 import '../css/AddChoir.css'
-
-import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
-import 'object-diff';
 
 class AddChoir extends Component {
 
@@ -27,6 +22,9 @@ class AddChoir extends Component {
 	    let hourEnd = '';
 	    let minuteEnd = '';
 	    let defaultName = '';
+	    let meetingDay = '';
+
+	    let timetest ='';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -42,7 +40,13 @@ class AddChoir extends Component {
 	      focusedEnd,
 	      timezone,
 	      showTimezone,
+
+	      meetingDay,
+	      timetest
 	    };
+
+	    this.handleDayChange = this.handleDayChange.bind(this);
+	    this.handleNameChange = this.handleNameChange.bind(this);
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
 	    this.onHourChange = this.onHourChange.bind(this);
@@ -55,66 +59,96 @@ class AddChoir extends Component {
 	    this.onMinuteChangeEnd = this.onMinuteChangeEnd.bind(this);
 	    this.onTimeChangeEnd = this.onTimeChangeEnd.bind(this);
 	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);
+
+	    //this.handleChangeTimePicker12 = this.handleChangeTimePicker12.bind(this);
 	    			
 	}
 
-  onHourChange(hourStart) {
-    this.setState({ hourStart });
-  }
+	onHourChange(hourStart) {
+		this.setState({ hourStart });
+	}
 
-  onMinuteChange(minuteStart) {
-    this.setState({ minuteStart });
-  }
+	onMinuteChange(minuteStart) {
+		this.setState({ minuteStart });
+	}
 
-  onTimeChange(time) {
-    const [hourStart, minuteStart] = time.split(':');
-    this.setState({ hourStart, minuteStart });
-  }
-
-
-  onFocusChange(focusedStart) {
-    this.setState({ focusedStart });
-  }
-
-  handleFocusedChange() {
-    const { focusedStart } = this.state;
-    this.setState({ focusedStart: !focusedStart });
-  }
-
-  onHourChangeEnd(hourEnd) {
-    this.setState({ hourEnd });
-  }
-
-  onMinuteChangeEnd(minuteEnd) {
-    this.setState({ minuteEnd });
-  }
-
-  onTimeChangeEnd(time) {
-    const [hourEnd, minuteEnd] = time.split(':');
-    this.setState({ hourEnd, minuteEnd });
-  }
+	onTimeChange(time) {
+		const [hourStart, minuteStart] = time.split(':');
+		this.setState({ hourStart, minuteStart });
+	}
 
 
-  onFocusChangeEnd(focusedEnd) {
-    this.setState({ focusedEnd });
-  }
+	onFocusChange(focusedStart) {
+		this.setState({ focusedStart });
+	}
 
-  handleFocusedChangeEnd() {
-    const { focusedEnd } = this.state;
-    this.setState({ focusedEnd: !focusedEnd });
-  }
+	handleFocusedChange() {
+		const { focusedStart } = this.state;
+		this.setState({ focusedStart: !focusedStart });
+	}
+
+	onHourChangeEnd(hourEnd) {
+		this.setState({ hourEnd });
+	}
+
+	onMinuteChangeEnd(minuteEnd) {
+		this.setState({ minuteEnd });
+	}
+
+	onTimeChangeEnd(time) {
+		const [hourEnd, minuteEnd] = time.split(':');
+		this.setState({ hourEnd, minuteEnd });
+	}
 
 
+	onFocusChangeEnd(focusedEnd) {
+		this.setState({ focusedEnd });
+	}
+
+	handleFocusedChangeEnd() {
+		const { focusedEnd } = this.state;
+		this.setState({ focusedEnd: !focusedEnd });
+	}
+
+	/*handleChangeTimePicker12 = (event, date) => {
+    	this.setState({value12: date});
+    	console.log(date)
+  	};*/
+
+
+	handleNameChange(event, value) {
+		this.setState({
+			name: value
+		})
+	}
+
+	handleDayChange(event, value) {
+		this.setState({
+			meetingDay: value
+		})
+		console.log(value)
+	}
+
+  	dayItems(values) {
+		return this.props.days.map((meetingDay) => (
+			<MenuItem
+				key={meetingDay.name}
+				insetChildren={true}
+				checked={values && values.indexOf(meetingDay) > -1}
+				value={meetingDay.number - 1}
+				primaryText={meetingDay.name}
+			/>
+		));
+	}
 
 	componentWillMount() {
 		this.setState ( {
 			newChoir:{},
 			fireRedirect: false,
+			cancelRedirect: false,
 			choirID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
-			edit: false,
 			values: {},
-			title: "Add Choir"
 		});
 	}
 
@@ -155,27 +189,19 @@ class AddChoir extends Component {
 		  showTimezone: false
 	}
 
-	// handleChange(event, index, values){
-	// 	this.setState({values});
-	// }
-
-	/*setWeekdays(values) {
-		return this.props.days.map((day) => (
-			<MenuItem
-				key={day.number}
-				//insetChildren={true}
-				checked={values && values.indexOf(day) > -1}
-				value={day.name}
-				//primaryText={day.name}
-			/>
-		));
-	}*/
+	handleCancel() {
+  		this.setState({
+  			cancelRedirect: true
+  		})
+  		console.log(this.state);
+  	}
 
 	handleSubmit(e){
 		this.setState({newChoir:{
-			name: this.refs.name.inputRef.value,
-			meeting_day: this.refs.meetingDay.value,
-			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
+			name: this.state.name,
+			meeting_day: this.state.meetingDay + 1,
+			//meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
+			meeting_dat_start_hour: this.state.value12,
 			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
 			organization: this.props.match.params.orgID,
 			choristers: [
@@ -213,6 +239,7 @@ class AddChoir extends Component {
 
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
+  	const { cancelRedirect } = this.state
   	const { choirID } = this.state;
   	const { buttonClasses } = this.state;
    	const { values } = this.state;
@@ -228,77 +255,80 @@ class AddChoir extends Component {
       showTimezone,
     } = this.state;
 
-  	let dayOptions = this.props.days.map(day => {
+  	{/*let dayOptions = this.props.days.map(day => {
   		return <option key={day.name} value={day.number}>{day.name}</option>
-  	});
+  	});*/}
 
     return (
-    	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>{this.state.title}</CardTitle>
+    	<Card shadow={0} style={{ margin: '10px', width: '340px'}}>
+		    <CardTitle title="Add Choir" />
 		    <CardText className={"timePickerForm"}>
-		       <form onSubmit={this.handleSubmit.bind(this)}>
-			       <Textfield
-					    //onChange={() => {}}
-					    label="Name..."
-					    floatingLabel
-					    ref="name"
-					    style={{width: '200px'}}
+			       <TextField
+					    floatingLabelText="Name..."
+					    style={{width: '300px'}}
 					    required={true}
-					    //onChange={this.onNameChange}
-					    value={this.defaultName}
+					    onChange={this.handleNameChange}
+					    value={this.state.name}
 					/>
 					<br/>
-					<label>Meeting Day</label>
-					<br/>
-		      		<select ref= "meetingDay">
-		      			{dayOptions}
-		      		</select>
-		      		{/*<SelectField
+		      		<SelectField
 		      			floatingLabelText="Meeting Day"
-						ref="state"
-						value={this.state.values}
-						maxHeight={200}
-						style={{width: '200px', color: 'blue'}}
-						//onChange={this.handleChange}
-		      		>{this.setWeekdays(this.values)}
-		      		</SelectField>*/}
+						value={this.state.meetingDay}
+						style={{width: '300px'}}
+						onChange={this.handleDayChange}
+		      		>{this.dayItems(this.values)}
+		      		</SelectField>
 		      		<br/>
 		      		<br/>
-		      		<label>Meeting Start Time:</label>
+
+		      		{/*<TimePicker
+						format="ampm"
+						hintText="12hr Format"
+						value={this.state.value12}
+						onChange={this.handleChangeTimePicker12}
+			        />*/}
 		      		<TimePicker
-			          focused={focusedStart}
-			          timezone={timezone}
-			          onFocusChange={this.onFocusChange}
-			          onHourChange={this.onHourChange}
-			          onMinuteChange={this.onMinuteChange}
-			          onTimeChange={this.onTimeChange}
-			          showTimezone={showTimezone}
-			          time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
+			      		hintText="Meeting Start Time"
+	      				autoOk={true}
+	      				style={{width: '300px'}}
+						focused={focusedStart}
+						timezone={timezone}
+						onFocusChange={this.onFocusChange}
+						onHourChange={this.onHourChange}
+						onMinuteChange={this.onMinuteChange}
+						onTimeChange={this.onTimeChange}
+						showTimezone={showTimezone}
+						time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
 			        />
 			        <br/>
 		      		<br/>
-			        <label>Meeting End Time:</label>
 			        <TimePicker
-			          focused={focusedEnd}
-			          timezone={timezone}
-			          onFocusChange={this.onFocusChangeEnd}
-			          onHourChange={this.onHourChangeEnd}
-			          onMinuteChange={this.onMinuteChangeEnd}
-			          onTimeChange={this.onTimeChangeEnd}
-			          showTimezone={showTimezone}
-			          time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
+			        	hintText="Meeting End Time"
+			        	autoOk={true}
+			        	style={{width: '300px'}}
+						focused={focusedEnd}
+						timezone={timezone}
+						onFocusChange={this.onFocusChangeEnd}
+						onHourChange={this.onHourChangeEnd}
+						onMinuteChange={this.onMinuteChangeEnd}
+						onTimeChange={this.onTimeChangeEnd}
+						showTimezone={showTimezone}
+						time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
 			        />
 		      		<br/>
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      		{/*<RaisedButton type="Submit" label="Save" onclick={this.handleSubmit.bind(this)}/>*/}
-		      	</form>
+		      		<br/>
+		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/choirs/' + choirID}/>
+		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.state.choirID}/>
+		        )} 
+		        {cancelRedirect && (
+		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID } />  
 		        )} 
 		    </CardText>
-		    <CardActions border>
+		    {/*<CardActions border>
 		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
-		    </CardActions>
+		    </CardActions>*/}
 		</Card>
 
 

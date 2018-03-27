@@ -1,28 +1,18 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Dropdown, SelectField, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
 
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
-import Moment from 'react-moment';	
 import moment from 'moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
-import ReactMaterialSelect from 'react-material-select'
-import 'react-material-select/lib/css/reactMaterialSelect.css'
-
-// import ReactMaterialDatePicker from 'react-material-datepicker'
+//import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, SelectField, MenuItem, Card, CardTitle, CardText } from 'material-ui/'
 
 
 
@@ -34,6 +24,8 @@ class AddEvent extends Component {
 	    let hour = '';
 	    let minute = '';
 	    let date = '';
+	    let name = '';
+	    let choirs = [];
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -46,8 +38,11 @@ class AddEvent extends Component {
 	      focused,
 	      timezone,
 	      showTimezone,
-	      choir: {},
-	      date
+	      //choir: {},
+	      date,
+
+	      name, 
+	      choirs
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -59,10 +54,14 @@ class AddEvent extends Component {
 	    this.callbackFunction = this.callbackFunction.bind(this);
 	    this.onDateChange = this.onDateChange.bind(this);
 
+	    this.onLocationChange = this.onLocationChange.bind(this);
+	    this.handleNameChange = this.handleNameChange.bind(this);
+	    //this.handleChoirChange = this.handleChoirChange.bind(this);
+
 	    this.baseState = this.state;
 	}
 
-	onHourChange(hour) {
+	  onHourChange(hour) {
 	    this.setState({ hour });
 	  }
 
@@ -74,7 +73,6 @@ class AddEvent extends Component {
 	    const [hour, minute] = time.split(':');
 	    this.setState({ hour, minute });
 	  }
-
 
 	  onFocusChange(focused) {
 	    this.setState({ focused });
@@ -94,6 +92,39 @@ class AddEvent extends Component {
 	  	this.setState({date: moment(date).format("YYYY-MM-DD")});
 	  }
 
+	  onLocationChange(event, value) {
+	  	this.setState({
+	  		location: value
+	  	})
+	  }
+
+	  handleNameChange(event, value) {
+		this.setState({
+			name: value
+		})
+	  }
+
+	  // handleChoirChange(event, values) { 
+	  // 	this.setState({
+	  // 		choirs: values
+	  // 	})
+	  // }
+
+	  handleChange = (event, index, values) => this.setState({values});
+
+
+	  choirItems(values) {
+		return this.state.choirGet.map((choir) => (
+			<MenuItem
+				key={choir.id}
+				insetChildren={true}
+				checked={values && values.indexOf(choir) > -1}
+				value={choir.id - 1}
+				primaryText={choir.name}
+			/>
+		));
+	  }
+
 	componentWillMount() {
 		this.setState ( {
 			newEvent:{},
@@ -111,25 +142,30 @@ class AddEvent extends Component {
 	        cache: false, 
 	        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 	        success: function(data) {
-	          this.setState({choirGet: data});
+	          this.setState({
+	          	choirGet: data
+	          }, function() {
+	        	console.log(this.state);
+	        });
 	        }.bind(this),
 	        error: function(xhr, status, err) {
-	          console.log(err);
+	          	console.log(err);
+				console.log(xhr.responseText);
+				console.log(this);
+				console.log(xhr);
 	        }
 	      });
 
 	}
 
 	handleSubmit(e){
-		console.log(+this.state.choir.value)
+		//console.log(+this.state.choir.value)
 		this.setState({newEvent:{
-			name: this.refs.name.inputRef.value,
+			name: this.state.name,
 			date: this.state.date,
 			time: this.state.hour + ":" + this.state.minute + ":00",
-			location: this.refs.location.inputRef.value,
-			choirs: [
-				+this.state.choir.value
-			],
+			location: this.state.location,
+			choirs: this.state.choirs,
 			organization: this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
@@ -161,14 +197,13 @@ class AddEvent extends Component {
   		)
   	}
 
-
-
   render() {
   	const { from } = this.props.location.state || '/';
   	const { submitRedirect } = this.state;
   	const { cancelRedirect } = this.state;
-  	const { eventID } = this.state;
-  	const { buttonClasses } = this.state
+  	//const { eventID } = this.state;
+  	const { buttonClasses } = this.state;
+  	const { values } = this.state;
   	const {
       hour,
       minute,
@@ -176,31 +211,31 @@ class AddEvent extends Component {
       timezone,
       showTimezone,
     } = this.state;
-	console.log(this.state.choirGet)
 
-    let choirs;
-    choirs = this.state.choirGet.map(choir => {
-        console.log(choir)
-        return (
-        	<option key={choir.id} dataValue={choir.id}>{choir.name}</option>
+	//console.log(this.state.choirGet)
+
+    // let choirs;
+    // choirs = this.state.choirGet.map(choir => {
+    //     console.log(choir)
+    //     return (
+    //     	<option key={choir.id} dataValue={choir.id}>{choir.name}</option>
             
-        );
-    });
+    //     );
+    // });
 
 
 
     return (
 
-    	<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
-		    <CardTitle>Add Event</CardTitle>
+    	<Card shadow={0} style={{ margin: '10px', height: '700px'}} title="Add Event">
+    		<CardTitle title="Add Event" />
 		    <CardText>
 		       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
-			       <Textfield
-					    onChange={() => {}}
-					    label="Event name..."
-					    floatingLabel
-					    ref="name"
+			       <TextField
+					    onChange={this.handleNameChange}
+					    floatingLabelText="Event name..."
 					    style={{width: '200px'}}
+					    value={this.state.name}
 					/>
 					{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
 					<DatePicker floatingLabelText="Date of Event..." container="inline" onChange={this.onDateChange}/>
@@ -218,16 +253,23 @@ class AddEvent extends Component {
 			          time={hour && minute ? `${hour}:${minute}` : null}
 			        />
 			        <br/>
-			        <Textfield
-					    onChange={() => {}}
-					    label="Location..."
-					    floatingLabel
+			        <TextField
+					    onChange={this.onLocationChange}
+					    floatingLabelText="Location..."
 					    ref="location"
 					/>
 					<br/>
-					<ReactMaterialSelect label="Choir..." onChange={this.callbackFunction}>
+					{/*<ReactMaterialSelect label="Choir..." onChange={this.callbackFunction}>
 		                {choirs}
-		            </ReactMaterialSelect>
+		            </ReactMaterialSelect>*/}
+		            <SelectField
+		          		floatingLabelText="Choirs"
+						value={values}
+						style={{width: '200px', color: 'blue'}}
+						onChange={this.handleChange}
+						multiple={true}
+					>{this.choirItems(this.values)}
+					</SelectField>
 		      		<br/>
 		      		<br/>
 		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText,
+    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, Tooltip,
     Menu, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -279,24 +279,26 @@ class Choir extends Component {
       const { weekday } = this.state
         return (
           <div>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+            {/* <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
-            </FABButton>
-            <List>
+            </FABButton> */}
+            <List className="title__padding">
               <ListItem>
-                <ListItemContent icon="today">{this.state.weekday[this.state.choirGet.meeting_day - 1]}</ListItemContent>
+                <ListItemContent icon="today"><b>Meeting Day:</b> {this.state.weekday[this.state.choirGet.meeting_day - 1]}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer">{moment(this.state.choirGet.meeting_day_start_hour, "H:m:s").format('LT')}</ListItemContent>
+                <ListItemContent icon="timer"><b>Rehersal Start:</b> {moment(this.state.choirGet.meeting_day_start_hour, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer_off">{moment(this.state.choirGet.meeting_day_end_hour, "H:m:s").format('LT')}</ListItemContent>
+                <ListItemContent icon="timer_off"><b>Rehersal End:</b> {moment(this.state.choirGet.meeting_day_end_hour, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
-              <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/choirs/' +this.props.match.params.choirID + '/edit/')}>
-                  <ImageEdit />
-              </IconButton>
+              <Tooltip label="Edit Choir" large>
+                  <ListItem>
+                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.props.match.params.choirID + '/edit/')}></ListItemContent>
+                  </ListItem>
+              </Tooltip>
             </List>
-            </div>
+          </div>
         );
     }
 
@@ -327,13 +329,13 @@ class Choir extends Component {
 
         return (
           <div>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+            {/* <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
                 <Icon name="keyboard_arrow_left" />
-            </FABButton>
+            </FABButton> */}
             <div>
-              <RaisedButton label="Add Member" onClick={this.handleOpen} />
+              <RaisedButton label="Add Member" onClick={this.handleOpen} style={{margin: "10pt 0pt 10pt 75pt"}}/>
               <Dialog
-                title="Add Member to Choir"
+                title={this.state.choirGet.name} 
                 actions={actions}
                 modal={true}
                 open={this.state.open}
@@ -348,7 +350,7 @@ class Choir extends Component {
               </Dialog>
             </div>
 
-            <List>
+            <List className="title__padding">
               { rosterItems }
             </List>
             </div>
@@ -380,11 +382,13 @@ class Choir extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding">
                                 <h3>{this.state.choirGet.name}</h3>
                             </HeaderRow>
-                            <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <FABButton className="back-button"  colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+                                <Icon name="keyboard_arrow_left" />
+                            </FABButton>
+                            <HeaderTabs className={getTextColorClass('primary-dark'), 'title__padding'} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                                 <Tab>Roster</Tab>
                             </HeaderTabs>

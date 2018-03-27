@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions, Tooltip,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -27,6 +27,10 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 
+import { Link } from 'react-router-dom';
+
+import EventTableItem from './EventTableItem';
+
 
 class Event extends Component {
 
@@ -42,7 +46,8 @@ class Event extends Component {
             value: "",
             checkboxes: false,
             musicGet: [],
-            musicLibrary: []
+            musicLibrary: [],
+            rows: [],
         };
 
         this.handleKeyChange = this.handleKeyChange.bind(this);
@@ -56,7 +61,7 @@ class Event extends Component {
     handleSubmit(e){
             this.setState({programItem:{
                 "music_record": this.state.musicRecordID,
-                "order": 2,
+                "order": this.state.program.length + 1,
                 "notes": this.state.notes,
                 "field_title": this.state.key
             }}, function() {
@@ -69,22 +74,21 @@ class Event extends Component {
                   headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
                   data: this.state.programItem,
                   success: function(data) {
-                    this.setState({eventPost: data}, function() {
-                      console.log(this.state.eventPost)
-                    });
+                      this.state.program.push(data)
+                      this.forceUpdate()
                   }.bind(this),
                   error: function(xhr, status, err) {
                     console.log(err);
                   }
                 });
-                console.log(this.state.key, this.state.value)
-                var key = this.state.key
-                var obj = {}
-                obj[key] = this.state.value
-                this.state.music.push(obj)
-                console.log(this.state)
+                // console.log(this.state.key, this.state.value)
+                // var key = this.state.key
+                // var obj = {}
+                // obj[key] = this.state.value
+                // this.state.music.push(obj)
+                // console.log(this.state)
                 
-                this._generateRows()
+                
 
 
             });
@@ -97,6 +101,7 @@ class Event extends Component {
   componentWillMount() {
     this.setState ( {
         eventGet:{},
+        eventPost: {},
         program: [],
         keys: [],
         music: [
@@ -122,6 +127,8 @@ class Event extends Component {
               })
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
+              console.log(this.state.eventGet)
+              // this.state.rows = this._generateRows();
           })
         }.bind(this),
         error: function(xhr, status, err) {
@@ -163,11 +170,6 @@ class Event extends Component {
 
     _generateRows(){
         return this.state.program.map(programItem => {
-          // var arr = []
-          // Object.keys(el).forEach((key) => {
-          //   arr.push(key)
-          //   arr.push(el[key])
-          // })
           return <TableRow key={programItem.id}>
                     <TableRowColumn>{programItem.field_title}</TableRowColumn>
                     <TableRowColumn>{programItem.title}</TableRowColumn>
@@ -178,25 +180,22 @@ class Event extends Component {
 
     renderTabOverview() {
         return (
-          <div>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                <Icon name="keyboard_arrow_left" />
-            </FABButton>
+          <div className="title__padding">
             <List>
               <ListItem>
-                <ListItemContent icon="today">{moment(this.state.eventGet.date).format("MMM Do, YYYY") }</ListItemContent>
+                <ListItemContent icon="today"><b>Event Date: </b>{moment(this.state.eventGet.date).format("MMM Do, YYYY") }</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="timer">{moment(this.state.eventGet.time, "H:m:s").format('LT')}</ListItemContent>
+                <ListItemContent icon="timer"><b>Event Time: </b>{moment(this.state.eventGet.time, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="home">{this.state.eventGet.location}</ListItemContent>
+                <ListItemContent icon="home"><b>Event Location: </b>{this.state.eventGet.location}</ListItemContent>
               </ListItem>
-              {/*<ListItem>*/}
-              <IconButton style={{display: 'inline-block', color: 'black'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID + "/edit")}>
-                  <ImageEdit />
-              </IconButton>
-              {/*</ListItem>*/}
+              <Tooltip label="Edit Event" large>
+                  <ListItem>
+                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID + '/events/' + this.props.match.params.eventID + '/edit/')}></ListItemContent>
+                  </ListItem>
+              </Tooltip>
             </List>
             
             </div>
@@ -212,7 +211,6 @@ class Event extends Component {
       console.log(searchText)
       this.setState({
         value: searchText,
-        // musicRecord:
       });
     }
 
@@ -228,20 +226,27 @@ class Event extends Component {
       })
       if(index === -1) {
           this.handleSubmit()
-          // this.setState( { value: '', key: '' }) 
+          this.setState( { value: '', key: '', notes: '' }) 
       }
           
     }
 
     renderProgram() {
 
+          this.state.rows = this.state.program.map(programItem => {
+            return (
+                <EventTableItem programItem={programItem} key={programItem.id} orgID={this.props.match.params.orgID}></EventTableItem>
+              )
+            {/* return <TableRow key={programItem.id}>
+                      <TableRowColumn>{programItem.field_title}</TableRowColumn>
+                      <TableRowColumn><Link to={'/organizations/' + this.props.match.params.orgID + '/music/' + programItem.music_record}>{programItem.title}</Link></TableRowColumn>
+                      <TableRowColumn>{programItem.notes}</TableRowColumn>
+                  </TableRow> */}
+          })
 
       
         return (
-          <div style={{marginLeft: '20px'}}>
-            <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
-                <Icon name="keyboard_arrow_left" />
-            </FABButton>
+          <div className="title__padding" style={{paddingRight: '20px'}}>
             <div >
             <br/>
               <Table>
@@ -254,52 +259,42 @@ class Event extends Component {
                                 dataSource={this.state.keys}
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleKeyChange}
-                                // searchText={this.state.key}
+                                searchText={this.state.key}
                                 fullWidth={true}
+                                style={{marginTop: '0'}}
                               />
                           </TableRowColumn>
                           <TableRowColumn>
                               <AutoComplete
-                                floatingLabelText="Value..."
+                                floatingLabelText="Piece Title..."
                                 filter={AutoComplete.caseInsensitiveFilter}
                                 dataSource={this.state.musicLibrary}
                                 dataSourceConfig={ {text: 'title', value: 'id'} }
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleValueChange}
-                                // searchText={this.state.value}
+                                searchText={this.state.value}
                                 fullWidth={true}
+                                style={{marginTop: '0'}}
                               />
                           </TableRowColumn>
                            <TableRowColumn>
                               <AutoComplete
-                                floatingLabelText="Value..."
+                                floatingLabelText="Notes..."
                                 filter={AutoComplete.caseInsensitiveFilter}
                                 dataSource={['']}
-                                dataSourceConfig={ {text: 'title', value: 'id'} }
                                 onNewRequest={this.handleSelect}
                                 onUpdateInput={this.handleNotesChange}
-                                // searchText={this.state.value}
+                                searchText={this.state.notes}
                                 fullWidth={true}
+                                style={{marginTop: '0'}}
                               />
-                              {/* <TextField
-                                floatingLabelText="Notes..."
-                                ref="notes"
-                                fullWidth={true}
-                                onKeyPress={(ev) => {
-                                    console.log(`Pressed keyCode ${ev.key}`);
-                                    if (ev.key === 'Enter') {
-                                        this.handleSelect()
-                                        ev.preventDefault();
-                                    }
-                                  }}
-                              /> */}
+                              
                           </TableRowColumn>
                            
                       </TableRow>
                   </TableHeader>
                   <TableBody displayRowCheckbox={this.state.checkboxes}>
-                      
-                      {this._generateRows()}
+                      {this.state.rows}
                   </TableBody>
               </Table> 
             </div>
@@ -326,11 +321,13 @@ class Event extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding">
                                 <h3>{this.state.eventGet.name}</h3>
                             </HeaderRow>
-                            <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <FABButton className="back-button"  colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID)}>
+                                <Icon name="keyboard_arrow_left" />
+                            </FABButton>
+                            <HeaderTabs className={getTextColorClass('primary-dark'), 'title__padding'} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                                 <Tab>Program</Tab>
                             </HeaderTabs>

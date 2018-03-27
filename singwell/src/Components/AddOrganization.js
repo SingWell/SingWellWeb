@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
+/*import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Dropdown, SelectField, Option } from 'react-mdl-extra';
+    Menu, Footer, FooterSection, FooterLinkList,
+    FooterDropDownSection } from  'react-mdl';*/
 import { getColorClass, getTextColorClass } from '../css/palette';
-import { MDLSelectField } from 'react-mdl-select';
 import styles from '../css/login.css'
+import { TextField, SelectField, MenuItem, RaisedButton, FlatButton, Card, CardText, CardTitle } from 'material-ui/';
 
+//import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+//import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 
 
@@ -17,7 +18,97 @@ class AddOrganization extends Component {
 
 	constructor(){
 		super();
-		
+
+		let orgName = '';
+		let orgAddress = '';
+		let orgCity = '';
+		let orgState = '';
+		let orgZip = '';
+		let orgDescription = '';
+		let orgPhone = '';
+		let orgEmail = '';
+
+		this.state = {
+			orgName, 
+			orgDescription,
+			orgAddress,
+			orgCity, 
+			orgState,
+			orgZip,
+			orgPhone,
+			orgEmail
+		}
+
+		this.handleNameChange = this.handleNameChange.bind(this);
+		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+		this.handleAddressChange = this.handleAddressChange.bind(this);
+		this.handleCityChange = this.handleCityChange.bind(this);
+		this.handleStateChange = this.handleStateChange.bind(this);
+		this.handleZipChange = this.handleZipChange.bind(this);
+		this.handlePhoneChange = this.handlePhoneChange.bind(this);
+		this.handleEmailChange = this.handleEmailChange.bind(this);	
+	}
+
+	handleNameChange(event, value) {
+		this.setState({
+			orgName: value
+		})
+	}
+
+	handleDescriptionChange(event, value) {
+		this.setState({
+			orgDescription: value
+		})
+	}
+
+	handleAddressChange(event, value) {
+		this.setState({
+			orgAddress: value
+		})
+	}
+
+	handleCityChange(event, value) {
+		this.setState({
+			orgCity: value
+		})
+	}
+
+	handleStateChange(event, value) {
+		let stateName = this.props.states[value].abbreviation
+		this.setState({
+			orgState: stateName
+		})
+		console.log(value);
+	}
+
+	handleZipChange(event, value) {
+		this.setState({
+			orgZip: value
+		})
+	}
+
+	handlePhoneChange(event, value) {
+		this.setState({
+			orgPhone: value
+		})
+	}
+
+	handleEmailChange(event, value) {
+		this.setState({
+			orgEmail: value
+		})
+	}
+
+	stateItems(values) {
+		return this.props.states.map((state) => (
+			<MenuItem
+				key={state.abbreviation}
+				insetChildren={true}
+				checked={values && values.indexOf(state) > -1}
+				value={state.abbreviation}
+				primaryText={state.abbreviation}
+			/>
+		));
 	}
 
 	componentWillMount() {
@@ -274,15 +365,20 @@ class AddOrganization extends Component {
 		]
 	}
 
+	handleCancel(e) {
+		this.setState({
+			cancelRedirect: true
+		})
+	}
 
 	handleSubmit(e){
 		console.log()
 		this.setState({newOrganization:{
-			name: this.refs.name.inputRef.value,
-			description: this.refs.description.inputRef.value,
-			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
-			phone_number: this.refs.phoneNumber.inputRef.value,
-			email: this.refs.email.inputRef.value,
+			name: this.state.orgName,
+			description: this.state.orgDescription,
+			address: this.state.orgAddress + " " + this.state.orgCity + ", " + this.state.orgState + " " + this.state.orgZip,
+			phone_number: this.state.phoneNumber,
+			email: this.state.email,
 			admins: [1]
 		}}, function() {
 			console.log(this.state.newOrganization)
@@ -302,6 +398,9 @@ class AddOrganization extends Component {
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
+				console.log(xhr.responseText);
+				console.log(this);
+				console.log(xhr);
 		      }
 		    });
 		});
@@ -311,8 +410,10 @@ class AddOrganization extends Component {
   render() {
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
+  	const { cancelRedirect } = this.state;
   	const { orgID } = this.state;
   	const { buttonClasses } =this.state;
+  	const { values } = this.state;
 
 
   	let stateOptions = this.props.states.map(state => {
@@ -321,81 +422,91 @@ class AddOrganization extends Component {
 
     return (
     	<div className={"materialContainer"} style={{overflowY: "auto"}}>
-           <div className={"box"}>
-            <form onSubmit={this.handleSubmit.bind(this)}>
-              <div className={"title"}>ADD ORGANIZATION</div>
-
-              <Textfield
-				    onChange={() => {}}
-				    label="Name..."
-				    floatingLabel
+        <div className={"box"}>
+        <Card shadow={0} style={{ margin: '10px', /*height: '700px'*/}}>
+        <CardTitle title="Add Organization" className={"title"}/>
+        	<CardText>
+              	<TextField
+				    onChange={this.handleNameChange}
+				    floatingLabelText="Name..."
 				    ref="name"
-				    style={{width: '200px'}}
+				    style={{width: '300px'}}
 				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="Description..."
-				    floatingLabel
+				<br />
+		      	<TextField
+				    onChange={this.handleDescriptionChange}
+				    floatingLabelText="Description..."
 				    ref="description"
 				    rows={3}
-				    style={{width: '200px'}}
+				    style={{width: '300px'}}
 				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="Street Address..."
-				    floatingLabel
+				<br />
+		      	<TextField
+				    onChange={this.handleAddressChange}
+				    floatingLabelText="Street Address..."
 				    ref="streetAddress"
-				    style={{width: '200px'}}
+				    style={{width: '300px'}}
 				/>
-		      	<Textfield
-				    onChange={() => {}}
-				    label="City..."
-				    floatingLabel
+				<br />
+		      	<TextField
+				    onChange={this.handleCityChange}
+				    floatingLabelText="City..."
 				    ref="city"
-				    style={{width: '200px'}}
+				    style={{width: '300px'}}
 				/>
-		      		<div>
+				<br />
+		      		{/*<div>
 			      		<label>State</label><br />
 			      		<select ref= "state">
 			      			{stateOptions}
 			      		</select>
-		      		</div>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Zipcode..."
-				    floatingLabel
-				    ref="zipcode"
-				    style={{width: '200px'}}
+		      		</div>*/}
+	      		<SelectField
+	      			floatingLabelText="State..."
+					value={this.state.orgState}
+					style={{width: '300px'}}
+					onChange={this.handleStateChange}
+	      		>{this.stateItems(this.values)}
+	      		</SelectField>
+	      		<br />
+	      		<TextField
+			    onChange={this.handleZipChange}
+			    floatingLabelText="Zipcode..."
+			    ref="zipcode"
+			    style={{width: '300px'}}
 				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Phone Number..."
-				    floatingLabel
-				    ref="phoneNumber"
-				    style={{width: '200px'}}
+				<br />
+	      		<TextField
+			    onChange={this.handlePhoneChange}
+			    floatingLabelText="Phone Number..."
+			    ref="phoneNumber"
+			    style={{width: '300px'}}
 				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Email..."
-				    floatingLabel
-				    ref="email"
-				    style={{width: '200px'}}
+				<br />
+	      		<TextField
+			    onChange={this.handleEmailChange}
+			    floatingLabelText="Email..."
+			    ref="email"
+			    style={{width: '300px'}}
 				/>
+				<br/>
+				<br />
+				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+				<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 
-              <div className={"button login"}>
+              {/* <div className={"button login"}>
                  <button type="submit"><span>GO</span> <i className={"fa fa-check"}></i></button>
-              </div>
-            </form>
+              </div> */}
             {fireRedirect && (
-		          <Redirect to={from || '/organizations/' + orgID}/>
-		        )} 
-
-
-           </div>
-
+		        <Redirect to={from || '/organizations/' + orgID}/>
+		    )} 
+            {cancelRedirect && (
+		        <Redirect to={from || '/organizations/1' } />  
+		    )}  
+	    </CardText>
+        </Card> 
         </div>
-   
-     
+        </div>
     );
   }
 }

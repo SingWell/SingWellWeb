@@ -4,7 +4,7 @@ import EventItem from './EventItem';
 import classNames from 'classnames';
 import $ from 'jquery';
 import '../css/Organizations.css'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
+import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell, Tooltip,
     Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
@@ -28,6 +28,12 @@ import GoogleMapReact from 'google-map-react';
 const google = window.google
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
+
+
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+const fromMonth = new Date(currentYear, currentMonth);
+const toMonth = new Date(currentYear + 10, 11);
 
 class Organizations extends Component {
 
@@ -141,10 +147,15 @@ class Organizations extends Component {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
+        this.handleYearMonthChange = this.handleYearMonthChange.bind(this);
 
         this.state = {
-            activeHeaderTab: 0
+            activeHeaderTab: 0,
+            monthData: currentMonth,
+            month: fromMonth,
+            year: currentYear
         };
+        console.log(this.state.monthData, this.state.year)
     }
 
 
@@ -156,20 +167,25 @@ class Organizations extends Component {
 
     renderTabOverview() {
         let eventItems;
+        this.state.eventGet = this.state.eventGet.sort(function(a, b) {
+            a["datetime"] = a["date"] + " " + a["time"]
+            b["datetime"] = b["date"] + " " + b["time"]
+
+            return (+moment.utc(a["datetime"])) - (+moment.utc(b["datetime"]))
+        })
+
+        this.state.eventGet = this.state.eventGet.reverse()
+
         eventItems = this.state.eventGet.map(event => {
-            console.log(event)
-            {/* sort(function (left, right) {
-                            return moment.utc(left.timeStamp).diff(moment.utc(right.timeStamp))
-                        }) */}
+            //console.log(event)
             return (
                 <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
             );
         });
 
         return (
-            <div>
-            <div>
-                <h4 style = {{marginLeft: '20px'}}>
+            <div >
+                <h4 className="title__padding">
                     Announcements:
                 </h4>
                 
@@ -194,23 +210,34 @@ class Organizations extends Component {
                 
                 </Grid>
 
-                <h4 style = {{marginLeft: '20px'}}>
+                <h4 className="title__padding">
                     Upcoming Events:
                 </h4>
                 <Grid component="section" className="section--center" shadow={0} noSpacing>
                         {console.log(eventItems)}
                         {eventItems.slice(0,3)}
                 <Cell col={12}>
-                    <List>
+                    <List className="title__padding">
                       <ListItem>
                         <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
                       </ListItem>
                       <ListItem>
                         <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
                       </ListItem>
-                      <IconButton style={{display: 'inline-block'}} tooltip="edit" tooltipPosition="top-center" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}>
-                        <ImageEdit />
-                      </IconButton>
+                      <ListItem>
+                        <ListItemContent icon="phone">{this.state.orgGet.phone_number}</ListItemContent>
+                      </ListItem>
+                      <ListItem>
+                        <ListItemContent icon="email">{this.state.orgGet.email}</ListItemContent>
+                      </ListItem>
+                      <ListItem>
+                        <ListItemContent icon="link"><a style={{color: "rgb(0, 0, 240)"}} href={this.state.orgGet.website_url}>{this.state.orgGet.website_url}</a></ListItemContent>
+                      </ListItem>
+                      <Tooltip label="Edit Org" large>
+                          <ListItem>
+                            <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}></ListItemContent>
+                          </ListItem>
+                      </Tooltip>
                     </List>
 
                         <div className="map" style={{height: "300px"}}>
@@ -230,9 +257,6 @@ class Organizations extends Component {
                 </Cell>
                 </Grid>
                         
-            </div>
-            <div>
-            </div>
             </div>
         );
     }
@@ -262,6 +286,16 @@ class Organizations extends Component {
     }
 
 
+    handleYearMonthChange(month) {
+        console.log(month)
+            this.setState({ month });
+            this.setState({
+                year: moment(month).year(),
+                monthData:moment(month).month()
+            })
+            console.log(this.state.year, this.state.monthData)
+          }
+
     renderEvents() {
         const {events} = this.state
         this.state.events = {};
@@ -280,16 +314,59 @@ class Organizations extends Component {
         console.log(events)
 
 
+        function YearMonthForm({ date, localeUtils, onChange }) {
+              const months = localeUtils.getMonths();
+
+              const years = [];
+              for (let i = fromMonth.getFullYear() - 1; i <= toMonth.getFullYear(); i += 1) {
+                years.push(i);
+              }
+
+              const handleChange = function handleChange(e) {
+                const { year, month } = e.target.form;
+
+                // this.setState({
+                //     "year": year.value,
+                //     "month": month.value
+                // })
+
+                // console.log(this.state.month, this.state.year)
+                onChange(new Date(year.value, month.value));
+              };
+
+              return (
+                <form className="DayPicker-Caption">
+                  <select name="month" onChange={handleChange} value={date.getMonth()}>
+                    {months.map((month, i) => (
+                      <option key={month} value={i}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                  <select name="year" onChange={handleChange} value={date.getFullYear()}>
+                    {years.map(year => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              );
+            }
+
+        
+
         function renderDay(day) {
           const date = day.getDate();
           const dateStyle = {
             position: 'absolute',
-            color: 'lightgray',
+            // color: 'lightgray',
             bottom: 0,
-            right: 0,
+            right: '5px',
             fontSize: 20,
           };
           const containerStyle = { 
+            // width: '100%',
             margin:'2px',
             border: '1px solid #3a87ad',
             borderRadius: '3px',
@@ -304,8 +381,10 @@ class Organizations extends Component {
          }
           const cellStyle = {
             height: 150,
-            width: 160,
+            width: 150,
             position: 'relative',
+            borderStyle: 'solid',
+            borderWidth: '1px'
           };
 
           return (
@@ -322,20 +401,28 @@ class Organizations extends Component {
         }
 
         return (
-            <div>
-                    <Grid component="section" className="section--center" shadow={0} noSpacing>
+            <div className="title__margin">
+                    <Grid component="section" className="section--center" noSpacing>
                     <Cell col={12}>
                         <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events')}>
                             <Icon name="add" />
                         </FABButton>
                     </Cell>
-                    
                         <DayPicker
-                          canChangeMonth={false}
+                          canChangeMonth={true}
                           className="Birthdays"
                           renderDay={renderDay.bind(this)}
-                        />
-                                  
+                          month={this.state.month}
+                          fromMonth={fromMonth}
+                          toMonth={toMonth}
+                          captionElement={({ date, localeUtils }) => (
+                            <YearMonthForm
+                              date={date}
+                              localeUtils={localeUtils}
+                              onChange={this.handleYearMonthChange}
+                            />
+                          )}
+                        />       
                     </Grid>
                 </div>
         );
@@ -343,6 +430,8 @@ class Organizations extends Component {
 
 
     renderMusicLibrary() {
+
+        const { musicGet } = this.state
         
         let musicLibraryItems;
         musicLibraryItems = this.state.musicGet.map(music => {
@@ -352,7 +441,7 @@ class Organizations extends Component {
         });
 
         return (
-            <div>
+            <div className="title__padding">
                 <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/music')}>
                     <Icon name="add" />
                 </FABButton>
@@ -385,11 +474,11 @@ class Organizations extends Component {
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderRow className="mdl-layout--large-screen-only">
+                            <HeaderRow className="mdl-layout--large-screen-only title__padding">
                                 <h3>{this.state.orgGet.name}</h3>
                             </HeaderRow>
                             <HeaderRow className="mdl-layout--large-screen-only" />
-                            <HeaderTabs className={getTextColorClass('primary-dark')} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
+                            <HeaderTabs className={getTextColorClass('primary-dark'), "title__padding"} activeTab={this.state.activeHeaderTab} onChange={this.onChangeHeaderTab} ripple>
                                 <Tab>Overview</Tab>
                                 <Tab>Choirs</Tab>
                                 <Tab>Events</Tab>
