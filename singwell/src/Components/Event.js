@@ -171,7 +171,7 @@ class Event extends Component {
 
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
-
+          })
               if(this.state.eventGet.choirs.length > 0) {
                     this.state.eventGet.choirs.map( choir => {
                       console.log(choir)

@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
 import { Option } from 'react-mdl-extra';
-import { MenuItem, RaisedButton, FlatButton, SelectField, TextField } from 'material-ui/';
+import { MenuItem, RaisedButton, FlatButton, SelectField, TextField, Card, CardTitle, CardText } from 'material-ui/';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { getColorClass, getTextColorClass } from '../css/palette';
@@ -15,13 +11,14 @@ import '../css/AddChoir.css';
 
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
-// import diff from 'object-diff/';
 
 
 class EditChoir extends Component {
 
 	constructor(props) {
+		
 		super(props);
+
 		const { defaultTime, focusedStart, focusedEnd, showTimezone, timezone } = props;
 	    let hourStart = '';
 	    let minuteStart = '';
@@ -100,35 +97,35 @@ class EditChoir extends Component {
 	}
 
 	onTimeChange(time) {
-	const [hourStart, minuteStart] = time.split(':');
-	this.setState({ hourStart, minuteStart });
+		const [hourStart, minuteStart] = time.split(':');
+		this.setState({ hourStart, minuteStart });
 	}
 
 	onFocusChange(focusedStart) {
-	this.setState({ focusedStart });
+		this.setState({ focusedStart });
 	}
 
 	handleFocusedChange() {
-	const { focusedStart } = this.state;
-	this.setState({ focusedStart: !focusedStart });
+		const { focusedStart } = this.state;
+		this.setState({ focusedStart: !focusedStart });
 	}
 
 	onHourChangeEnd(hourEnd) {
-	this.setState({ 
-		hourEnd,
-		defaultEndHour: hourEnd,
+		this.setState({ 
+			hourEnd,
+			defaultEndHour: hourEnd,
 	});
 	}
 
 	onMinuteChangeEnd(minuteEnd) {
-	this.setState({ 
-		minuteEnd,
-		defaultEndMinute: minuteEnd,
+		this.setState({ 
+			minuteEnd,
+			defaultEndMinute: minuteEnd,
 	});
 	}
 
 	onTimeChangeEnd(time) {
-	const [hourEnd, minuteEnd] = time.split(':');
+		const [hourEnd, minuteEnd] = time.split(':');
 		this.setState({ hourEnd, minuteEnd });
 	}
 
@@ -137,8 +134,8 @@ class EditChoir extends Component {
 	}
 
 	handleFocusedChangeEnd() {
-	const { focusedEnd } = this.state;
-	this.setState({ focusedEnd: !focusedEnd });
+		const { focusedEnd } = this.state;
+		this.setState({ focusedEnd: !focusedEnd });
 	}
 
 	handleNameChange(event, value) {
@@ -282,7 +279,7 @@ class EditChoir extends Component {
 				type: "PATCH",
 				url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/",					
 				dataType: "json",
-				//headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+				headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
 				data: this.state.newChoir,
 				success: function(data) {
 					this.setState(
@@ -334,16 +331,15 @@ class EditChoir extends Component {
       showTimezone,
     } = this.state;
 
-  	let dayOptions = this.props.days.map(day => {
-  		return <option key={day.name} value={day.number}>{day.name}</option>
-  	});
+  	// let dayOptions = this.props.days.map(day => {
+  	// 	return <option key={day.name} value={day.number}>{day.name}</option>
+  	// });
 
     return (
     	<div>
     	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Edit Choir</CardTitle>
+		    <CardTitle title="Edit Event" />
 		    <CardText className={"timePickerForm"}>
-		       <form onSubmit={this.handleSubmit.bind(this)}>
 					<TextField
 						floatingLabelText="Name..."
 						ref="name"
@@ -390,7 +386,6 @@ class EditChoir extends Component {
 		      		{/*<input className={this.state.buttonClasses} type="submit" value="Submit" />*/}
 		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
 		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
-		      	</form>
 		      	{fireRedirect && (
 		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.state.choirID}/>
 		        )} 

@@ -183,6 +183,7 @@ class Organizations extends Component {
 
         eventItems = eventItems.reverse()
 
+
         eventItems = eventItems.map(event => {
             return (
                 <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
@@ -504,6 +505,8 @@ class Organizations extends Component {
 
 
     renderMusicLibrary() {
+
+        const { musicGet } = this.state
         
         let musicLibraryItems;
         musicLibraryItems = this.state.musicGet.map(music => {

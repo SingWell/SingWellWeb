@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+/*import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
+    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, ListItemContent, CardText, CardActions,
     Menu, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Dropdown, Option } from 'react-mdl-extra';
+    FooterDropDownSection } from  'react-mdl';*/
 import { getColorClass, getTextColorClass } from '../css/palette';
 
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
-import Moment from 'react-moment';	
 import moment from 'moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
-import ReactMaterialSelect from 'react-material-select'
 import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 // import ReactMaterialDatePicker from 'react-material-datepicker'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton, TextField, MenuItem, SelectField } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, 
+	RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui/'
 
 
 
@@ -39,7 +36,7 @@ class EditEvent extends Component {
 	    let eventDate = '';
 	    let eventTime = '';
 	    let eventLoc = '';
-	    let eventChoir = '';
+	    let choirs = [];
 
 	    let defaultYear = '';
 	    let defaultMonth = '';
@@ -61,14 +58,13 @@ class EditEvent extends Component {
 	      focused,
 	      timezone,
 	      showTimezone,
-	      choir: {},
 	      date,
 
 	      eventName,
 	      eventDate,
 	      eventTime,
 	      eventLoc,
-	      eventChoir, 
+	      choirs, 
 
 	      defaultYear,
 	      defaultMonth,
@@ -95,6 +91,9 @@ class EditEvent extends Component {
 	    this.onNameChange = this.onNameChange.bind(this);
 	    this.onLocationChange = this.onLocationChange.bind(this);
 	    this.onChoirChange = this.onChoirChange.bind(this);
+
+	    this.handleOpen = this.handleOpen.bind(this);
+	    this.handleClose = this.handleClose.bind(this);
 	}
 
 	onHourChange(hour) {
@@ -157,11 +156,27 @@ class EditEvent extends Component {
 		})
 	}
 
-	onChoirChange(event, value) {
+	onChoirChange(event, index, values) {
+		console.log(values);
 		this.setState({
-			eventChoir: value
+			choirs: values
 		})
 	}
+
+	//handleChange = (event, index, choirs) => this.setState({choirs});
+
+
+	handleOpen() {
+    	this.setState({
+    		open: true
+    	});
+  	};
+
+  	handleClose() {
+    	this.setState({
+    		open: false
+    	});
+  	};
 
   	// handleChoirChange = (event, index, values) => this.setState({ eventChoir: values});
 
@@ -202,11 +217,11 @@ class EditEvent extends Component {
 				key={choir.id}
 				insetChildren={true}
 				checked={values && values.indexOf(choir) > -1}
-				value={choir.name}
+				value={choir.id - 1}
 				primaryText={choir.name}
 			/>
 		));
-	}
+	  }
 
 	componentWillMount() {
 		this.setState ( {
@@ -216,7 +231,8 @@ class EditEvent extends Component {
 			cancelRedirect: false,
 			eventID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
-			choirGet: []
+			choirGet: [],
+			open: false
 		});
 
 		$.ajax({
@@ -249,7 +265,7 @@ class EditEvent extends Component {
 	          	eventDate: data.date,
 	          	eventTime: data.time,
 	          	eventLoc: data.location,
-	          	eventChoirs: data.choirs
+	          	choirs: data.choirs
 	          }, function() {
 	            console.log(this.state);
 	          });
@@ -263,15 +279,14 @@ class EditEvent extends Component {
 	}
 
 	handleSubmit(e){
-		console.log(+this.state.choir.value)
+		console.log(this.state.choirs)
 		this.setState({newEvent:{
 			name: this.state.eventName,
 			date: this.state.date,
 			time: this.state.hour + ":" + this.state.minute + ":00",
 			location: this.state.eventLoc,
-			choirs: [
-				+this.state.choir
-			],
+			choirs: 
+				[this.state.choirs],
 			organization: this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
@@ -287,6 +302,8 @@ class EditEvent extends Component {
 		        		eventPost: data,
 		        		eventID: data.id,
 		        		submitRedirect: true
+		        	}, function () {
+		        		console.log(this.state);
 		        	});
 		      }.bind(this),
 		      error: function(xhr, status, err) {
@@ -312,7 +329,7 @@ class EditEvent extends Component {
 		const { cancelRedirect } = this.state;
 		const { eventID } = this.state;
 		const { buttonClasses } = this.state;
-		const { values } = this.state;
+		const { choirs } = this.state;
 		const {
 			hour,
 			minute,
@@ -320,7 +337,33 @@ class EditEvent extends Component {
 			timezone,
 			showTimezone
 		} = this.state;
-		console.log(this.state.choirGet)
+
+		const actions = [
+	      <FlatButton
+	        label="Cancel"
+	        primary={true}
+	        onClick={this.handleClose}
+	      />,
+	      <FlatButton
+	        label="Submit"
+	        primary={true}
+	        keyboardFocused={true}
+	        onClick={this.handleClose}
+	      />,
+	    ];
+
+	    const radios = [];
+	    for (let i = 0; i < 30; i++) {
+	      radios.push(
+	        <RadioButton
+	          key={i}
+	          value={`value${i + 1}`}
+	          label={`Option ${i + 1}`}
+	          //style={styles.radioButton}
+	        />
+	      );
+	    }
+
 
 		{/*let choirs;
 		choirs = this.state.choirGet.map(choir => {
@@ -332,15 +375,15 @@ class EditEvent extends Component {
 
 		return (
 
-			<Card shadow={0} style={{ margin: '10px', height: '700px'}}>
-			    <CardTitle>Edit Event</CardTitle>
+			<Card shadow={0} style={{ margin: '10px'}}>
+			    <CardTitle title="Edit Event" />
 			    <CardText>
 			       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 				       <TextField
 						    //onChange={() => {}}
 						    floatingLabelText="Event name..."
 						    ref="name"
-						    style={{width: '200px'}}
+						    //style={{width: '200px'}}
 						    value={this.state.eventName}
 						    onChange={this.onNameChange}
 						/>
@@ -383,12 +426,12 @@ class EditEvent extends Component {
 			                {choirs}
 			            </ReactMaterialSelect>*/}
 			            <SelectField
-							floatingLabelText="Choir..."
-							multi={true}
-							value={this.state.eventChoir}
-							style={{width: '200px'}}
-							onChange={this.onChoirChange}>
-							{this.choirItems(this.values)}
+			          		floatingLabelText="Add Choirs"
+							value={choirs}
+							style={{width: '200px', color: 'blue'}}
+							onChange={this.onChoirChange}
+							multiple={true}
+							>{this.choirItems(this.choirs)}
 						</SelectField>
 			      		<br/>
 			      		<br/>
@@ -396,10 +439,10 @@ class EditEvent extends Component {
 			      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 			      	{/*</form>*/}
 			      	{submitRedirect && (
-			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID } />
+			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID } />
 			        )}
 			        {cancelRedirect && (
-			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.state.eventID } />  
+			          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/events/' + this.props.match.params.eventID } />  
 			        )} 
 			    </CardText>
 			</Card>

@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router'
-import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, Footer, FooterSection, FooterLinkList, Textfield,
-    FooterDropDownSection } from  'react-mdl';
-import { Dropdown, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
-import { MDLSelectField } from 'react-mdl-select';
-import { TextField, SelectField, MenuItem } from 'material-ui/';
+import { TextField, SelectField, MenuItem, RaisedButton, 
+	FlatButton, Card, CardTitle, CardText } from 'material-ui/';
 
 
 
@@ -20,7 +15,9 @@ class EditOrganization extends Component {
 
 		let orgName = '';
 		let orgAddress = '';
+		let orgCity = '';
 		let orgState = '';
+		let orgZip = '';
 		let orgDescription = '';
 		let orgPhone = '';
 		let orgEmail = '';
@@ -29,7 +26,9 @@ class EditOrganization extends Component {
 			orgName, 
 			orgDescription,
 			orgAddress,
+			orgCity,
 			orgState,
+			orgZip,
 			orgPhone,
 			orgEmail
 		}
@@ -37,7 +36,9 @@ class EditOrganization extends Component {
 	   this.handleNameChange = this.handleNameChange.bind(this);
 	   this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 	   this.handleAddressChange = this.handleAddressChange.bind(this);
+	   this.handleCityChange = this.handleCityChange.bind(this);
 	   this.handleStateChange = this.handleStateChange.bind(this);
+	   this.handleZipChange = this.handleZipChange.bind(this);
 	   this.handlePhoneChange = this.handlePhoneChange.bind(this);
 	   this.handleEmailChange = this.handleEmailChange.bind(this);
 		
@@ -61,9 +62,23 @@ class EditOrganization extends Component {
 		})
 	}
 
-	handleStateChange(event, value) {
+	handleCityChange(event, value) {
 		this.setState({
-			orgState: value
+			orgCity: value
+		})
+	}
+
+	handleStateChange(event, value) {
+		let stateName = this.props.states[value].abbreviation
+		this.setState({
+			orgState: stateName
+		})
+		console.log(value);
+	}
+
+	handleZipChange(event, value) {
+		this.setState({
+			orgZip: value
 		})
 	}
 
@@ -82,7 +97,7 @@ class EditOrganization extends Component {
 	stateItems(values) {
 		return this.props.states.map((state) => (
 			<MenuItem
-				key={state.name}
+				key={state.abbreviation}
 				insetChildren={true}
 				checked={values && values.indexOf(state) > -1}
 				value={state.abbreviation}
@@ -96,7 +111,8 @@ class EditOrganization extends Component {
 			newOrganization:{},
 			fireRedirect: false,
 			orgID: null,
-			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`
+			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
+			cancelRedirect: false
 		});
 	}
 
@@ -112,7 +128,7 @@ class EditOrganization extends Component {
 				orgName: data.name, 
 				orgAddress: data.address,
 				orgDescription: data.description,
-				orgPhone: data.phone_number,
+				orgPhone: +data.phone_number,
 				orgEmail: data.email
           	}, function() {
             console.log(this.state)
@@ -381,10 +397,9 @@ class EditOrganization extends Component {
 		this.setState({newOrganization:{
 			name: this.state.orgName,
 			description: this.state.orgDescription,
-			address: this.refs.streetAddress.inputRef.value + ", " + this.refs.city.inputRef.value + ", " + this.refs.state.value + " " + this.refs.zipcode.inputRef.value,
-			state: this.state.orgState,
-			phone_number: +this.refs.phoneNumber.inputRef.value,
-			email: this.refs.email.inputRef.value,
+			address: this.state.orgAddress + " " + this.state.orgCity + ", " + this.state.orgState + " " + this.state.orgZip,
+			phone_number: +this.state.orgPhone,
+			email: this.state.orgEmail,
 			admins: [1]
 		}}, function() {
 			console.log(this.state.newOrganization)
@@ -403,8 +418,7 @@ class EditOrganization extends Component {
 		        	},function(){
 		        		console.log(this.state);
 		        		console.log(this.state.newOrganization);
-		        		console.log("success");
-		        		
+		        		console.log("success");	
 
 		        	})
 		      }.bind(this),
@@ -419,9 +433,17 @@ class EditOrganization extends Component {
   		e.preventDefault();
   	}
 
+  	 handleCancel() {
+  		this.setState({
+  			cancelRedirect: true
+  		})
+  		console.log(this.state);
+  	}
+
   render() {
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
+  	const { cancelRedirect } = this.state;
   	const { orgID } = this.state;
   	const { buttonClasses } =this.state;
   	const { values } = this.state;
@@ -433,83 +455,78 @@ class EditOrganization extends Component {
 
     return (
     	<div>
-    	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Edit Organization</CardTitle>
+    	<Card shadow={0} style={{ margin: '10px', width: '340px'}}>
+		    <CardTitle title="Edit Organization" />
 		    <CardText>
-		       <form onSubmit={this.handleSubmit.bind(this)}>
+		       {/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 					<TextField 
 						floatingLabelText="Name..."
-						ref="name"
-						style={{width: '200px'}}
+						style={{width: '300px'}}
 						value={this.state.orgName}
 						onChange={this.handleNameChange}		
 					/>
+					<br/>
 		      		<TextField
 					    floatingLabelText="Description..."
-					    ref="description"
 					    rows={3}
-					    style={{width: '200px'}}
+					    style={{width: '300px'}}
 					    value={this.state.orgDescription}
 					    onChange={this.handleDescriptionChange}
 					/>
+					<br/>
 		      		<TextField
 					    floatingLabelText="Street Address..."
-					    ref="streetAddress"
-					    style={{width: '200px'}}
+					    style={{width: '300px'}}
 					    value={this.state.orgAddress}
 					    onChange={this.handleAddressChange}
 					/>
+					<br/>
 		      		<TextField
 					    floatingLabelText="City..."
-					    ref="city"
-					    style={{width: '200px'}}
-					    value="Not filled"
+					    style={{width: '300px'}}
+					    value={this.state.orgCity}
 					    onChange={this.handleCityChange}
 					/>
-		      		{/*<div>
-			      		<label>State</label><br />
-			      		<select ref= "state">
-			      			{stateOptions}
-			      		</select>
-		      		</div>*/}
+					<br/>
 		      		<SelectField
 		      			floatingLabelText="State..."
-						//value={this.state.value}
-						style={{width: '200px', color: 'blue'}}
+						value={this.state.orgState}
+						style={{width: '300px'}}
 						onChange={this.handleStateChange}
 		      		>{this.stateItems(this.values)}
 		      		</SelectField>
-		      		{/*<Textfield
-				    onChange={() => {}}
-				    label="Zipcode..."
-				    floatingLabel
-				    ref="zipcode"
-				    style={{width: '200px'}}
-				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Phone Number..."
-				    floatingLabel
-				    ref="phoneNumber"
-				    style={{width: '200px'}}
-				    value={this.state.orgPhone}
-				    onChange={this.handlePhoneChange}
-				/>
-		      		<Textfield
-				    onChange={() => {}}
-				    label="Email..."
-				    floatingLabel
-				    ref="email"
-				    style={{width: '200px'}}
-				    value={this.state.orgEmail}
-				    onChange={this.handleEmailChange}
-				/>*/}
-				<br/>
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      	</form>
-		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + orgID}/>
+		      		<br/>
+		      		<TextField
+					    onChange={this.handleZipChange}
+					    floatingLabelText="Zipcode..."
+					    style={{width: '300px'}}
+					    value={this.state.orgZip}
+						/>
+		      		<TextField
+					    floatingLabelText="Phone Number..."
+					    ref="phoneNumber"
+					    style={{width: '300px'}}
+					    value={this.state.orgPhone}
+					    onChange={this.handlePhoneChange}
+					/>
+					<br/>	
+		      		<TextField
+					    floatingLabelText="Email..."
+					    ref="email"
+					    style={{width: '300px'}}
+					    value={this.state.orgEmail}
+					    onChange={this.handleEmailChange}
+					/>
+					<br/>
+		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
+		      	{/*</form>*/}
+		      	{(fireRedirect || cancelRedirect) && (
+		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID } />
 		        )} 
+		        {/*{cancelRedirect && (
+		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID } />  
+		        )}*/}
 		    </CardText>
 		</Card>
 		</div>

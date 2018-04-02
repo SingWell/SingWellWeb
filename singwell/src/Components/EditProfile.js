@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { Card, CardTitle } from  'react-mdl';
 //import MuiThemeProvider from 'material-ui/styles';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { MenuItem, TextField, RaisedButton, FlatButton, SelectField, CardText} from 'material-ui/'
+import { MenuItem, TextField, RaisedButton, FlatButton, SelectField, CardText, Card, CardTitle} from 'material-ui/'
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 
@@ -26,6 +25,7 @@ class EditProfile extends Component {
 		let	zip = ''; 
 		let	state = ''; 
 		let	dob = ''; 
+		let selectedFile = '';
 
 		this.state = {
 			/*fname, 
@@ -37,7 +37,8 @@ class EditProfile extends Component {
 			city,
 			zip,
 			state,
-			dob
+			dob, 
+			selectedFile
 		};
 
 		/*this.handleFNameChange = this.handleFNameChange.bind(this);
@@ -51,6 +52,7 @@ class EditProfile extends Component {
 		this.handleZipChange = this.handleZipChange.bind(this);
 		this.handleStateChange = this.handleStateChange.bind(this);
 		this.handleDobChange = this.handleDobChange.bind(this);
+		this.handleFileSelected = this.handleFileSelected.bind(this);
 
 		//this.stateItems = this.stateItems.bind(this);
 
@@ -120,6 +122,17 @@ class EditProfile extends Component {
 		})
 	}
 
+  	handleFileSelected(event) {
+  		this.setState({
+  			selectedFile: event.target.files[0]
+  		})
+  	}
+
+  	handleUpload() {
+
+  	}
+
+
   	handleCancel(e){
 		this.setState(
 			{cancelRedirect: true}
@@ -153,6 +166,7 @@ class EditProfile extends Component {
 	componentWillMount() {
 		this.setState ({
 			profileGet: {},
+			updateProfile: {},
 			fireRedirect: false,
 			cancelRedirect: false,
 			user: null,
@@ -172,7 +186,7 @@ class EditProfile extends Component {
           		email: data.email,
           		fname: data.first_name,
           		lname: data.last_name,
-          		//profileGet: data.profile,
+          		profileGet: data,
 				phone: data.profile.phone_number, 
 				address: data.profile.address,
 				bio: data.profile.bio,
@@ -462,9 +476,18 @@ class EditProfile extends Component {
 
 
 	handleSubmit(e){
+		console.log(this.state.selectedFile);
 		this.setState({updateProfile: {
+			id: this.props.match.params.id,
+			email: this.state.email,
+			first_name: this.state.profileGet.first_name,
+			last_name: this.state.profileGet.last_name,
+			admin_of_organizations: this.state.profileGet.admin_of_organizations,
+			owned_organizations: this.state.profileGet.owned_organizations,
+			choirs: this.state.profileGet.choirs,
+			member_of_organizations: this.state.profileGet.member_of_organizations,
 			profile:{
-				user: +this.props.match.params.userID,
+				//user: +this.props.match.params.userID,
 				phone_number: this.state.phone,
 				bio: this.state.bio, 
 				address: this.state.address,
@@ -473,23 +496,29 @@ class EditProfile extends Component {
 				zip_code: this.state.zip,
 				//instruments: this.refs.instruments.value,
 				date_of_birth: this.state.dob,
-				age: '',
-				profile_picture_link: ''
-		}}},
+				//age: this.state.age, 
+				profile_picture_link: this.state.selectedFile
+			},
+			//organizations:
+		}},
 			function() {
-			console.log(this.state)
+			console.log(this.state.updateProfile)
 			$.ajax({
 			  type: "PATCH",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
 		      dataType: 'json',
-		      data: this.state.updateProfile.profile,
+		      data: this.state.updateProfile,
 		      success: function(data) {
 		        this.setState(
 		        	{
 		        		profilePatch: data,
-		        		//user: 1,
-		        		fireRedirect: true 
-		        	});
+		        		profilePatch2: this.state.updateProfile,
+		        		//user: this.props.match.params.userID,
+		        		fireRedirect: true
+		        	})
+		        console.log(data)
+		        //console.log(this.state)
+		        console.log(this.state.updateProfile)
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
@@ -499,6 +528,7 @@ class EditProfile extends Component {
 		      }
 		    });
 		});
+		console.log(this.state.profilePatch)
   		e.preventDefault();
   	}
 
@@ -509,9 +539,8 @@ class EditProfile extends Component {
 	  	const { values } = this.state;
 
 	    return (
-	    <div>
 	      <Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Edit Profile</CardTitle>
+		    <CardTitle title="Edit Profile" />
 		    <CardText>
 		      {/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 		       	{/*<TextField
@@ -540,36 +569,39 @@ class EditProfile extends Component {
 				<TextField
 					floatingLabelText="Address..."
 					ref="address"
-					style={{width: '200px'}}
+					style={{width: '300px'}}
 					value={this.state.address}
 					onChange={this.handleAddressChange}
 				/>
-
+				<br/>
 				<TextField
 					floatingLabelText="City..."
 					ref="city"
-					style={{width: '200px'}}
+					style={{width: '300px'}}
 					value={this.state.city}
 					onChange={this.handleCityChange}
 				/>
+				<br/>
 				<SelectField
 					floatingLabelText="State..."
 					//ref="state"
 					//value="AK"
 					//maxHeight={200}
 					value={this.state.state}
-					style={{width: '200px'}}
+					style={{width: '300px'}}
 					onChange={this.handleStateChange}
 				>{this.stateItems(this.values)}
 				</SelectField>
+				<br/>
 				<TextField
 					floatingLabelText="Zip..."
 					ref="zip"
 					type="number"
-					style={{width: '200px'}}
+					style={{width: '300px'}}
 					value={this.state.zip}
 					onChange={this.handleZipChange}
 				/>
+				<br/>
 		      	<TextField
 				    //onChange={() => {}}
 				    floatingLabelText="Bio..."
@@ -577,10 +609,11 @@ class EditProfile extends Component {
 				    ref={(input) => { this.bioInput = input; }}
 				    rows={3}
 				    multiLine={true}
-				    style={{width: '200px'}}
+				    style={{width: '300px'}}
 				    value={this.state.bio}
 				    onChange={this.handleBioChange}
 				/>
+				<br/>
 				{/*<SelectField
 			        multiple={true}
 			        floatingLabelText="Select your Instruments..."
@@ -594,18 +627,24 @@ class EditProfile extends Component {
 				    onChange={() => {}}
 				    floatingLabelText="Phone Number..."
 				    ref="phone"
-				    style={{width: '200px'}}
+				    style={{width: '300px'}}
 				    value={this.state.phone}
 				    onChange={this.handlePhoneChange}
 				/>
+				<br/>
 	      		<TextField
 			        ref="dob"
 			        floatingLabelText="Birthday"
-			        style={{width: '200px'}}
+			        style={{width: '300px'}}
 			        hintText="mm/dd/yyyy"
 			        value={this.state.dob}
 			       	onChange={this.handleDobChange}
 			    />
+				<br/>
+				<br/>
+				<input type="file" onChange={this.handleFileSelected} />
+				{/*<FlatButton label="Upload" onClick={this.handleUpload} />*/}
+				<br/>
 				<br/>
 				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
 		      	<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
@@ -620,7 +659,6 @@ class EditProfile extends Component {
 		        )} 
 		    </CardText>
 		</Card>
-		</div>
 	    );
 	  }
 	}

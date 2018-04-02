@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { Card, CardTitle, CardText } from  'react-mdl';
 //import MuiThemeProvider from 'material-ui/styles';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { MenuItem, TextField, RaisedButton, FlatButton, SelectField } from 'material-ui/'
+import { MenuItem, TextField, RaisedButton, FlatButton, SelectField, Card, CardTitle, CardText } from 'material-ui/'
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 
@@ -437,11 +436,12 @@ class CreateProfile extends Component {
 
 	    return (
 	      <Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Create Profile </CardTitle>
+		    <CardTitle title="Create Profile" />
 		    <CardText>
 		    	<Link to="/users/1">
-		    		<FlatButton label="skip this step" />
+		    		<RaisedButton label="skip this step" />
 		    	</Link>
+		    	<br />
 		       {/*}	<TextField
 				    onChange={() => {}}
 				    floatingLabelText="First Name..."
@@ -460,12 +460,14 @@ class CreateProfile extends Component {
 					ref="address"
 					style={{width: '200px'}}
 				/>
+				<br />
 				<TextField
 					onChange={this.handleCityChange}
 					floatingLabelText="City..."
 					ref="city"
 					style={{width: '200px'}}
 				/>
+				<br />
 				<SelectField
 					floatingLabelText="State..."
 					ref="state"
@@ -475,6 +477,7 @@ class CreateProfile extends Component {
 					onChange={this.handleStateChange} >
 						{this.stateItems(this.values)}
 				</SelectField>
+				<br />
 				<TextField
 					onChange={this.handleZipChange}
 					floatingLabelText="Zip..."
@@ -482,6 +485,7 @@ class CreateProfile extends Component {
 					type="number"
 					style={{width: '200px'}}
 				/>
+		      	<br />
 		      	<TextField
 				    onChange={this.handleBioChange}
 				    floatingLabelText="Bio..."
@@ -504,7 +508,7 @@ class CreateProfile extends Component {
 			    >
 			        {this.instrumentItems(this.values)}
 				</SelectField>*/}
-
+				<br />
 		      	<TextField
 				    onChange={this.handlePhoneChange}
 				    floatingLabelText="Phone Number..."
@@ -512,6 +516,7 @@ class CreateProfile extends Component {
 				    ref="phone"
 				    style={{width: '200px'}}
 				/>
+	      		<br />
 	      		<TextField
 	      			onChange={this.handleDobChange}
 			        id="date"
@@ -524,6 +529,7 @@ class CreateProfile extends Component {
 			        }}
 			    />
 				<br/>
+				<br />
 				{/*<input className={this.state.buttonClasses} type="submit" value="Submit" />*/}
 				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
 		      	{fireRedirect && (

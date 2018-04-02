@@ -20,6 +20,7 @@ import ChoirItem from './ChoirItem';
 import { IconButton, FontIcon } from 'material-ui/';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 
+
 import ReactDOM from 'react-dom';
 
 
@@ -240,10 +241,6 @@ class Profile extends Component {
       </div>
       );
     }
-
-    
-
-
 
 
 }
