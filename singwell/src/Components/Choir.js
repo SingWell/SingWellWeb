@@ -4,14 +4,15 @@ import { List, ListItem, ListItemContent, Tooltip, Layout, Header, HeaderRow, FA
  Icon, HeaderTabs, Tab, Content } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import classNames from 'classnames';
-import DayPicker from 'react-day-picker';
+
 import 'react-day-picker/lib/style.css';
 import { IconButton, FontIcon, Dialog, FlatButton, RaisedButton, SelectField, MenuItem, DropDownMenu } from 'material-ui/';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
+import '../css/Choir.css'
 
 
-
-import RosterItem from './RosterItem'
+import RosterItem from './RosterItem';
+import EventItem from './EventItem';
 
 import moment from 'moment'
 
@@ -120,7 +121,8 @@ class Choir extends Component {
         userGet: {},
         orgMembers: {},
         weekday: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-        open: false
+        open: false,
+        choirEventsGet: []
       });
 
     $.ajax({
@@ -135,6 +137,20 @@ class Choir extends Component {
           }, function() {
             console.log(this.state)
           });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+      });
+
+    $.ajax({
+        type: "GET",
+        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID + "/events/",
+        dataType: 'json',
+        cache: false, 
+        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+        success: function(data) {
+          this.setState({choirEventsGet: data});
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -158,6 +174,11 @@ class Choir extends Component {
           console.log(err);
         }
       });
+
+
+    
+
+
 
     $.ajax({
         type: "GET",
@@ -334,6 +355,7 @@ class Choir extends Component {
                   console.log(xhr);
                 }.bind(this)
             })
+
         })
         console.log(this.state.rosterPost)
         e.preventDefault();
@@ -348,6 +370,28 @@ class Choir extends Component {
 
 
     renderTabOverview() {
+      let eventItems = [];
+        this.state.choirEventsGet = this.state.choirEventsGet.sort(function(a, b) {
+            a["datetime"] = a["date"] + " " + a["time"]
+            b["datetime"] = b["date"] + " " + b["time"]
+
+            return (+moment.utc(a["datetime"])) - (+moment.utc(b["datetime"]))
+        })
+
+        this.state.choirEventsGet.map( event => {
+            if(moment(event["date"] + " " + event["time"]).isAfter(Date.now())) { 
+                eventItems.push(event)
+            } 
+        })
+
+        eventItems = eventItems.reverse()
+
+        eventItems = eventItems.map(event => {
+            return (
+                <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
+            );
+        });
+
       const { weekday } = this.state
         return (
           <div>
@@ -364,12 +408,21 @@ class Choir extends Component {
               <ListItem>
                 <ListItemContent icon="timer_off"><b>Rehersal End:</b> {moment(this.state.choirGet.meeting_day_end_hour, "H:m:s").format('LT')}</ListItemContent>
               </ListItem>
+              <ListItem>
+                <ListItemContent icon="person"><b>Director:</b> {this.state.choirGet.director_name}</ListItemContent>
+              </ListItem>
               <Tooltip label="Edit Choir" large>
                   <ListItem>
                     <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID + '/choirs/' + this.props.match.params.choirID + '/edit/')}></ListItemContent>
                   </ListItem>
               </Tooltip>
             </List>
+            <h4 className="title__padding">
+                    Upcoming Events:
+            </h4>
+            <Grid component="section" className="section--center" shadow={0} noSpacing>
+                    {eventItems.slice(0,3)}
+            </Grid>
           </div>
         );
     }
@@ -421,9 +474,9 @@ class Choir extends Component {
               </Dialog>
             </div>
 
-            <List className="title__padding">
+            <ul className="title__padding mn-pymk-list__cards">
               { rosterItems }
-            </List>
+            </ul>
             </div>
         );
     }

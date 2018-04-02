@@ -10,12 +10,15 @@ import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
 import MusicResourceItem from './MusicResourceItem';
+import YoutubeItem from './YoutubeItem';
 
 import RosterItem from './RosterItem'
 
 import moment from 'moment'
 
 import YouTube from 'react-youtube';
+
+import EventItem  from './EventItem';
 
 
 class MusicPage extends Component {
@@ -24,7 +27,7 @@ class MusicPage extends Component {
         super(props);
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
-        this.renderPDF = this.renderPDF.bind(this);
+
 
         this.state = {
             activeHeaderTab: 0
@@ -32,43 +35,29 @@ class MusicPage extends Component {
     }
 
   componentWillMount() {
-    this.setState ( {
-        musicGet:{},
-        musicResourceGet: [],
-      });
+      this.setState ( {
+          musicGet:{},
+          musicResourceGet: [],
+          eventsGet: []
+        });
 
-    $.ajax({
-        type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/" + this.props.match.params.musicID,
-        dataType: 'json',
-        cache: false, 
-        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-        success: function(data) {
-          this.setState({musicGet: data});
-          this.setState({musicResourceGet: data.music_resources})
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.log(err);
-        }
-      });
-    }
-
-    renderPDF(id) {
-        $.ajax({
+      $.ajax({
           type: "GET",
-          url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/resource/?resource_id=" + id + "&record_id=" + this.props.match.params.musicID,
+          url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/" + this.props.match.params.musicID,
           dataType: 'json',
           cache: false, 
           headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
           success: function(data) {
-            console.log(this.data)
+            this.setState({musicGet: data});
+            this.setState({musicResourceGet: data.music_resources})
+            this.setState({eventsGet: data.events})
           }.bind(this),
           error: function(xhr, status, err) {
             console.log(err);
           }
         });
     }
-    
+
 
     onChangeHeaderTab(tabId) {
         this.setState({
@@ -78,6 +67,42 @@ class MusicPage extends Component {
 
 
     renderTabOverview() {
+        let nextEventItem;
+        let nextEvents = [];
+
+        let previousEvents = [];
+        let previousEventItem
+
+        this.state.eventsGet = this.state.eventsGet.sort(function(a, b) {
+            a["datetime"] = a["date"] + " " + a["time"]
+            b["datetime"] = b["date"] + " " + b["time"]
+            return (+moment.utc(a["datetime"])) - (+moment.utc(b["datetime"]))
+        })
+
+        this.state.eventsGet.map( event => {
+            if(moment(event["date"] + " " + event["time"]).isBefore(Date.now())) { 
+                previousEvents.push(event)
+            } else if(moment(event["date"] + " " + event["time"]).isAfter(Date.now())) {
+                nextEvents.push(event)
+            }
+        })
+
+        previousEvents = previousEvents.reverse()
+        nextEvents = nextEvents.reverse()
+
+        previousEventItem = previousEvents.map(event => {
+                return (
+                    <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
+                );
+        });
+
+        nextEventItem = nextEvents.map(event => {
+                return (
+                    <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
+                );
+        });
+
+
       const { weekday } = this.state
         return (
           <div>
@@ -95,7 +120,19 @@ class MusicPage extends Component {
                 <ListItemContent icon="music_note"><b>Instrumentation: </b>{this.state.musicGet.instrumentation}</ListItemContent>
               </ListItem>
             </List>
-            </div>
+            <h4 className="title__padding">
+                    Last Used:
+            </h4>
+            <Grid component="section" className="section--center" shadow={0} noSpacing style={{boxShadow: "none"}}>
+                    {previousEventItem[0]}
+            </Grid>
+            <h4 className="title__padding">
+                    Next Use:
+            </h4>
+            <Grid component="section" className="section--center" shadow={0} noSpacing style={{boxShadow: "none"}}>
+                    {nextEventItem[0]}
+            </Grid>
+          </div>
         );
     }
 
@@ -107,11 +144,34 @@ class MusicPage extends Component {
     renderMusicResources() {
 
         let musicResourceItems = [];
-        musicResourceItems = this.state.musicResourceGet.map(item => {
-            return (
-                <MusicResourceItem key={item.resource_id} musicResource={item} musicID={this.props.match.params.musicID} orgID={this.props.match.params.orgID} history={this.props.history} />
-            );
-        });
+        let youtubeItems = [];
+        let mxlItems= [];
+        this.state.musicResourceGet.map(item => {
+            if(item.type === "file" && item.extension === "pdf") {
+                musicResourceItems.push(
+                    <MusicResourceItem key={item.resource_id} musicResource={item} musicID={this.props.match.params.musicID} orgID={this.props.match.params.orgID} history={this.props.history} />
+                )
+            } else if (item.type === "youtube_link") {
+                youtubeItems.push(
+                    <YoutubeItem key={item.resource_id} youtubeItem={item} musicID={this.props.match.params.musicID} orgID={this.props.match.params.orgID} history={this.props.history} />
+                )
+            } else if (item.type ==="file" && item.extension === "mxl") {
+                // let href = "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/resource/?resource_id=" + item.resource_id + "&record_id=" + this.props.match.params.musicID
+                // mxlItems.push(
+                //     <a href={href} >{item.title}</a>
+                // )
+            }
+
+        })
+        console.log(youtubeItems)
+        console.log(musicResourceItems)
+
+
+        // musicResourceItems = this.state.musicResourceGet.map(item => {
+        //     return (
+        //         <MusicResourceItem key={item.resource_id} musicResource={item} musicID={this.props.match.params.musicID} orgID={this.props.match.params.orgID} history={this.props.history} />
+        //     );
+        // });
 
         return (
           <div>
@@ -119,24 +179,14 @@ class MusicPage extends Component {
             <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/musicResource/' + this.props.match.params.musicID)}>
                 <Icon name="file_upload" />
             </FABButton>
-            <div>
-            <div style={{display: "flex", alignItems: 'center', flexDirection: "column"}}> 
-              <h4> Bach - Jesu, Joy of Man's Desiring by Bach</h4>
-              </div>
+            <div style={{display: "flex", alignItems: 'center', flexDirection: "column"}}>
+            
               <div className="video-wrapper">
-                <YouTube
-                    videoId="S6OgZCCoXWc"
-                    opts={
-                      {
-                        height: '390',
-                        width: '100%',
-                        padding: '25px'
-                      }
-                    }
-                    onReady={this._onReady}
-                  />
+                {youtubeItems}
               </div>
               {musicResourceItems}
+
+              {mxlItems}
 
 
             </div>

@@ -5,6 +5,7 @@ import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 
+// import '../css/Organizations.css';
 
 
 
@@ -19,9 +20,25 @@ class MusicLibraryItem extends Component {
   render() {
 
     return (
-      <ListItem twoLine style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/organizations/' + this.props.music.organization + "/music/" + this.props.music.id)}>
-        <ListItemContent avatar="music_note" subtitle={this.props.music.composer}>{this.props.music.title}</ListItemContent>
-      </ListItem>
+
+      <li className="mn-pymk-list__card display-flex flex-column" onClick={() => this.props.history.push('/organizations/' + this.props.music.organization + "/music/" + this.props.music.id)} style={{cursor: 'pointer'}}>
+          <div className="pymk-card" style={{marginBottom: '0'}}>
+              <div className="pymk-card__details text-align-center">   
+                      <div className="pymk-card__name pymk-card__name--card-layout" >
+                        {this.props.music.title}
+                      </div>
+                      <div className="pymk-card__occupation pymk-card__occupation--card-layout">
+                        {this.props.music.composer}
+                      </div>
+                      <div className="pymk-card__occupation pymk-card__occupation--card-layout" style={{marginTop: '10pt'}}>
+                        {this.props.music.arranger}
+                      </div>
+                      <div className="pymk-card__occupation pymk-card__occupation--card-layout" style={{marginTop: '10pt'}}>
+                        {this.props.music.instrumentation}
+                      </div>
+              </div>
+           </div>
+      </li>
     );
   }
 

@@ -9,7 +9,7 @@ import Card from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
     Button, FABButton, Icon, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions, Tooltip,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList,
+    Menu, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import classNames from 'classnames';
@@ -23,6 +23,11 @@ import ImageEdit from 'material-ui/svg-icons/image/edit';
 
 import ReactDOM from 'react-dom';
 
+
+import MenuItem from 'material-ui/MenuItem';
+import Drawer from 'material-ui/Drawer';
+
+import RaisedButton from 'material-ui/RaisedButton';
 
 
 
@@ -40,6 +45,7 @@ class Profile extends Component {
             userGet:{},
             profile: {},
             choirsFlag: false,
+            organizations: [],
 
             user: '',
             phone_number: '',
@@ -50,6 +56,8 @@ class Profile extends Component {
             zip: '',
             date_of_birth: '',
             age: '',
+
+            value: 1,
         };
 
         this.handleEdit = this.handleEdit.bind(this);
@@ -78,7 +86,8 @@ class Profile extends Component {
           this.setState({userGet: data});
           //console.log(this.state.userGet.profile.bio)
           this.setState({profile: data.profile})
-          console.log(this.state)
+          this.setState({organizations: data.member_of_organizations})
+          console.log(this.state.organizations)
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -132,7 +141,7 @@ class Profile extends Component {
                 <ListItemContent icon="email">{this.state.userGet.email}</ListItemContent>
               </ListItem>
               <ListItem>
-                <ListItemContent icon="home">{this.state.profile.address}, {this.state.profile.city}</ListItemContent>
+                <ListItemContent icon="home">{this.state.profile.address}, {this.state.profile.city}, {this.state.profile.state} {this.state.profile.zip_code}</ListItemContent>
               </ListItem>
               <ListItem>
                 <ListItemContent icon="cake">{this.state.profile.date_of_birth}</ListItemContent>
@@ -163,17 +172,54 @@ class Profile extends Component {
         }
     }
 
+    handleChange = (value) => {
+
+      this.props.history.push('/organizations/' + value)
+      // this.setState({value})
+    };
+
+    handleToggle = () => this.setState({open: !this.state.open});
+
+    handleClose = (value) => {
+      console.log(value)
+      this.setState({open: false}); 
+      this.props.history.push('/organizations/' + value)
+    }
+
     render() {
-    
+
+      let orgItems = this.state.organizations.map((org) => (
+        <MenuItem 
+          key={org.id}
+          value={org.id} 
+          onClick={() => this.handleChange(org.id)}>
+          {org.name}
+        </MenuItem>
+      ));
     
     return (
-
+      <div>
+      
+        <Drawer
+          docked={false}
+          width={200}
+          open={this.state.open}
+          onRequestChange={(open) => this.setState({open})}
+        >
+          {orgItems}
+        </Drawer>
       <div className={classNames('mdl-demo', 'mdl-base')}>
+
                     <Layout fixedHeader className={classNames(getColorClass('grey', 100), getTextColorClass('grey', 700))}>
                         <Header className={getColorClass('primary')} title="Material Design Lite" scroll>
+
+                            <FABButton style={{position: 'absolute', margin: '13.33px'}}  colored ripple onClick={this.handleToggle}>
+                                <Icon name="menu" />
+                            </FABButton>
                             <HeaderRow className="mdl-layout--large-screen-only" />
                             <HeaderRow className="mdl-layout--large-screen-only title__padding"  >
                                 <h3>{this.state.userGet.first_name} {this.state.userGet.last_name}</h3>
+                                
                             </HeaderRow>  
                             <FABButton className="back-button"  colored ripple onClick={() => this.props.history.goBack()}>
                                 <Icon name="keyboard_arrow_left" />
@@ -186,9 +232,12 @@ class Profile extends Component {
                             <div className="react-mdl-layout__tab-panel">
                                 {this.renderActiveTabContent()}
                             </div>
+                            
                         </Content>
+
                   </Layout>
                     
+      </div>
       </div>
       );
     }

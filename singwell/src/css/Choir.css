@@ -1,71 +1,3 @@
-.Organizations {
-
-	/*padding-left: 20px;*/
-}
-
-.demo-tabs {
-    width: 70%;
-    margin: auto;
-}
-.demo-tabs .content {
-    height: 100px;
-}
-
-.DayPicker-Months, .DayPicker, .DayPicker-Month, .DayPicker-wrapper, .DayPicker-Body {
-	width: 100% !important;
-}
-
-.DayPicker-Day {
-	padding: 0 !important;
-}
-
-.DayPicker-Month {
-	display: initial !important;
-}
-
-
-.DayPicker-Day--today > div > div:nth-child(1) {
-	background: orangered !important;
-	color: white;
-	line-height: 30px;
-	width: 30px;
-	height: 30px;
-	bottom: 2px !important;
-	right: 5px !important;
-	border-radius: 25px;
-
-
-}
-
-.DayPicker-Day--today {
-	color: inherit !important;
-}
-
-.DayPicker-NavButton--prev {
-	display: none;
-}
-
-.DayPicker-NavButton--next {
-	display: none;
-}
-
-.DayPicker-Body > div:first-child > div > div {
-	border-top-width: 2px !important;
-}
-
-.DayPicker-Body > div:last-child > div > div {
-	border-bottom-width: 2px !important;
-}
-
-.DayPicker-Body > div > div:first-child > div {
-	border-left-width: 2px !important;
-}
-
-.DayPicker-Body > div > div:last-child > div {
-	border-right-width: 2px !important;
-}
-
-
 .mn-pymk-list__cards {
     display: flex;
     flex-wrap: wrap;
@@ -81,8 +13,8 @@
 }
 
 .mn-pymk-list__card {
-    flex-basis: calc(15% + .1em) !important;
-    max-width: calc(15% + .1em) !important;
+    flex-basis: calc(24% + .1em);
+    max-width: calc(24% + .1em);
     padding: 10pt;
 }
 
@@ -106,7 +38,16 @@
     flex-direction: column;
     align-items: center;
     flex: none;
-    /*margin-bottom: 40px;*/
+    margin-bottom: 40px;
+}
+
+.EntityPhoto-circle-7 {
+    width: 104px;
+    height: 104px;
+    box-sizing: border-box;
+    background-clip: content-box;
+    border: 0 solid transparent;
+    border-radius: 49.9%;
 }
 
 .justify-center {
@@ -123,8 +64,8 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    max-height: none !important;
     text-overflow: ellipsis;
+    max-height: 2rem;
     word-break: keep-all;
     flex: 1 100%;
     color: black;
@@ -141,17 +82,17 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-height: 4rem;
     word-break: break-word;
     flex: 1 100%;
-    color: black;f
+    color: black;
     font-size:1.25rem;
     opacity: 0.7;
 }
 
 .pymk-card__occupation--card-layout {
     display: block;
-    max-height: none;
-
+    max-height: 3.2rem;
 }
 
 .text-align-center {
