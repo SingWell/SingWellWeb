@@ -200,13 +200,14 @@ class AddChoir extends Component {
 		this.setState({newChoir:{
 			name: this.state.name,
 			meeting_day: this.state.meetingDay + 1,
-			//meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
-			meeting_dat_start_hour: this.state.value12,
+			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
 			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
 			organization: this.props.match.params.orgID,
 			choristers: [
 				1
-			]
+			],
+			//director_name: "Kenton Kravig",
+			director_id: 1
 		}}, function() {
 			console.log("inside post statement");
 			$.ajax({
@@ -288,9 +289,9 @@ class AddChoir extends Component {
 						onChange={this.handleChangeTimePicker12}
 			        />*/}
 		      		<TimePicker
-			      		hintText="Meeting Start Time"
+			      		/*hintText="Meeting Start Time"
 	      				autoOk={true}
-	      				style={{width: '300px'}}
+	      				style={{width: '300px'}}*/
 						focused={focusedStart}
 						timezone={timezone}
 						onFocusChange={this.onFocusChange}
@@ -303,9 +304,9 @@ class AddChoir extends Component {
 			        <br/>
 		      		<br/>
 			        <TimePicker
-			        	hintText="Meeting End Time"
+			        	/*hintText="Meeting End Time"
 			        	autoOk={true}
-			        	style={{width: '300px'}}
+			        	style={{width: '300px'}}*/
 						focused={focusedEnd}
 						timezone={timezone}
 						onFocusChange={this.onFocusChangeEnd}

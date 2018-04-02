@@ -56,7 +56,7 @@ class AddEvent extends Component {
 
 	    this.onLocationChange = this.onLocationChange.bind(this);
 	    this.handleNameChange = this.handleNameChange.bind(this);
-	    //this.handleChoirChange = this.handleChoirChange.bind(this);
+	    this.onChoirChange = this.onChoirChange.bind(this);
 
 	    this.baseState = this.state;
 	}
@@ -104,13 +104,14 @@ class AddEvent extends Component {
 		})
 	  }
 
-	  // handleChoirChange(event, values) { 
-	  // 	this.setState({
-	  // 		choirs: values
-	  // 	})
-	  // }
+	  onChoirChange(event, index, values) { 
+	  	console.log(values);
+	  	this.setState({
+	  		choirs: values
+	  	})
+	  }
 
-	  handleChange = (event, index, values) => this.setState({values});
+	  //handleChange = (event, index, values) => this.setState({values});
 
 
 	  choirItems(values) {
@@ -159,7 +160,7 @@ class AddEvent extends Component {
 	}
 
 	handleSubmit(e){
-		//console.log(+this.state.choir.value)
+		console.log(this.state.choirs)
 		this.setState({newEvent:{
 			name: this.state.name,
 			date: this.state.date,
@@ -203,7 +204,7 @@ class AddEvent extends Component {
   	const { cancelRedirect } = this.state;
   	//const { eventID } = this.state;
   	const { buttonClasses } = this.state;
-  	const { values } = this.state;
+  	const { choirs } = this.state;
   	const {
       hour,
       minute,
@@ -264,9 +265,9 @@ class AddEvent extends Component {
 		            </ReactMaterialSelect>*/}
 		            <SelectField
 		          		floatingLabelText="Choirs"
-						value={values}
+						value={choirs}
 						style={{width: '200px', color: 'blue'}}
-						onChange={this.handleChange}
+						onChange={this.onChoirChange}
 						multiple={true}
 					>{this.choirItems(this.values)}
 					</SelectField>

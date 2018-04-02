@@ -27,6 +27,7 @@ class AddOrganization extends Component {
 		let orgDescription = '';
 		let orgPhone = '';
 		let orgEmail = '';
+		let member = [];
 
 		this.state = {
 			orgName, 
@@ -36,7 +37,8 @@ class AddOrganization extends Component {
 			orgState,
 			orgZip,
 			orgPhone,
-			orgEmail
+			orgEmail, 
+			member
 		}
 
 		this.handleNameChange = this.handleNameChange.bind(this);
@@ -47,6 +49,7 @@ class AddOrganization extends Component {
 		this.handleZipChange = this.handleZipChange.bind(this);
 		this.handlePhoneChange = this.handlePhoneChange.bind(this);
 		this.handleEmailChange = this.handleEmailChange.bind(this);	
+		this.handleMemberChange = this.handleMemberChange.bind(this);
 	}
 
 	handleNameChange(event, value) {
@@ -96,6 +99,14 @@ class AddOrganization extends Component {
 	handleEmailChange(event, value) {
 		this.setState({
 			orgEmail: value
+		})
+	}
+
+	handleMemberChange(event, value) {
+		//let m=[];
+		//m[0]=value;
+		this.setState({
+			member: value
 		})
 	}
 
@@ -379,7 +390,8 @@ class AddOrganization extends Component {
 			address: this.state.orgAddress + " " + this.state.orgCity + ", " + this.state.orgState + " " + this.state.orgZip,
 			phone_number: this.state.phoneNumber,
 			email: this.state.email,
-			admins: [1]
+			admins: [1], 
+			members: [1, 3]
 		}}, function() {
 			console.log(this.state.newOrganization)
 			$.ajax({
@@ -491,6 +503,11 @@ class AddOrganization extends Component {
 				/>
 				<br/>
 				<br />
+				<TextField
+				onChange={this.handleMemberChange}
+				floatingLabelText="Members..."
+				style={{width:'300px'}}
+				/>
 				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
 				<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 
@@ -501,7 +518,7 @@ class AddOrganization extends Component {
 		        <Redirect to={from || '/organizations/' + orgID}/>
 		    )} 
             {cancelRedirect && (
-		        <Redirect to={from || '/organizations/1' } />  
+		        <Redirect to={from || '/profile/' + this.props.person.id } />  
 		    )}  
 	    </CardText>
         </Card> 

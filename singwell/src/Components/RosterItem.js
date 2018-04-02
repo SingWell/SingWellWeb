@@ -9,7 +9,6 @@ import { IconButton, FontIcon, Card, Dialog, FlatButton, RaisedButton } from 'ma
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 
 
-
 class RosterItem extends Component {
 
   constructor(props) {
@@ -23,26 +22,29 @@ class RosterItem extends Component {
   componentWillMount() {
     this.setState ( {
         open: false,
-        choirGet: {}
+        //choirGet: {}
       });
 
-     $.ajax({
-        type: "GET",
-        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.match.params.choirID,
-        dataType: 'json',
-        cache: false, 
-        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-        success: function(data) {
-          this.setState({
-            choirGet: data
-          }, function() {
-            console.log(this.state)
-          });
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.log(err);
-        }
-      });
+     // $.ajax({
+     //    type: "GET",
+     //    url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + this.props.choirID,
+     //    dataType: 'json',
+     //    cache: false, 
+     //    headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+     //    success: function(data) {
+     //      this.setState({
+     //        choirGet: data
+     //      }, function() {
+     //        console.log(this.state)
+     //      });
+     //    }.bind(this),
+     //    error: function(xhr, status, err) {
+     //      console.log(err);
+     //      //console.log(xhr.responseText);
+     //      console.log(this);
+     //      console.log(xhr);
+     //    }
+     //  });
 
   }
 
@@ -54,8 +56,15 @@ class RosterItem extends Component {
     this.setState({open: true});
   };
 
-  handleSubmit() {
-    this.setState({open: false});
+  handleClose() {
+    this.setState({open:false});
+  }
+
+  handleSubmit(e) {
+    this.setState({
+      open: false
+
+    });
   };
 
   render() {
@@ -77,12 +86,6 @@ class RosterItem extends Component {
 
     return (
       <Card style={{width: '300px'}}>
-      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
-        <ListItemContent avatar="person" >{this.props.person.first_name} {this.props.person.last_name}</ListItemContent>
-      </ListItem>
-      <IconButton label="Alert" style={{display: 'inline', float: 'right'}} tooltip="edit"  onClick={this.handleOpen}>
-        <ActionDelete />
-      </IconButton>
       <Dialog
           title="Are you sure?"
           actions={actions}
@@ -92,6 +95,16 @@ class RosterItem extends Component {
         >
           Removing a choir member cannot be undone.
         </Dialog>
+      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
+        <ListItemContent avatar="person" >{this.props.person.first_name} {this.props.person.last_name}</ListItemContent>
+        
+      </ListItem>
+      {/*<IconButton label="Alert" style={{display: 'block', float: 'right'}} tooltip="edit"  onClick={this.handleOpen}>
+          <ActionDelete />
+      </IconButton>*/}
+
+      
+      
       </Card>
     );
   }

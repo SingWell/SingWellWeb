@@ -7,22 +7,19 @@ import { Redirect } from 'react-router'
     FooterDropDownSection } from  'react-mdl';*/
 import { getColorClass, getTextColorClass } from '../css/palette';
 
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
-import Moment from 'react-moment';	
 import moment from 'moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
-import ReactMaterialSelect from 'react-material-select'
 import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 // import ReactMaterialDatePicker from 'react-material-datepicker'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, Dialog, 
-	RadioButton, RadioButtonGroup, List, ListItem, Checkbox, Card, CardText, CardTitle } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, 
+	RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui/'
 
 
 
@@ -93,7 +90,7 @@ class EditEvent extends Component {
 
 	    this.onNameChange = this.onNameChange.bind(this);
 	    this.onLocationChange = this.onLocationChange.bind(this);
-	    //this.onChoirChange = this.onChoirChange.bind(this);
+	    this.onChoirChange = this.onChoirChange.bind(this);
 
 	    this.handleOpen = this.handleOpen.bind(this);
 	    this.handleClose = this.handleClose.bind(this);
@@ -159,13 +156,14 @@ class EditEvent extends Component {
 		})
 	}
 
-	// onChoirChange(event, values) {
-	// 	this.setState({
-	// 		choirs: values
-	// 	})
-	// }
+	onChoirChange(event, index, values) {
+		console.log(values);
+		this.setState({
+			choirs: values
+		})
+	}
 
-	handleChange = (event, index, choirs) => this.setState({choirs});
+	//handleChange = (event, index, choirs) => this.setState({choirs});
 
 
 	handleOpen() {
@@ -288,8 +286,7 @@ class EditEvent extends Component {
 			time: this.state.hour + ":" + this.state.minute + ":00",
 			location: this.state.eventLoc,
 			choirs: 
-				this.state.choirs
-	,
+				[this.state.choirs],
 			organization: this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
@@ -432,7 +429,7 @@ class EditEvent extends Component {
 			          		floatingLabelText="Add Choirs"
 							value={choirs}
 							style={{width: '200px', color: 'blue'}}
-							onChange={this.handleChange}
+							onChange={this.onChoirChange}
 							multiple={true}
 							>{this.choirItems(this.choirs)}
 						</SelectField>

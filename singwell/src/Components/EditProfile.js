@@ -25,6 +25,7 @@ class EditProfile extends Component {
 		let	zip = ''; 
 		let	state = ''; 
 		let	dob = ''; 
+		let selectedFile = '';
 
 		this.state = {
 			/*fname, 
@@ -36,7 +37,8 @@ class EditProfile extends Component {
 			city,
 			zip,
 			state,
-			dob
+			dob, 
+			selectedFile
 		};
 
 		/*this.handleFNameChange = this.handleFNameChange.bind(this);
@@ -50,6 +52,7 @@ class EditProfile extends Component {
 		this.handleZipChange = this.handleZipChange.bind(this);
 		this.handleStateChange = this.handleStateChange.bind(this);
 		this.handleDobChange = this.handleDobChange.bind(this);
+		this.handleFileSelected = this.handleFileSelected.bind(this);
 
 		//this.stateItems = this.stateItems.bind(this);
 
@@ -119,6 +122,17 @@ class EditProfile extends Component {
 		})
 	}
 
+  	handleFileSelected(event) {
+  		this.setState({
+  			selectedFile: event.target.files[0]
+  		})
+  	}
+
+  	handleUpload() {
+
+  	}
+
+
   	handleCancel(e){
 		this.setState(
 			{cancelRedirect: true}
@@ -172,7 +186,7 @@ class EditProfile extends Component {
           		email: data.email,
           		fname: data.first_name,
           		lname: data.last_name,
-          		//profileGet: data.profile,
+          		profileGet: data,
 				phone: data.profile.phone_number, 
 				address: data.profile.address,
 				bio: data.profile.bio,
@@ -462,9 +476,18 @@ class EditProfile extends Component {
 
 
 	handleSubmit(e){
+		console.log(this.state.selectedFile);
 		this.setState({updateProfile: {
+			id: this.props.match.params.id,
+			email: this.state.email,
+			first_name: this.state.profileGet.first_name,
+			last_name: this.state.profileGet.last_name,
+			admin_of_organizations: this.state.profileGet.admin_of_organizations,
+			owned_organizations: this.state.profileGet.owned_organizations,
+			choirs: this.state.profileGet.choirs,
+			member_of_organizations: this.state.profileGet.member_of_organizations,
 			profile:{
-				user: +this.props.match.params.userID,
+				//user: +this.props.match.params.userID,
 				phone_number: this.state.phone,
 				bio: this.state.bio, 
 				address: this.state.address,
@@ -472,8 +495,11 @@ class EditProfile extends Component {
 				state: this.state.state,
 				zip_code: this.state.zip,
 				//instruments: this.refs.instruments.value,
-				date_of_birth: this.state.dob
-		}
+				date_of_birth: this.state.dob,
+				//age: this.state.age, 
+				profile_picture_link: this.state.selectedFile
+			},
+			//organizations:
 		}},
 			function() {
 			console.log(this.state.updateProfile)
@@ -489,7 +515,7 @@ class EditProfile extends Component {
 		        		profilePatch2: this.state.updateProfile,
 		        		//user: this.props.match.params.userID,
 		        		fireRedirect: true
-		        	});
+		        	})
 		        console.log(data)
 		        //console.log(this.state)
 		        console.log(this.state.updateProfile)
@@ -502,6 +528,7 @@ class EditProfile extends Component {
 		      }
 		    });
 		});
+		console.log(this.state.profilePatch)
   		e.preventDefault();
   	}
 
@@ -613,6 +640,10 @@ class EditProfile extends Component {
 			        value={this.state.dob}
 			       	onChange={this.handleDobChange}
 			    />
+				<br/>
+				<br/>
+				<input type="file" onChange={this.handleFileSelected} />
+				{/*<FlatButton label="Upload" onClick={this.handleUpload} />*/}
 				<br/>
 				<br/>
 				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
