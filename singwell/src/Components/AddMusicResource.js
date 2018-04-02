@@ -23,6 +23,8 @@ import { TextField } from 'material-ui/'
 
 import IconButton from 'material-ui/IconButton';
 
+import '../css/AddMusicResource.css'
+
 
 class AddMusicResource extends Component {
 
@@ -97,12 +99,17 @@ class AddMusicResource extends Component {
 			request.send(data);
 		}
 
-		// if(this.refs.youtube.value !== "") {
-		// 	var data = new FormData()
-		// 	data.append('record_id', this.props.match.params.musicID)
-		// 	data.append('type', 'youtube_link')
-		// 	data.append(this.state.filesToBeSent[file].name, this.state.filesToBeSent[file])
-		// }
+		if(this.refs.youtubeLink.getValue() && this.refs.youtubeTitle.getValue()) {
+			var data = new FormData()
+			data.append('record_id', this.props.match.params.musicID)
+			data.append('type', 'youtube_link')
+			data.append('url', this.refs.youtubeLink.getValue())
+			data.append('title', this.refs.youtubeTitle.getValue())
+			var request = new XMLHttpRequest();
+			request.open("POST", "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/resource/");
+			request.send(data);
+
+		}
 
 
 		this.setState(
@@ -130,18 +137,24 @@ class AddMusicResource extends Component {
 		       <form onSubmit={this.handleSubmit.bind(this)} id="upload-form">
 					<TextField
 	  					floatingLabelText="Youtube Link..."
-	  					ref="youtube"
-					/>					
+	  					ref="youtubeLink"
+					/>	
+					<TextField
+	  					floatingLabelText="Youtube Title..."
+	  					ref="youtubeTitle"
+					/>			
+					<br/>		
 					<Dropzone 
 						onDrop={(files) => this.onDrop(files)}
 						multiple={true}
+						className="dropzone"
 					>
-		                <div>Try dropping some files here, or click to select files to upload.</div>
+		                <div>
+					         Files to be uploaded are:
+					         {this.state.filesPreview}
+			        	</div>
 		            </Dropzone>
-		            <div>
-				         Files to be uploaded are:
-				         {this.state.filesPreview}
-			        </div>
+		            <br/>
 					
 		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
 		      	</form>

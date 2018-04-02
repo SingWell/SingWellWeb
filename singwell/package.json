@@ -30,6 +30,7 @@
     "react-scripts": "1.0.17",
     "react-select": "^1.0.1",
     "react-sidenav": "^2.1.2",
+    "react-sortable-hoc": "^0.6.8",
     "react-times": "^2.2.8",
     "react-weekday-picker": "^1.0.8",
     "react-weekly-day-picker": "^1.0.0",

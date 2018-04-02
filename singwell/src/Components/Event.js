@@ -22,6 +22,7 @@ import {
   TableHeaderColumn,
   TableRow,
   TableRowColumn,
+  TableFooter,
 } from 'material-ui/Table';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -31,8 +32,47 @@ import { Link } from 'react-router-dom';
 
 import EventTableItem from './EventTableItem';
 
+import '../css/Event.css';
+
+import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+
+
+const SortableItem = SortableElement(({programItem}) => {
+  console.log(programItem)
+  return(
+    <EventTableItem programItem={programItem} key={programItem.id} orgID={this.props.match.params.orgID} ></EventTableItem>
+    );
+}
+    
+    
+);
+
+const SortableList = SortableContainer(({items}) => {
+  console.log(items)
+  return (
+    // this.state.rows = this.state.program.map((programItem, index) => {
+    //         return (
+    //             <SortableItem key={`item-${index}`} index={index} programItem={programItem} />
+                
+    //           )
+    //       })
+
+      items.map((programItem, index) => (
+
+          <SortableItem key={`item-${index}`} index={index} programItem={programItem} />
+        ))
+
+  );
+});
 
 class Event extends Component {
+
+  onSortEnd = ({oldIndex, newIndex}) => {
+      this.setState({
+        rows: arrayMove(this.state.rows, oldIndex, newIndex),
+      });
+      console.log(this.state.rows, oldIndex, newIndex)
+    };
 
   constructor(props) {
         super(props);
@@ -48,6 +88,7 @@ class Event extends Component {
             musicGet: [],
             musicLibrary: [],
             rows: [],
+            choirDirectors: []
         };
 
         this.handleKeyChange = this.handleKeyChange.bind(this);
@@ -57,6 +98,8 @@ class Event extends Component {
         this.handleSelect = this.handleSelect.bind(this);
     }
 
+
+    
 
     handleSubmit(e){
             this.setState({programItem:{
@@ -125,10 +168,34 @@ class Event extends Component {
               this.state.program.map(programItem => {
                   this.state.keys.push(programItem.field_title)
               })
+
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
-              // this.state.rows = this._generateRows();
-          })
+
+              if(this.state.eventGet.choirs.length > 0) {
+                    this.state.eventGet.choirs.map( choir => {
+                      console.log(choir)
+                      $.ajax({
+                          type: "GET",
+                          url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + choir,
+                          dataType: 'json',
+                          cache: false, 
+                          headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                          success: function(data) {
+                              let choirDirectors =  this.state.choirDirectors;
+                              choirDirectors.push(data.director_name)
+                              this.setState({choirDirectors: choirDirectors})
+                              // this.state.choirDirectors.push(data.director_name)
+                              console.log(this.state.choirDirectors, data.director_name)
+                          }.bind(this),
+                          error: function(xhr, status, err) {
+                            console.log(err);
+                          }
+                      })
+                  })
+              }
+              
+          })    
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -146,7 +213,7 @@ class Event extends Component {
             console.log(this.state.musicGet)
             this.state.musicGet.map(musicPiece => {
               console.log(musicPiece)
-              this.state.musicLibrary.push({title: musicPiece.title, id: musicPiece.id})
+              this.state.musicLibrary.push({title: musicPiece.title + " - " + musicPiece.instrumentation, id: musicPiece.id})
             });
 
           });
@@ -190,6 +257,9 @@ class Event extends Component {
               <ListItem>
                 <ListItemContent icon="home"><b>Event Location: </b>{this.state.eventGet.location}</ListItemContent>
               </ListItem>
+              <ListItem>
+                <ListItemContent icon="person"><b>Director(s): </b>{this.state.choirDirectors.join()}</ListItemContent>
+              </ListItem>
               <Tooltip label="Edit Event" large>
                   <ListItem>
                     <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID + '/events/' + this.props.match.params.eventID + '/edit/')}></ListItemContent>
@@ -232,25 +302,28 @@ class Event extends Component {
 
     renderProgram() {
 
-          this.state.rows = this.state.program.map(programItem => {
+          this.state.rows = this.state.program.map((programItem, index) => {
             return (
-                <EventTableItem programItem={programItem} key={programItem.id} orgID={this.props.match.params.orgID}></EventTableItem>
+                <EventTableItem programItem={programItem} key={programItem.id} orgID={this.props.match.params.orgID} index={index}></EventTableItem>
               )
-            {/* return <TableRow key={programItem.id}>
-                      <TableRowColumn>{programItem.field_title}</TableRowColumn>
-                      <TableRowColumn><Link to={'/organizations/' + this.props.match.params.orgID + '/music/' + programItem.music_record}>{programItem.title}</Link></TableRowColumn>
-                      <TableRowColumn>{programItem.notes}</TableRowColumn>
-                  </TableRow> */}
           })
 
       
         return (
-          <div className="title__padding" style={{paddingRight: '20px'}}>
+          <div className="title__padding" id="event" style={{paddingRight: '20px', marginBottom: '250px'}}>
             <div >
             <br/>
               <Table>
-                  <TableHeader adjustForCheckbox={this.state.checkboxes} displaySelectAll={this.state.checkboxes}>
+                  
+                  <TableBody displayRowCheckbox={this.state.checkboxes}>
+                      {this.state.rows} 
+                    {/* <SortableList items={this.state.program} onSortEnd={this.onSortEnd} /> */}
+                  </TableBody> 
+                  <TableFooter adjustForCheckbox={this.state.checkboxes} displaySelectAll={this.state.checkboxes} className="table-footer">
                       <TableRow key="input">
+                          <TableRowColumn style={{width:'36pt'}}>
+                            
+                          </TableRowColumn>
                           <TableRowColumn>
                             <AutoComplete
                                 floatingLabelText="Key..."
@@ -291,10 +364,7 @@ class Event extends Component {
                           </TableRowColumn>
                            
                       </TableRow>
-                  </TableHeader>
-                  <TableBody displayRowCheckbox={this.state.checkboxes}>
-                      {this.state.rows}
-                  </TableBody>
+                  </TableFooter>
               </Table> 
             </div>
           </div>

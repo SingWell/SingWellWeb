@@ -3,7 +3,7 @@ import ChoirItem from './ChoirItem';
 import EventItem from './EventItem';
 import classNames from 'classnames';
 import $ from 'jquery';
-import '../css/Organizations.css'
+import '../css/Organizations.css';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell, Tooltip,
     Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
@@ -48,6 +48,7 @@ class Organizations extends Component {
         choirGet:[],
         eventGet: [],
         events: {},
+        eventsTest: {},
         geocode: {},
         center: {},
         musicGet: {}
@@ -166,7 +167,7 @@ class Organizations extends Component {
     }
 
     renderTabOverview() {
-        let eventItems;
+        let eventItems = [];
         this.state.eventGet = this.state.eventGet.sort(function(a, b) {
             a["datetime"] = a["date"] + " " + a["time"]
             b["datetime"] = b["date"] + " " + b["time"]
@@ -174,10 +175,15 @@ class Organizations extends Component {
             return (+moment.utc(a["datetime"])) - (+moment.utc(b["datetime"]))
         })
 
-        this.state.eventGet = this.state.eventGet.reverse()
+        this.state.eventGet.map( event => {
+            if(moment(event["date"] + " " + event["time"]).isAfter(Date.now())) { 
+                eventItems.push(event)
+            } 
+        })
 
-        eventItems = this.state.eventGet.map(event => {
-            console.log(event)
+        eventItems = eventItems.reverse()
+
+        eventItems = eventItems.map(event => {
             return (
                 <EventItem key= {event.id} event={event} orgID={this.props.match.params.orgID} history={this.props.history}/>
             );
@@ -214,47 +220,46 @@ class Organizations extends Component {
                     Upcoming Events:
                 </h4>
                 <Grid component="section" className="section--center" shadow={0} noSpacing>
-                        {console.log(eventItems)}
                         {eventItems.slice(0,3)}
-                <Cell col={12}>
-                    <List className="title__padding">
-                      <ListItem>
-                        <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemContent icon="phone">{this.state.orgGet.phone_number}</ListItemContent>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemContent icon="email">{this.state.orgGet.email}</ListItemContent>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemContent icon="link"><a style={{color: "rgb(0, 0, 240)"}} href={this.state.orgGet.website_url}>{this.state.orgGet.website_url}</a></ListItemContent>
-                      </ListItem>
-                      <Tooltip label="Edit Org" large>
-                          <ListItem>
-                            <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}></ListItemContent>
-                          </ListItem>
-                      </Tooltip>
-                    </List>
+                        <Cell col={12}>
+                            <List className="title__padding">
+                              <ListItem>
+                                <ListItemContent icon="home">{this.state.orgGet.address}</ListItemContent>
+                              </ListItem>
+                              <ListItem>
+                                <ListItemContent icon="description">{this.state.orgGet.description}</ListItemContent>
+                              </ListItem>
+                              <ListItem>
+                                <ListItemContent icon="phone">{this.state.orgGet.phone_number}</ListItemContent>
+                              </ListItem>
+                              <ListItem>
+                                <ListItemContent icon="email">{this.state.orgGet.email}</ListItemContent>
+                              </ListItem>
+                              <ListItem>
+                                <ListItemContent icon="link"><a style={{color: "rgb(0, 0, 240)"}} href={this.state.orgGet.website_url}>{this.state.orgGet.website_url}</a></ListItemContent>
+                              </ListItem>
+                              <Tooltip label="Edit Org" large>
+                                  <ListItem>
+                                    <ListItemContent style={{cursor: "pointer"}} icon="edit" onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/edit/')}></ListItemContent>
+                                  </ListItem>
+                              </Tooltip>
+                            </List>
 
-                        <div className="map" style={{height: "300px"}}>
-                        <GoogleMapReact
-                                bootstrapURLKeys={{ key: "AIzaSyDs9ev97Ko6vAon6w5wxflxhJBdcDhzXT0" }}
-                                defaultCenter={this.props.center}
-                                defaultZoom={this.props.zoom}
-                              >
-                                <AnyReactComponent
-                                  lat={this.state.center.lat}
-                                  lng={this.state.center.lng}
-                                  text={this.state.orgGet.description}
-                                />
-                              </GoogleMapReact>
-                            {/* <MapContainer initialCenter={{lat: 55, lng: -93}}/> */}
-                        </div>
-                </Cell>
+                                <div className="map" style={{height: "300px"}}>
+                                <GoogleMapReact
+                                        bootstrapURLKeys={{ key: "AIzaSyDs9ev97Ko6vAon6w5wxflxhJBdcDhzXT0" }}
+                                        defaultCenter={this.props.center}
+                                        defaultZoom={this.props.zoom}
+                                      >
+                                        <AnyReactComponent
+                                          lat={this.state.center.lat}
+                                          lng={this.state.center.lng}
+                                          text={this.state.orgGet.description}
+                                        />
+                                      </GoogleMapReact>
+                                    {/* <MapContainer initialCenter={{lat: 55, lng: -93}}/> */}
+                                </div>
+                        </Cell>
                 </Grid>
                         
             </div>
@@ -297,21 +302,73 @@ class Organizations extends Component {
           }
 
     renderEvents() {
+        console.log(this.state.monthData)
         const {events} = this.state
         this.state.events = {};
         let eventItems = this.state.eventGet.map(event => {
-            console.log(event.id)
+            // console.log(event.id)
+            // console.log(moment(event.date).year())
+            // console.log(moment(event.date).month())
+            // console.log(moment(event.date).date())
             if(typeof(events[moment(event.date).date()]) !== "undefined") {
                 events[moment(event.date).date()].push(event.name + "&&&" + event.id)
-                // events[moment(event.date).date()].push({"name":event.name, "id":event.id})
                
             } else {
                 events[moment(event.date).date()] = [event.name + "&&&" + event.id]
-                // events[moment(event.date).date()] = [{"name":event.name, "id":event.id}]
             }
             
         });
         console.log(events)
+
+
+        const {eventsTest} = this.state
+        this.state.eventsTest = {};
+        for(let i = 2016; i < 2020; i++) {
+            eventsTest[i] = {}
+            for(let j = 0; j < 12; j++) {
+                eventsTest[i][j] = {}
+            }
+        }
+
+        // you know that generic comment we all know about the one about dont touch this code because i dont even 
+        // know what it does
+        // example below:
+
+        this.state.eventGet.map(event => {
+            if(typeof(eventsTest[moment(event.date).year()]) === "undefined") {
+                eventsTest[moment(event.date).year()] = {}
+                if(typeof(eventsTest[moment(event.date).year()][moment(event.date).month()]) === "undefined") {
+                    eventsTest[moment(event.date).year()][moment(event.date).month()] = {}
+                    if(typeof(eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()]) !== "undefined") {
+                        eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()].push(event.name + "&&&" + event.id)
+                       
+                    } else {
+                        eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()] = [event.name + "&&&" + event.id]
+                    }
+                } 
+            } else {
+                if(typeof(eventsTest[moment(event.date).year()][moment(event.date).month()]) === "undefined") {
+                    eventsTest[moment(event.date).year()][moment(event.date).month()] = {}
+                    if(typeof(eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()]) !== "undefined") {
+                        eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()].push(event.name + "&&&" + event.id)
+                       
+                    } else {
+                        eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()] = [event.name + "&&&" + event.id]
+                    }
+                } else {
+                    if(typeof(eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()]) !== "undefined") {
+                        eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()].push(event.name + "&&&" + event.id)
+                       
+                    } else {
+                        eventsTest[moment(event.date).year()][moment(event.date).month()][moment(event.date).date()] = [event.name + "&&&" + event.id]
+                    }
+                }
+            }
+
+            
+        });
+
+        console.log(eventsTest)
 
 
         function YearMonthForm({ date, localeUtils, onChange }) {
@@ -327,7 +384,7 @@ class Organizations extends Component {
 
                 // this.setState({
                 //     "year": year.value,
-                //     "month": month.value
+                //     "monthData": month.value
                 // })
 
                 // console.log(this.state.month, this.state.year)
@@ -335,7 +392,7 @@ class Organizations extends Component {
               };
 
               return (
-                <form className="DayPicker-Caption">
+                <form className="`DayPicker`-Caption">
                   <select name="month" onChange={handleChange} value={date.getMonth()}>
                     {months.map((month, i) => (
                       <option key={month} value={i}>
@@ -387,11 +444,25 @@ class Organizations extends Component {
             borderWidth: '1px'
           };
 
-          return (
+          // console.log(this.state)
+
+          {/* return (
             <div style={cellStyle}>
               <div style={dateStyle}>{date}</div>
               {events[date] &&
                 events[date].map((name, i) => (
+                  <div onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events/' + name.split("&&&")[1])} key={i} style={containerStyle}>
+                    <div style={textStyle}> {name.split("&&&")[0]} </div>
+                  </div>
+                ))}
+            </div>
+          ); */}
+
+          return (
+            <div style={cellStyle}>
+              <div style={dateStyle}>{date}</div>
+              {eventsTest[this.state.year][this.state.month.getMonth()][date] &&
+                eventsTest[this.state.year][this.state.month.getMonth()][date].map((name, i) => (
                   <div onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/events/' + name.split("&&&")[1])} key={i} style={containerStyle}>
                     <div style={textStyle}> {name.split("&&&")[0]} </div>
                   </div>
@@ -408,7 +479,9 @@ class Organizations extends Component {
                             <Icon name="add" />
                         </FABButton>
                     </Cell>
+                    <Cell col={12}>
                         <DayPicker
+                          showOutsideDays
                           canChangeMonth={true}
                           className="Birthdays"
                           renderDay={renderDay.bind(this)}
@@ -422,7 +495,8 @@ class Organizations extends Component {
                               onChange={this.handleYearMonthChange}
                             />
                           )}
-                        />       
+                        />    
+                    </Cell>   
                     </Grid>
                 </div>
         );
@@ -443,9 +517,9 @@ class Organizations extends Component {
                 <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/music')}>
                     <Icon name="add" />
                 </FABButton>
-                <List>
+                <ul className="title__padding mn-pymk-list__cards">
                   { musicLibraryItems }
-                </List>
+                </ul>
             </div>
         );
 
