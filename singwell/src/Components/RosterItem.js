@@ -64,25 +64,27 @@ class RosterItem extends Component {
      //    }
      //  });
 
-  }
 
-  handleEdit() {
-    console.log("edit");
-  }
+  
+}
+    handleEdit() {
+        console.log("edit");
+      }
 
-  handleOpen() {
-    this.setState({open: true});
-  };
+      handleOpen() {
+        this.setState({open: true});
+      };
 
-  handleClose() {
-    this.setState({open:false});
+      handleClose() {
+        this.setState({open:false});
+      }
 
-  handleSubmit(e) {
-    this.setState({
-      open: false
+      handleSubmit(e) {
+        this.setState({
+          open: false
 
-    });
-  };
+        });
+      };
 
   render() {
     const actions = [
@@ -106,9 +108,7 @@ class RosterItem extends Component {
         var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
         return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
       }
-
-    return (
-      <Card style={{width: '300px'}}>
+{/* <Card style={{width: '300px'}}>
       <Dialog
           title="Are you sure?"
           actions={actions}
@@ -118,17 +118,12 @@ class RosterItem extends Component {
         >
           Removing a choir member cannot be undone.
         </Dialog>
-      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
-        <ListItemContent avatar="person" >{this.props.person.first_name} {this.props.person.last_name}</ListItemContent>
-        
-      </ListItem>
-      {/*<IconButton label="Alert" style={{display: 'block', float: 'right'}} tooltip="edit"  onClick={this.handleOpen}>
-          <ActionDelete />
-      </IconButton>*/}
 
       
       
-      </Card>
+      </Card> */}
+    return (
+      
 
 
 
@@ -152,6 +147,7 @@ class RosterItem extends Component {
               </div>
            </div>
       </li>
+
     );
   }
 

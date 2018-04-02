@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { List, ListItem, ListItemContent, Tooltip, Layout, Header, HeaderRow, FABButton,
- Icon, HeaderTabs, Tab, Content } from  'react-mdl';
+ Icon, HeaderTabs, Tab, Content, Grid } from  'react-mdl';
 import { getColorClass, getTextColorClass } from '../css/palette';
 import classNames from 'classnames';
 

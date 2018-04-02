@@ -17,7 +17,7 @@ import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
 
-import { IconButton, FontIcon } from 'material-ui/';
+import { IconButton, FontIcon, SelectField, TextField } from 'material-ui/';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 import MusicLibraryItem from './MusicLibraryItem'
 
@@ -51,7 +51,12 @@ class Organizations extends Component {
         eventsTest: {},
         geocode: {},
         center: {},
-        musicGet: {}
+        musicGet: {},
+        title: '',
+        composer: '',
+        arranger: '',
+        instrumentation: '',
+        musicLibraryItems: [],
       });
 
     $.ajax({
@@ -149,6 +154,11 @@ class Organizations extends Component {
 
         this.onChangeHeaderTab = this.onChangeHeaderTab.bind(this);
         this.handleYearMonthChange = this.handleYearMonthChange.bind(this);
+
+        this.handleTitleChange = this.handleTitleChange.bind(this);
+        this.handleComposereChange = this.handleComposerChange.bind(this);
+        this.handleArrangerChange = this.handleArrangerChange.bind(this);
+        this.handleInstrumentationChange = this.handleInstrumentationChange.bind(this);
 
         this.state = {
             activeHeaderTab: 0,
@@ -504,12 +514,56 @@ class Organizations extends Component {
     }
 
 
+    handleTitleChange(event, value) {
+        this.setState({
+            title: value
+        })
+        this.filterMusicLibrary(value)
+    }
+
+    handleComposerChange(event, value) {
+        this.setState({
+            composer: value
+        })
+        this.filterMusicLibrary(value)
+    }
+
+    handleArrangerChange(event, value) {
+        this.setState({
+            arranger: value
+        })
+        this.filterMusicLibrary(value)
+    }
+
+    handleInstrumentationChange(event, value) {
+        this.setState({
+            instrumentation: value
+        })
+        this.filterMusicLibrary(value)
+    }
+
+    filterMusicLibrary(value) {
+        // console.log(this.state.title)
+        let musicLibraryItems = [];
+        this.state.musicGet.map(music => {
+            if(music.title.includes(this.state.title)) {
+                musicLibraryItems.push(
+                    <MusicLibraryItem key= {music.id} music={music} history={this.props.history}/>
+                );
+            }
+            
+        });
+        
+        return musicLibraryItems;
+        
+    }
+
     renderMusicLibrary() {
 
         const { musicGet } = this.state
         
-        let musicLibraryItems;
-        musicLibraryItems = this.state.musicGet.map(music => {
+        // let musicLibraryItems;
+        this.state.musicLibraryItems = this.state.musicGet.map(music => {
             return (
                 <MusicLibraryItem key= {music.id} music={music} history={this.props.history}/>
             );
@@ -520,8 +574,44 @@ class Organizations extends Component {
                 <FABButton style={{margin: '10px', float: "right"}} colored ripple onClick={() => this.props.history.push('/organizations/' + this.props.match.params.orgID + '/music')}>
                     <Icon name="add" />
                 </FABButton>
+                <Grid component="section" className="section--center"  noSpacing>
+                    <Cell col={3}>
+                        <TextField
+                            floatingLabelText="Piece Title..."
+                            required={true}
+                            onChange={this.handleTitleChange}
+                            value={this.state.title}
+                        />    
+                    </Cell>
+                    <Cell col={3}>
+                        <TextField
+                            floatingLabelText="Composer..."
+                            required={true}
+                            onChange={this.handleComposerChange}
+                            value={this.state.composer}
+                        />
+                    </Cell>    
+                    <Cell col={3}>
+                        <TextField
+                            floatingLabelText="Arranger..."
+                            required={true}
+                            onChange={this.handleArrangerChange}
+                            value={this.state.arranger}
+                        />
+                    </Cell>
+                    <Cell col={3}>
+                        <TextField
+                            floatingLabelText="Instrumentation..."
+                            required={true}
+                            onChange={this.handleInstrumentationChange}
+                            value={this.state.instrumentation}
+                        />
+                    </Cell>  
+                
+                </Grid>
+                
                 <ul className="title__padding mn-pymk-list__cards">
-                  { musicLibraryItems }
+                  { this.filterMusicLibrary() }
                 </ul>
             </div>
         );
