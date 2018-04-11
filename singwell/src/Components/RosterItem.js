@@ -76,6 +76,7 @@ class RosterItem extends Component {
 
   handleClose() {
     this.setState({open:false});
+  }
 
   handleSubmit(e) {
     this.setState({
@@ -108,6 +109,7 @@ class RosterItem extends Component {
       }
 
     return (
+      <div>
       <Card style={{width: '300px'}}>
       <Dialog
           title="Are you sure?"
@@ -129,10 +131,6 @@ class RosterItem extends Component {
       
       
       </Card>
-
-
-
-
       <li className="mn-pymk-list__card display-flex flex-column" onClick={() => this.props.history.push('/profile/' + this.props.person.id)} style={{cursor: 'pointer'}}>
           <div className="pymk-card">
               <a className="pymk-card__imageember-view"><img className="lazy-image EntityPhoto-circle-7 loaded" src={this.state.image}/></a>
@@ -152,6 +150,7 @@ class RosterItem extends Component {
               </div>
            </div>
       </li>
+      </div>
     );
   }
 

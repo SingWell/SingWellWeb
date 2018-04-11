@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
+    Button, FABButton, Icon, CardMenu, List, ListItem, ListItemContent,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
     FooterDropDownSection } from  'react-mdl';
 import { SelectField, Option } from 'react-mdl-extra';
@@ -19,7 +19,7 @@ import Dropzone from 'react-dropzone';
 import FontIcon from 'material-ui/FontIcon';
 import {blue500, red500, greenA200} from 'material-ui/styles/colors';
 
-import { TextField } from 'material-ui/'
+import { TextField, RaisedButton, FlatButton, Card, CardTitle, CardText } from 'material-ui/'
 
 import IconButton from 'material-ui/IconButton';
 
@@ -33,6 +33,7 @@ class AddMusicResource extends Component {
 		this.setState ( {
 			newMusic:{},
 			fireRedirect: false,
+			cancelRedirect: false,
 			musicID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
 			filesToBeSent: [],
@@ -85,6 +86,9 @@ class AddMusicResource extends Component {
 	    this.setState({filesToBeSent, filesPreview});
    }
 	
+	handleCancel(e) {
+		this.setState({ cancelRedirect: true})
+	}
 
 	handleSubmit(e) {
 
@@ -126,19 +130,22 @@ class AddMusicResource extends Component {
 
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
+  	const { cancelRedirect } = this.state;
   	const { musicID } = this.state;
   	const { buttonClasses } = this.state
 
 
     return (
-    	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Music Resources</CardTitle>
+    	<div className={"formContainer"} >
+        <div className={"form"}>
+    	<Card shadow={0}>
+		    <CardTitle title="ADD MUSIC RESOURCES" className={"title"} />
 		    <CardText className={"timePickerForm"}>
-		       <form onSubmit={this.handleSubmit.bind(this)} id="upload-form">
 					<TextField
 	  					floatingLabelText="Youtube Link..."
 	  					ref="youtubeLink"
 					/>	
+					<br/>
 					<TextField
 	  					floatingLabelText="Youtube Title..."
 	  					ref="youtubeTitle"
@@ -156,14 +163,18 @@ class AddMusicResource extends Component {
 		            </Dropzone>
 		            <br/>
 					
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      	</form>
+				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
+				<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 		      	{fireRedirect && (
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + this.props.match.params.musicID}/>
+		        )} 
+		        {cancelRedirect && (
 		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + this.props.match.params.musicID}/>
 		        )} 
 		    </CardText>
 		</Card>
-
+		</div>
+		</div>
 
       
     );

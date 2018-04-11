@@ -374,21 +374,23 @@ class EditEvent extends Component {
 		});*/}
 
 		return (
-
-			<Card shadow={0} style={{ margin: '10px'}}>
-			    <CardTitle title="Edit Event" />
+			<div className={"formContainer"} >
+        	<div className={"form"}>
+			<Card shadow={0} >
+			    <CardTitle title="EDIT EVENT" className={"title"}/>
 			    <CardText>
 			       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 				       <TextField
 						    //onChange={() => {}}
 						    floatingLabelText="Event name..."
 						    ref="name"
-						    //style={{width: '200px'}}
+						    style={{width: '100%'}}
 						    value={this.state.eventName}
 						    onChange={this.onNameChange}
 						/>
 						{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
 						<DatePicker 
+							style={{width: '100%'}}
 							floatingLabelText="Date of Event..." 
 							container="inline" 
 							value={new Date(this.state.defaultYear, this.state.defaultMonth, this.state.defaultDay)}
@@ -398,6 +400,7 @@ class EditEvent extends Component {
 			      		<br/>
 			      		<label>Event Time:</label>
 			      		<TimePicker
+			      			style={{width: '100%'}}
 							focused={focused}
 							timezone={timezone}
 							onFocusChange={this.onFocusChange}
@@ -411,6 +414,7 @@ class EditEvent extends Component {
 				        />
 				        <br/>
 				        <TextField
+				        	style={{width: '100%'}}
 						    //onChange={() => {}}
 						    floatingLabelText="Location..."
 						    ref="location"
@@ -428,7 +432,7 @@ class EditEvent extends Component {
 			            <SelectField
 			          		floatingLabelText="Add Choirs"
 							value={choirs}
-							style={{width: '200px', color: 'blue'}}
+							style={{width: '100%'}}
 							onChange={this.onChoirChange}
 							multiple={true}
 							>{this.choirItems(this.choirs)}
@@ -446,7 +450,8 @@ class EditEvent extends Component {
 			        )} 
 			    </CardText>
 			</Card>
-		 
+		 	</div>
+		 	</div>
 		);
 		}
 	}

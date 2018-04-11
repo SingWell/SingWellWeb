@@ -9,7 +9,7 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import TimePicker from 'react-times';
 
 
-import '../css/AddChoir.css'
+//import '../css/AddChoir.css'
 import 'react-times/css/material/default.css';
 
 class AddChoir extends Component {
@@ -207,7 +207,7 @@ class AddChoir extends Component {
 				1
 			],
 			//director_name: "Kenton Kravig",
-			director_id: 1
+			director: 1
 		}}, function() {
 			console.log("inside post statement");
 			$.ajax({
@@ -261,26 +261,26 @@ class AddChoir extends Component {
   	});*/}
 
     return (
-    	<Card shadow={0} style={{ margin: '10px', width: '340px'}}>
-		    <CardTitle title="Add Choir" />
+    	<div className={"formContainer"} >
+        <div className={"form"}>
+    	<Card shadow={0}>
+		    <CardTitle title="ADD CHOIR" className={"title"}/>
 		    <CardText className={"timePickerForm"}>
 			       <TextField
 					    floatingLabelText="Name..."
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    required={true}
 					    onChange={this.handleNameChange}
 					    value={this.state.name}
 					/>
-					<br/>
+					
 		      		<SelectField
 		      			floatingLabelText="Meeting Day"
 						value={this.state.meetingDay}
-						style={{width: '300px'}}
+						style={{width: '100%'}}
 						onChange={this.handleDayChange}
 		      		>{this.dayItems(this.values)}
 		      		</SelectField>
-		      		<br/>
-		      		<br/>
 
 		      		{/*<TimePicker
 						format="ampm"
@@ -288,10 +288,11 @@ class AddChoir extends Component {
 						value={this.state.value12}
 						onChange={this.handleChangeTimePicker12}
 			        />*/}
+			        <br/>
 		      		<TimePicker
 			      		/*hintText="Meeting Start Time"
-	      				autoOk={true}
-	      				style={{width: '300px'}}*/
+	      				autoOk={true}*/
+	      				style={{width: '100%'}}
 						focused={focusedStart}
 						timezone={timezone}
 						onFocusChange={this.onFocusChange}
@@ -302,11 +303,11 @@ class AddChoir extends Component {
 						time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
 			        />
 			        <br/>
-		      		<br/>
+
 			        <TimePicker
 			        	/*hintText="Meeting End Time"
-			        	autoOk={true}
-			        	style={{width: '300px'}}*/
+			        	autoOk={true}*/
+			        	style={{width: '100%'}}
 						focused={focusedEnd}
 						timezone={timezone}
 						onFocusChange={this.onFocusChangeEnd}
@@ -327,13 +328,9 @@ class AddChoir extends Component {
 		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID } />  
 		        )} 
 		    </CardText>
-		    {/*<CardActions border>
-		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
-		    </CardActions>*/}
 		</Card>
-
-
-      
+		</div>
+		</div>
     );
   }
 

@@ -336,14 +336,15 @@ class EditChoir extends Component {
   	// });
 
     return (
-    	<div>
+    	<div className={"formContainer"} >
+        <div className={"form"}>
     	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle title="Edit Event" />
+		    <CardTitle title="EDIT CHOIR" className={"title"}/>
 		    <CardText className={"timePickerForm"}>
 					<TextField
 						floatingLabelText="Name..."
 						ref="name"
-						style={{width: '200px'}}
+						style={{width: '100%'}}
 						value={this.state.choirName}
 						onChange={this.handleNameChange}
 					/>
@@ -352,7 +353,7 @@ class EditChoir extends Component {
 		      		<SelectField
 		      			floatingLabelText="Meeting Day"
 						value={this.state.mtgDay}
-						style={{width: '200px', color: 'blue'}}
+						style={{width: '100%'}}
 						onChange={this.handleDayChange}
 		      		>{this.dayItems(this.values)}
 		      		</SelectField>
@@ -360,6 +361,7 @@ class EditChoir extends Component {
 		      		<br/>
 		      		<label>Meeting Start Time:</label>
 		      		<TimePicker
+		      			style={{width: '100%'}}
 						focused={focusedStart}
 						timezone={timezone}
 						onFocusChange={this.onFocusChange}
@@ -373,6 +375,7 @@ class EditChoir extends Component {
 		      		<br/>
 			        <label>Meeting End Time:</label>
 			        <TimePicker
+			        	style={{width: '100%'}}
 						focused={focusedEnd}
 						timezone={timezone}
 						onFocusChange={this.onFocusChangeEnd}
@@ -398,6 +401,7 @@ class EditChoir extends Component {
 		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
 		    </CardActions>*/}
 		</Card>
+		</div>
 		</div>
 
 

@@ -171,7 +171,7 @@ class Event extends Component {
 
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
-          })
+          });
               if(this.state.eventGet.choirs.length > 0) {
                     this.state.eventGet.choirs.map( choir => {
                       console.log(choir)
@@ -185,7 +185,7 @@ class Event extends Component {
                               let choirDirectors =  this.state.choirDirectors;
                               choirDirectors.push(data.director_name)
                               this.setState({choirDirectors: choirDirectors})
-                              // this.state.choirDirectors.push(data.director_name)
+                              //this.state.choirDirectors.push(data.director_name)
                               console.log(this.state.choirDirectors, data.director_name)
                           }.bind(this),
                           error: function(xhr, status, err) {
@@ -193,9 +193,7 @@ class Event extends Component {
                           }
                       })
                   })
-              }
-              
-          })    
+              } 
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -215,17 +213,13 @@ class Event extends Component {
               console.log(musicPiece)
               this.state.musicLibrary.push({title: musicPiece.title + " - " + musicPiece.instrumentation, id: musicPiece.id})
             });
-
           });
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
         }
       });
-
-
     }
-
 
     onChangeHeaderTab(tabId) {
         this.setState({

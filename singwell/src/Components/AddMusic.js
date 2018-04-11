@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    Button, FABButton, IconButton, Icon, List, ListItem, ListItemContent, CardActions,
+    Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { SelectField, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
+import { Card, CardTitle, CardMenu, TextField, CardText, RaisedButton, FlatButton } from 'material-ui/';
 
 import '../css/AddChoir.css'
 
@@ -22,10 +23,15 @@ class AddMusic extends Component {
 		this.setState ( {
 			newMusic:{},
 			fireRedirect: false,
+			cancelRedirect: false,
 			musicID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
 		});
 
+	}
+
+	handleCancel(e) {
+		this.setState({cancelRedirect: true})
 	}
 	
 
@@ -71,63 +77,61 @@ class AddMusic extends Component {
 
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
+  	const { cancelRedirect } = this.state;
   	const { musicID } = this.state;
   	const { buttonClasses } = this.state
 
 
     return (
-    	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Music</CardTitle>
+        <div className={"formContainer"} >
+        <div className={"form"}>
+    	<Card shadow={0} >
+		    <CardTitle title="ADD MUSIC" className={"title"}/>
 		    <CardText className={"timePickerForm"}>
-		       <form onSubmit={this.handleSubmit.bind(this)}>
-			       <Textfield
+			       <TextField
 					    onChange={() => {}}
-					    label="Title..."
-					    floatingLabel
+					    floatingLabelText="Title..."
 					    ref="title"
-					    style={{width: '200px'}}
+					    style={{width: '100%'}}
 					/>
-					<Textfield
+					<TextField
 					    onChange={() => {}}
-					    label="Composer..."
-					    floatingLabel
+					    floatingLabelText="Composer..."
 					    ref="composer"
-					    style={{width: '200px'}}
+					    style={{width: '100%'}}
 					/>
-					<Textfield
+					<TextField
 					    onChange={() => {}}
-					    label="Arranger..."
-					    floatingLabel
+					    floatingLabelText="Arranger..."
 					    ref="arranger"
-					    style={{width: '200px'}}
+					    style={{width: '100%'}}
 					/>
-					<Textfield
+					<TextField
 					    onChange={() => {}}
-					    label="Publisher..."
-					    floatingLabel
+					    floatingLabelText="Publisher..."
 					    ref="publisher"
-					    style={{width: '200px'}}
+					    style={{width: '100%'}}
 					/>
-					<Textfield
+					<TextField
 					    onChange={() => {}}
-					    label="Instrumentation..."
-					    floatingLabel
+					    floatingLabelText="Instrumentation..."
 					    ref="instrumentation"
-					    style={{width: '200px'}}
+					    style={{width: '100%'}}
 					/>
-					
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      	</form>
+					<br/>
+					<br/>
+					<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)} />
+		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />		  
 		      	{fireRedirect && (
 		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>
 		        )} 
+		        {cancelRedirect && (
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>
+		        )} 
 		    </CardText>
-		    <CardActions border>
-		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
-		    </CardActions>
 		</Card>
-
-
+		</div>
+		</div>
       
     );
   }

@@ -227,19 +227,25 @@ class AddEvent extends Component {
 
 
     return (
-
-    	<Card shadow={0} style={{ margin: '10px', height: '700px'}} title="Add Event">
-    		<CardTitle title="Add Event" />
+    	<div className={"formContainer"} >
+        <div className={"form"}>
+    	<Card shadow={0}>
+    		<CardTitle title="ADD EVENT" className={"title"}/>
 		    <CardText>
 		       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 			       <TextField
 					    onChange={this.handleNameChange}
 					    floatingLabelText="Event name..."
-					    style={{width: '200px'}}
+					    style={{width: '100%'}}
 					    value={this.state.name}
 					/>
 					{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
-					<DatePicker floatingLabelText="Date of Event..." container="inline" onChange={this.onDateChange}/>
+					<DatePicker 
+						floatingLabelText="Date of Event..." 
+						container="inline" 
+						onChange={this.onDateChange}
+						style={{width: '100%'}}
+					/>
 		      		<br/>
 		      		<br/>
 		      		<label>Event Time:</label>
@@ -257,7 +263,8 @@ class AddEvent extends Component {
 			        <TextField
 					    onChange={this.onLocationChange}
 					    floatingLabelText="Location..."
-					    ref="location"
+					   	value={this.state.location}
+					   	style={{width: '100%'}}
 					/>
 					<br/>
 					{/*<ReactMaterialSelect label="Choir..." onChange={this.callbackFunction}>
@@ -266,7 +273,7 @@ class AddEvent extends Component {
 		            <SelectField
 		          		floatingLabelText="Choirs"
 						value={choirs}
-						style={{width: '200px', color: 'blue'}}
+						style={{width: '100%'}}
 						onChange={this.onChoirChange}
 						multiple={true}
 					>{this.choirItems(this.values)}
@@ -284,6 +291,8 @@ class AddEvent extends Component {
 		        )} 
 		    </CardText>
 		</Card>
+		</div>
+		</div>
      
     );
   }

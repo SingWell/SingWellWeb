@@ -539,8 +539,10 @@ class EditProfile extends Component {
 	  	const { values } = this.state;
 
 	    return (
+	    <div className={"formContainer"} >
+        <div className={"form"}>
 	      <Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle title="Edit Profile" />
+		    <CardTitle title="EDIT PROFILE" className={"title"}/>
 		    <CardText>
 		      {/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 		       	{/*<TextField
@@ -569,7 +571,7 @@ class EditProfile extends Component {
 				<TextField
 					floatingLabelText="Address..."
 					ref="address"
-					style={{width: '300px'}}
+					style={{width: '100%'}}
 					value={this.state.address}
 					onChange={this.handleAddressChange}
 				/>
@@ -577,7 +579,7 @@ class EditProfile extends Component {
 				<TextField
 					floatingLabelText="City..."
 					ref="city"
-					style={{width: '300px'}}
+					style={{width: '100%'}}
 					value={this.state.city}
 					onChange={this.handleCityChange}
 				/>
@@ -588,7 +590,7 @@ class EditProfile extends Component {
 					//value="AK"
 					//maxHeight={200}
 					value={this.state.state}
-					style={{width: '300px'}}
+					style={{width: '100%'}}
 					onChange={this.handleStateChange}
 				>{this.stateItems(this.values)}
 				</SelectField>
@@ -597,7 +599,7 @@ class EditProfile extends Component {
 					floatingLabelText="Zip..."
 					ref="zip"
 					type="number"
-					style={{width: '300px'}}
+					style={{width: '100%'}}
 					value={this.state.zip}
 					onChange={this.handleZipChange}
 				/>
@@ -609,7 +611,7 @@ class EditProfile extends Component {
 				    ref={(input) => { this.bioInput = input; }}
 				    rows={3}
 				    multiLine={true}
-				    style={{width: '300px'}}
+				    style={{width: '100%'}}
 				    value={this.state.bio}
 				    onChange={this.handleBioChange}
 				/>
@@ -627,7 +629,7 @@ class EditProfile extends Component {
 				    onChange={() => {}}
 				    floatingLabelText="Phone Number..."
 				    ref="phone"
-				    style={{width: '300px'}}
+				    style={{width: '100%'}}
 				    value={this.state.phone}
 				    onChange={this.handlePhoneChange}
 				/>
@@ -635,7 +637,7 @@ class EditProfile extends Component {
 	      		<TextField
 			        ref="dob"
 			        floatingLabelText="Birthday"
-			        style={{width: '300px'}}
+			        style={{width: '100%'}}
 			        hintText="mm/dd/yyyy"
 			        value={this.state.dob}
 			       	onChange={this.handleDobChange}
@@ -659,6 +661,8 @@ class EditProfile extends Component {
 		        )} 
 		    </CardText>
 		</Card>
+		</div>
+		</div>
 	    );
 	  }
 	}
