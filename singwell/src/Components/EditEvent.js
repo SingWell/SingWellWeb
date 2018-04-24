@@ -10,7 +10,7 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
-import TimePicker from 'react-times';
+//import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
 import 'react-material-select/lib/css/reactMaterialSelect.css'
@@ -19,7 +19,7 @@ import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 import DatePicker from 'material-ui/DatePicker'
 import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, 
-	RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui/'
+	RadioButton, RadioButtonGroup, Card, CardText, CardTitle, TimePicker } from 'material-ui/'
 
 
 
@@ -44,6 +44,9 @@ class EditEvent extends Component {
 
 	    let defaultHour = '';
 	    let defaultMinute = '';
+
+	   	let startTime12 = '';
+
 	    //let defaultSecond = '';
 
 	    if (!defaultTime) {
@@ -75,6 +78,7 @@ class EditEvent extends Component {
 	      //defaultSecond,
 
 	      //finalTime
+	      startTime12
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -94,6 +98,9 @@ class EditEvent extends Component {
 
 	    this.handleOpen = this.handleOpen.bind(this);
 	    this.handleClose = this.handleClose.bind(this);
+
+	    this.handleChangeStartTimePicker = this.handleChangeStartTimePicker.bind(this);
+
 	}
 
 	onHourChange(hour) {
@@ -177,6 +184,10 @@ class EditEvent extends Component {
     		open: false
     	});
   	};
+
+  	handleChangeStartTimePicker(event, date){
+    	this.setState({startTime12: date});
+  	  };
 
   	// handleChoirChange = (event, index, values) => this.setState({ eventChoir: values});
 
@@ -279,11 +290,14 @@ class EditEvent extends Component {
 	}
 
 	handleSubmit(e){
+		let startTimeString = this.state.startTime12 + " " ;
+		let [sweekday, smonth, sday, syear, startTime, sextra] = startTimeString.split(" ");
 		console.log(this.state.choirs)
 		this.setState({newEvent:{
 			name: this.state.eventName,
 			date: this.state.date,
-			time: this.state.hour + ":" + this.state.minute + ":00",
+			//time: this.state.hour + ":" + this.state.minute + ":00",
+			time: startTime,
 			location: this.state.eventLoc,
 			choirs: 
 				[this.state.choirs],
@@ -398,7 +412,16 @@ class EditEvent extends Component {
 						/>
 			      		<br/>
 			      		<br/>
-			      		<label>Event Time:</label>
+			      		<TimePicker
+		      			floatingLabelText = "Time of Event..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						defaultTime={new Date()}
+						value={this.state.time12}
+						onChange={this.handleChangeStartTimePicker}
+						okAuto={true}
+			        	/>
+			      		{/*<label>Event Time:</label>
 			      		<TimePicker
 			      			style={{width: '100%'}}
 							focused={focused}
@@ -411,7 +434,7 @@ class EditEvent extends Component {
 							//time={hour && minute ? `${hour}:${minute}` : null}
 							time={`${this.state.defaultHour}:${this.state.defaultMinute}`}
 							//defaultTime={`${this.state.defaultHour}:${this.state.defaultMinute}`}
-				        />
+				        />*/}
 				        <br/>
 				        <TextField
 				        	style={{width: '100%'}}

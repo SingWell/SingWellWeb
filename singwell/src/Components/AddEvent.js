@@ -6,13 +6,13 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
-import TimePicker from 'react-times';
+//import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
 //import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 import DatePicker from 'material-ui/DatePicker'
-import { FlatButton, RaisedButton, TextField, SelectField, MenuItem, Card, CardTitle, CardText } from 'material-ui/'
+import { FlatButton, RaisedButton, TextField, SelectField, MenuItem, Card, CardTitle, CardText, TimePicker } from 'material-ui/'
 
 
 
@@ -26,6 +26,7 @@ class AddEvent extends Component {
 	    let date = '';
 	    let name = '';
 	    let choirs = [];
+	    let startTime12 = '';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
@@ -42,7 +43,9 @@ class AddEvent extends Component {
 	      date,
 
 	      name, 
-	      choirs
+	      choirs,
+
+	      startTime12
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -59,6 +62,9 @@ class AddEvent extends Component {
 	    this.onChoirChange = this.onChoirChange.bind(this);
 
 	    this.baseState = this.state;
+
+	   	this.handleChangeStartTimePicker = this.handleChangeStartTimePicker.bind(this);
+
 	}
 
 	  onHourChange(hour) {
@@ -111,6 +117,10 @@ class AddEvent extends Component {
 	  	})
 	  }
 
+	  handleChangeStartTimePicker(event, date){
+    	this.setState({startTime12: date});
+  	  };
+
 	  //handleChange = (event, index, values) => this.setState({values});
 
 
@@ -160,11 +170,14 @@ class AddEvent extends Component {
 	}
 
 	handleSubmit(e){
+		let startTimeString = this.state.startTime12 + " " ;
+		let [sweekday, smonth, sday, syear, startTime, sextra] = startTimeString.split(" ");
 		console.log(this.state.choirs)
 		this.setState({newEvent:{
 			name: this.state.name,
 			date: this.state.date,
-			time: this.state.hour + ":" + this.state.minute + ":00",
+			//time: this.state.hour + ":" + this.state.minute + ":00",
+			time: startTime,
 			location: this.state.location,
 			choirs: this.state.choirs,
 			organization: this.props.match.params.orgID
@@ -248,7 +261,15 @@ class AddEvent extends Component {
 					/>
 		      		<br/>
 		      		<br/>
-		      		<label>Event Time:</label>
+		      		<TimePicker
+		      			floatingLabelText = "Time of Event..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						value={this.state.time12}
+						onChange={this.handleChangeStartTimePicker}
+						minuteStep={5}
+			        />
+		      		{/*<label>Event Time:</label>
 		      		<TimePicker
 			          focused={focused}
 			          timezone={timezone}
@@ -258,7 +279,7 @@ class AddEvent extends Component {
 			          onTimeChange={this.onTimeChange}
 			          showTimezone={showTimezone}
 			          time={hour && minute ? `${hour}:${minute}` : null}
-			        />
+			        />*/}
 			        <br/>
 			        <TextField
 					    onChange={this.onLocationChange}

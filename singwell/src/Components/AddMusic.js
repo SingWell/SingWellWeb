@@ -19,6 +19,30 @@ import 'react-times/css/material/default.css';
 
 class AddMusic extends Component {
 
+	constructor(props){
+		super(props);
+
+		let title = '';
+		let composer = '';
+		let arranger = '';
+		let publisher = '';
+		let instrument = '';
+
+		this.state = {
+			title, 
+			composer, 
+			arranger, 
+			publisher, 
+			instrument
+		}
+
+		this.handleTitleChange = this.handleTitleChange.bind(this);
+		this.handleComposerChange = this.handleComposerChange.bind(this);
+		this.handleArrangerChange = this.handleArrangerChange.bind(this);
+		this.handlePublisherChange = this.handlePublisherChange.bind(this);
+		this.handleInstrumentChange = this.handleInstrumentChange.bind(this);
+	}
+
 	componentWillMount() {
 		this.setState ( {
 			newMusic:{},
@@ -33,16 +57,35 @@ class AddMusic extends Component {
 	handleCancel(e) {
 		this.setState({cancelRedirect: true})
 	}
+
+	handleTitleChange(event, value) {
+		this.setState({title: value});
+	}
 	
+	handleComposerChange(event, value) {
+		this.setState({composer: value});
+	}
+
+	handleArrangerChange(event, value) {
+		this.setState({arranger: value});
+	}
+
+	handlePublisherChange(event, value) {
+		this.setState({publisher: value});
+	}
+
+	handleInstrumentChange(event, value) {
+		this.setState({instrument: value});
+	}
 
 	handleSubmit(e){
-		console.log(this.refs.title.inputRef.value)
+		//console.log(this.refs.title.inputRef.value)
 		this.setState({newMusic:{
-			title: this.refs.title.inputRef.value,
-			composer: this.refs.composer.inputRef.value,
-			arranger: this.refs.arranger.inputRef.value,
-			publisher: this.refs.publisher.inputRef.value,
-			instrumentation: this.refs.instrumentation.inputRef.value,
+			title: this.state.title,
+			composer: this.state.composer,
+			arranger: this.state.arranger,
+			publisher: this.state.publisher,
+			instrumentation: this.state.instrument,
 			organization: this.props.match.params.orgID
 		}}, function() {
 			$.ajax({
@@ -80,6 +123,7 @@ class AddMusic extends Component {
   	const { cancelRedirect } = this.state;
   	const { musicID } = this.state;
   	const { buttonClasses } = this.state
+  	const { value } = this.state;
 
 
     return (
@@ -89,34 +133,39 @@ class AddMusic extends Component {
 		    <CardTitle title="ADD MUSIC" className={"title"}/>
 		    <CardText className={"timePickerForm"}>
 			       <TextField
-					    onChange={() => {}}
+					    onChange={this.handleTitleChange}
 					    floatingLabelText="Title..."
-					    ref="title"
+					    //ref="title"
 					    style={{width: '100%'}}
+					    value={this.state.title}
 					/>
 					<TextField
-					    onChange={() => {}}
+					    onChange={this.handleComposerChange}
 					    floatingLabelText="Composer..."
-					    ref="composer"
+					    //ref="composer"
 					    style={{width: '100%'}}
+					    value={this.state.composer}
 					/>
 					<TextField
-					    onChange={() => {}}
+					    onChange={this.handleArrangerChange}
 					    floatingLabelText="Arranger..."
-					    ref="arranger"
+					    //ref="arranger"
 					    style={{width: '100%'}}
+					    value={this.state.arranger}
 					/>
 					<TextField
-					    onChange={() => {}}
+					    onChange={this.handlePublisherChange}
 					    floatingLabelText="Publisher..."
-					    ref="publisher"
+					    //ref="publisher"
 					    style={{width: '100%'}}
+					    value={this.state.publisher}
 					/>
 					<TextField
-					    onChange={() => {}}
+					    onChange={this.handleInstrumentChange}
 					    floatingLabelText="Instrumentation..."
-					    ref="instrumentation"
+					    //ref="instrumentation"
 					    style={{width: '100%'}}
+					    value={this.state.instrument}
 					/>
 					<br/>
 					<br/>

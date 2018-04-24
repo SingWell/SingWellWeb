@@ -343,6 +343,7 @@ class Choir extends Component {
                     {
                       rosterPost: data,
                     })
+                  window.location.reload();
                 }.bind(this),
                 error: function(xhr, status, err) {
                   console.log(err);

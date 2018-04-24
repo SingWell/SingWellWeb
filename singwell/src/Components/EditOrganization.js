@@ -397,7 +397,7 @@ class EditOrganization extends Component {
 		this.setState({newOrganization:{
 			name: this.state.orgName,
 			description: this.state.orgDescription,
-			address: this.state.orgAddress + " " + this.state.orgCity + ", " + this.state.orgState + " " + this.state.orgZip,
+			address: this.state.orgAddress,
 			phone_number: +this.state.orgPhone,
 			email: this.state.orgEmail,
 			admins: [1]
@@ -482,7 +482,7 @@ class EditOrganization extends Component {
 					    onChange={this.handleAddressChange}
 					/>
 					<br/>
-		      		<TextField
+		      		{/*<TextField
 					    floatingLabelText="City..."
 					    style={{width: '100%'}}
 					    value={this.state.orgCity}
@@ -502,7 +502,7 @@ class EditOrganization extends Component {
 					    floatingLabelText="Zipcode..."
 					    style={{width: '100%'}}
 					    value={this.state.orgZip}
-						/>
+						/>*/}
 		      		<TextField
 					    floatingLabelText="Phone Number..."
 					    ref="phoneNumber"

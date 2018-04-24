@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Option } from 'react-mdl-extra';
-import { MenuItem, RaisedButton, FlatButton, SelectField, TextField, Card, CardTitle, CardText } from 'material-ui/';
+import { MenuItem, RaisedButton, FlatButton, SelectField, TextField, Card, CardTitle, CardText, TimePicker} from 'material-ui/';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { getColorClass, getTextColorClass } from '../css/palette';
 
 import '../css/AddChoir.css';
 
-import TimePicker from 'react-times';
+//import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
 
@@ -34,6 +34,9 @@ class EditChoir extends Component {
 
 	    let defaultEndHour = '';
 	    let defaultEndMinute = '';
+
+	    let startTime12 = '';
+	    let endTime12 = '';
 
 
 	    if (!defaultTime) {
@@ -61,7 +64,10 @@ class EditChoir extends Component {
 			defaultStartMinute,
 
 			defaultEndHour,
-			defaultEndMinute
+			defaultEndMinute,
+
+			startTime12,
+	      	endTime12
 
 	    };
 
@@ -79,6 +85,9 @@ class EditChoir extends Component {
 
 	    this.handleNameChange = this.handleNameChange.bind(this);
 	    this.handleDayChange = this.handleDayChange.bind(this);
+
+	    this.handleChangeStartTimePicker = this.handleChangeStartTimePicker.bind(this);
+	    this.handleChangeEndTimePicker = this.handleChangeEndTimePicker.bind(this);
 	
 	}
 
@@ -149,6 +158,14 @@ class EditChoir extends Component {
 			mtgDay: value
 		})
 	}
+
+	handleChangeStartTimePicker(event, date){
+    	this.setState({startTime12: date});
+  	};
+
+  	handleChangeEndTimePicker(event, date){
+    	this.setState({endTime12: date});
+  	};
 
 	parseTime() {
 		let [starthour, startminute, startsecond] = this.state.startTime.split(":");
@@ -260,13 +277,19 @@ class EditChoir extends Component {
 	}
 
 	handleSubmit(e){
+		let startTimeString = this.state.startTime12 + " " ;
+		let endTimeString = this.state.endTime12 + " ";
+		let [sweekday, smonth, sday, syear, startTime, sextra] = startTimeString.split(" ");
+		let [eweekday, emonth, eday, eyear, endTime, eextra] = endTimeString.split(" ");
 		console.log("startTime:" + this.state.defaultStartTime);
 		this.setState({newChoir:{
 			// name: this.refs.name.inputRef.value,
 			name: this.state.choirName,
 			meeting_day: +this.state.mtgDay + 1,
-			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
-			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
+			//meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
+			//meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
+			meeting_day_start_hour: startTime,
+			meeting_day_end_hour: endTime,
 			organization: 1,
 			choristers: [
 				1
@@ -359,8 +382,27 @@ class EditChoir extends Component {
 		      		</SelectField>
 		      		<br/>
 		      		<br/>
-		      		<label>Meeting Start Time:</label>
 		      		<TimePicker
+		      			floatingLabelText = "Meeting Start Time..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						defaultTime={new Date()}
+						value={this.state.time12}
+						onChange={this.handleChangeStartTimePicker}
+						okAuto={true}
+			        />
+			        <br/>
+			        <TimePicker
+		      			floatingLabelText = "Meeting End Time..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						defaultTime={new Date()}
+						value={this.state.time12}
+						onChange={this.handleChangeEndTimePicker}
+						okAuto={true}
+			        />
+		      		<label>Meeting Start Time:</label>
+		      		{/*<TimePicker
 		      			style={{width: '100%'}}
 						focused={focusedStart}
 						timezone={timezone}
@@ -384,7 +426,7 @@ class EditChoir extends Component {
 						onTimeChange={this.onTimeChangeEnd}
 						showTimezone={showTimezone}
 						time={`${this.state.defaultEndHour}:${this.state.defaultEndMinute}`}
-			        />
+			        />*/}
 		      		<br/>
 		      		{/*<input className={this.state.buttonClasses} type="submit" value="Submit" />*/}
 		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>

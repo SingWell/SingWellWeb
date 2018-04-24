@@ -81,6 +81,7 @@ class EditProfile extends Component {
 		this.setState({
 			phone: value
 		})
+		console.log(value)
 	}
 
 	handleAddressChange(event, value) {
@@ -476,7 +477,6 @@ class EditProfile extends Component {
 
 
 	handleSubmit(e){
-		console.log(this.state.selectedFile);
 		this.setState({updateProfile: {
 			id: this.props.match.params.id,
 			email: this.state.email,
@@ -488,7 +488,7 @@ class EditProfile extends Component {
 			member_of_organizations: this.state.profileGet.member_of_organizations,
 			profile:{
 				//user: +this.props.match.params.userID,
-				phone_number: this.state.phone,
+				phone_number: "0000000000",
 				bio: this.state.bio, 
 				address: this.state.address,
 				city: this.state.city,
@@ -499,10 +499,8 @@ class EditProfile extends Component {
 				//age: this.state.age, 
 				profile_picture_link: this.state.selectedFile
 			},
-			//organizations:
 		}},
 			function() {
-			console.log(this.state.updateProfile)
 			$.ajax({
 			  type: "PATCH",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/users/" + this.props.match.params.userID + "/",
@@ -519,6 +517,8 @@ class EditProfile extends Component {
 		        console.log(data)
 		        //console.log(this.state)
 		        console.log(this.state.updateProfile)
+		        console.log(this.state.profilePatch)
+
 		      }.bind(this),
 		      error: function(xhr, status, err) {
 		        console.log(err);
@@ -528,7 +528,6 @@ class EditProfile extends Component {
 		      }
 		    });
 		});
-		console.log(this.state.profilePatch)
   		e.preventDefault();
   	}
 
@@ -630,7 +629,7 @@ class EditProfile extends Component {
 				    floatingLabelText="Phone Number..."
 				    ref="phone"
 				    style={{width: '100%'}}
-				    value={this.state.phone}
+				    value={this.state.prophone}
 				    onChange={this.handlePhoneChange}
 				/>
 				<br/>

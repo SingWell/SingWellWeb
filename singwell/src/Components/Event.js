@@ -183,7 +183,8 @@ class Event extends Component {
                           headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
                           success: function(data) {
                               let choirDirectors =  this.state.choirDirectors;
-                              choirDirectors.push(data.director_name)
+                              if(choirDirectors.indexOf(data.director_name) == -1)
+                              { choirDirectors.push(data.director_name) }
                               this.setState({choirDirectors: choirDirectors})
                               //this.state.choirDirectors.push(data.director_name)
                               console.log(this.state.choirDirectors, data.director_name)
