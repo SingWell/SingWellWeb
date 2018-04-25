@@ -17,34 +17,34 @@ class AddChoir extends Component {
 	constructor(props) {
 		super(props);
 		const { defaultTime, focusedStart, focusedEnd, showTimezone, timezone } = props;
-	    let hourStart = '';
+	    /*let hourStart = '';
 	    let minuteStart = '';
 	    let hourEnd = '';
-	    let minuteEnd = '';
+	    let minuteEnd = '';*/
 	    let defaultName = '';
 	    let meetingDay = '';
 	    let startTime12 = '';
 	    let endTime12 = '';
 
-	    let timetest ='';
+	    /*let timetest ='';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
 	      [hourStart, minuteStart] = defaultTime.split(/:/);
-	    }
+	    }*/
 
 	    this.state = {
-	      hourStart,
+	      /*hourStart,
 	      minuteStart,
 	      focusedStart,
 	      hourEnd,
 	      minuteEnd,
 	      focusedEnd,
 	      timezone,
-	      showTimezone,
+	      showTimezone,*/
 
 	      meetingDay,
-	      timetest,
+	      //timetest,
 
 	      startTime12,
 	      endTime12
@@ -53,7 +53,7 @@ class AddChoir extends Component {
 	    this.handleDayChange = this.handleDayChange.bind(this);
 	    this.handleNameChange = this.handleNameChange.bind(this);
 
-	    this.onFocusChange = this.onFocusChange.bind(this);
+	    /*this.onFocusChange = this.onFocusChange.bind(this);
 	    this.onHourChange = this.onHourChange.bind(this);
 	    this.onMinuteChange = this.onMinuteChange.bind(this);
 	    this.onTimeChange = this.onTimeChange.bind(this);
@@ -63,13 +63,13 @@ class AddChoir extends Component {
 	    this.onHourChangeEnd = this.onHourChangeEnd.bind(this);
 	    this.onMinuteChangeEnd = this.onMinuteChangeEnd.bind(this);
 	    this.onTimeChangeEnd = this.onTimeChangeEnd.bind(this);
-	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);
+	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);*/
 
 	    this.handleChangeStartTimePicker = this.handleChangeStartTimePicker.bind(this);
 	    this.handleChangeEndTimePicker = this.handleChangeEndTimePicker.bind(this);			
 	}
 
-	onHourChange(hourStart) {
+	/*onHourChange(hourStart) {
 		this.setState({ hourStart });
 	}
 
@@ -113,7 +113,7 @@ class AddChoir extends Component {
 	handleFocusedChangeEnd() {
 		const { focusedEnd } = this.state;
 		this.setState({ focusedEnd: !focusedEnd });
-	}
+	}*/
 
 	handleChangeStartTimePicker(event, date){
     	this.setState({startTime12: date});

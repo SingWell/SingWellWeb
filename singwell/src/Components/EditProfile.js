@@ -478,7 +478,7 @@ class EditProfile extends Component {
 
 	handleSubmit(e){
 		this.setState({updateProfile: {
-			id: this.props.match.params.id,
+			//id: this.props.match.params.id,
 			email: this.state.email,
 			first_name: this.state.profileGet.first_name,
 			last_name: this.state.profileGet.last_name,
@@ -499,6 +499,8 @@ class EditProfile extends Component {
 				//age: this.state.age, 
 				profile_picture_link: this.state.selectedFile
 			},
+			organizations: this.state.profileGet.organizations,
+
 		}},
 			function() {
 			$.ajax({
@@ -627,9 +629,9 @@ class EditProfile extends Component {
 		      	<TextField
 				    onChange={() => {}}
 				    floatingLabelText="Phone Number..."
-				    ref="phone"
+				    //ref="phone"
 				    style={{width: '100%'}}
-				    value={this.state.prophone}
+				    value={this.state.phone}
 				    onChange={this.handlePhoneChange}
 				/>
 				<br/>

@@ -46,6 +46,7 @@ class EditEvent extends Component {
 	    let defaultMinute = '';
 
 	   	let startTime12 = '';
+	   	let timeString;
 
 	    //let defaultSecond = '';
 
@@ -78,7 +79,8 @@ class EditEvent extends Component {
 	      //defaultSecond,
 
 	      //finalTime
-	      startTime12
+	      startTime12,
+	      timeString
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -168,6 +170,7 @@ class EditEvent extends Component {
 		this.setState({
 			choirs: values
 		})
+		console.log(this.state.choirs);
 	}
 
 	//handleChange = (event, index, choirs) => this.setState({choirs});
@@ -207,19 +210,31 @@ class EditEvent extends Component {
 	}
 
 	parseTime(time) {
-		if(time!=null){
-		let [hour, minute, second] = this.state.eventTime.split(":");
+		// if(time!=null){
+		// let [hour, minute, second] = this.state.eventTime.split(":");
+		// this.setState({
+		// 	defaultHour: +hour,
+		// 	defaultMinute: +minute,
+		// 	//defaultSecond: +second
+		// 	hour: +hour,
+		// 	minute: +minute
+		// });
+		// }
+		// console.log("D Hour:" + this.state.defaultHour);
+		// console.log("D Minute:" + this.state.defaultMinute);
+		// console.log(this.state.defaultSecond);
+
+		let dateString = '1970-01-01T' + time;
+		let dateObj = new Date(dateString);
+		console.log(dateObj);
+		let setTime = Date.parse(dateObj);
+		console.log(setTime);
+		let newwithtime = new Date(setTime); //newwithtime is a dateobject 
+		console.log(newwithtime);
 		this.setState({
-			defaultHour: +hour,
-			defaultMinute: +minute,
-			//defaultSecond: +second
-			hour: +hour,
-			minute: +minute
-		});
-		}
-		console.log("D Hour:" + this.state.defaultHour);
-		console.log("D Minute:" + this.state.defaultMinute);
-		console.log(this.state.defaultSecond);
+			timeString: setTime
+		})
+		//console.log(this.state.dateString);
 	}
 
 	choirItems(values) {
@@ -277,6 +292,7 @@ class EditEvent extends Component {
 	          	eventTime: data.time,
 	          	eventLoc: data.location,
 	          	choirs: data.choirs
+
 	          }, function() {
 	            console.log(this.state);
 	          });
@@ -299,8 +315,7 @@ class EditEvent extends Component {
 			//time: this.state.hour + ":" + this.state.minute + ":00",
 			time: startTime,
 			location: this.state.eventLoc,
-			choirs: 
-				[this.state.choirs],
+			choirs: this.state.choirs,
 			organization: this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
@@ -351,6 +366,13 @@ class EditEvent extends Component {
 			timezone,
 			showTimezone
 		} = this.state;
+
+		//let time = this.state.eventTime;
+		//let dateString = '1970-01-01T' + time;
+		//let dateObj = new Date(dateString);
+		//console.log(dateObj);
+
+		//const { timeString } = this.state;
 
 		const actions = [
 	      <FlatButton
