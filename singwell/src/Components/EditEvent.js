@@ -10,7 +10,7 @@ import { getColorClass, getTextColorClass } from '../css/palette';
 import 'react-day-picker/lib/style.css';
 
 import moment from 'moment';
-import TimePicker from 'react-times';
+//import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
 import 'react-material-select/lib/css/reactMaterialSelect.css'
@@ -19,7 +19,7 @@ import 'react-material-select/lib/css/reactMaterialSelect.css'
 
 import DatePicker from 'material-ui/DatePicker'
 import { FlatButton, RaisedButton, TextField, MenuItem, SelectField, 
-	RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui/'
+	RadioButton, RadioButtonGroup, Card, CardText, CardTitle, TimePicker } from 'material-ui/'
 
 
 
@@ -44,6 +44,10 @@ class EditEvent extends Component {
 
 	    let defaultHour = '';
 	    let defaultMinute = '';
+
+	   	let startTime12 = '';
+	   	let timeString;
+
 	    //let defaultSecond = '';
 
 	    if (!defaultTime) {
@@ -75,6 +79,8 @@ class EditEvent extends Component {
 	      //defaultSecond,
 
 	      //finalTime
+	      startTime12,
+	      timeString
 	    };
 
 	    this.onFocusChange = this.onFocusChange.bind(this);
@@ -94,6 +100,9 @@ class EditEvent extends Component {
 
 	    this.handleOpen = this.handleOpen.bind(this);
 	    this.handleClose = this.handleClose.bind(this);
+
+	    this.handleChangeStartTimePicker = this.handleChangeStartTimePicker.bind(this);
+
 	}
 
 	onHourChange(hour) {
@@ -161,6 +170,7 @@ class EditEvent extends Component {
 		this.setState({
 			choirs: values
 		})
+		console.log(this.state.choirs);
 	}
 
 	//handleChange = (event, index, choirs) => this.setState({choirs});
@@ -177,6 +187,10 @@ class EditEvent extends Component {
     		open: false
     	});
   	};
+
+  	handleChangeStartTimePicker(event, date){
+    	this.setState({startTime12: date});
+  	  };
 
   	// handleChoirChange = (event, index, values) => this.setState({ eventChoir: values});
 
@@ -196,19 +210,31 @@ class EditEvent extends Component {
 	}
 
 	parseTime(time) {
-		if(time!=null){
-		let [hour, minute, second] = this.state.eventTime.split(":");
+		// if(time!=null){
+		// let [hour, minute, second] = this.state.eventTime.split(":");
+		// this.setState({
+		// 	defaultHour: +hour,
+		// 	defaultMinute: +minute,
+		// 	//defaultSecond: +second
+		// 	hour: +hour,
+		// 	minute: +minute
+		// });
+		// }
+		// console.log("D Hour:" + this.state.defaultHour);
+		// console.log("D Minute:" + this.state.defaultMinute);
+		// console.log(this.state.defaultSecond);
+
+		let dateString = '1970-01-01T' + time;
+		let dateObj = new Date(dateString);
+		console.log(dateObj);
+		let setTime = Date.parse(dateObj);
+		console.log(setTime);
+		let newwithtime = new Date(setTime); //newwithtime is a dateobject 
+		console.log(newwithtime);
 		this.setState({
-			defaultHour: +hour,
-			defaultMinute: +minute,
-			//defaultSecond: +second
-			hour: +hour,
-			minute: +minute
-		});
-		}
-		console.log("D Hour:" + this.state.defaultHour);
-		console.log("D Minute:" + this.state.defaultMinute);
-		console.log(this.state.defaultSecond);
+			timeString: setTime
+		})
+		//console.log(this.state.dateString);
 	}
 
 	choirItems(values) {
@@ -266,6 +292,7 @@ class EditEvent extends Component {
 	          	eventTime: data.time,
 	          	eventLoc: data.location,
 	          	choirs: data.choirs
+
 	          }, function() {
 	            console.log(this.state);
 	          });
@@ -279,14 +306,16 @@ class EditEvent extends Component {
 	}
 
 	handleSubmit(e){
+		let startTimeString = this.state.startTime12 + " " ;
+		let [sweekday, smonth, sday, syear, startTime, sextra] = startTimeString.split(" ");
 		console.log(this.state.choirs)
 		this.setState({newEvent:{
 			name: this.state.eventName,
 			date: this.state.date,
-			time: this.state.hour + ":" + this.state.minute + ":00",
+			//time: this.state.hour + ":" + this.state.minute + ":00",
+			time: startTime,
 			location: this.state.eventLoc,
-			choirs: 
-				[this.state.choirs],
+			choirs: this.state.choirs,
 			organization: this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
@@ -338,6 +367,13 @@ class EditEvent extends Component {
 			showTimezone
 		} = this.state;
 
+		//let time = this.state.eventTime;
+		//let dateString = '1970-01-01T' + time;
+		//let dateObj = new Date(dateString);
+		//console.log(dateObj);
+
+		//const { timeString } = this.state;
+
 		const actions = [
 	      <FlatButton
 	        label="Cancel"
@@ -374,21 +410,23 @@ class EditEvent extends Component {
 		});*/}
 
 		return (
-
-			<Card shadow={0} style={{ margin: '10px'}}>
-			    <CardTitle title="Edit Event" />
+			<div className={"formContainer"} >
+        	<div className={"form"}>
+			<Card shadow={0} >
+			    <CardTitle title="EDIT EVENT" className={"title"}/>
 			    <CardText>
 			       {/*<form onSubmit={this.handleSubmit.bind(this)} style={{height: '700px'}}>*/}
 				       <TextField
 						    //onChange={() => {}}
 						    floatingLabelText="Event name..."
 						    ref="name"
-						    //style={{width: '200px'}}
+						    style={{width: '100%'}}
 						    value={this.state.eventName}
 						    onChange={this.onNameChange}
 						/>
 						{/* <DayPickerInput onDayChange={day => console.log(day)} /> */}
 						<DatePicker 
+							style={{width: '100%'}}
 							floatingLabelText="Date of Event..." 
 							container="inline" 
 							value={new Date(this.state.defaultYear, this.state.defaultMonth, this.state.defaultDay)}
@@ -396,8 +434,18 @@ class EditEvent extends Component {
 						/>
 			      		<br/>
 			      		<br/>
-			      		<label>Event Time:</label>
 			      		<TimePicker
+		      			floatingLabelText = "Time of Event..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						defaultTime={new Date()}
+						value={this.state.time12}
+						onChange={this.handleChangeStartTimePicker}
+						okAuto={true}
+			        	/>
+			      		{/*<label>Event Time:</label>
+			      		<TimePicker
+			      			style={{width: '100%'}}
 							focused={focused}
 							timezone={timezone}
 							onFocusChange={this.onFocusChange}
@@ -408,9 +456,10 @@ class EditEvent extends Component {
 							//time={hour && minute ? `${hour}:${minute}` : null}
 							time={`${this.state.defaultHour}:${this.state.defaultMinute}`}
 							//defaultTime={`${this.state.defaultHour}:${this.state.defaultMinute}`}
-				        />
+				        />*/}
 				        <br/>
 				        <TextField
+				        	style={{width: '100%'}}
 						    //onChange={() => {}}
 						    floatingLabelText="Location..."
 						    ref="location"
@@ -428,7 +477,7 @@ class EditEvent extends Component {
 			            <SelectField
 			          		floatingLabelText="Add Choirs"
 							value={choirs}
-							style={{width: '200px', color: 'blue'}}
+							style={{width: '100%'}}
 							onChange={this.onChoirChange}
 							multiple={true}
 							>{this.choirItems(this.choirs)}
@@ -446,7 +495,8 @@ class EditEvent extends Component {
 			        )} 
 			    </CardText>
 			</Card>
-		 
+		 	</div>
+		 	</div>
 		);
 		}
 	}

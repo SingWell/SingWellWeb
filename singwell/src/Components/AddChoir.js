@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { MenuItem, RaisedButton, FlatButton, SelectField, TextField, 
-	Card, CardText, CardTitle } from 'material-ui/';
+	Card, CardText, CardTitle, TimePicker } from 'material-ui/';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { getColorClass, getTextColorClass } from '../css/palette';
-import TimePicker from 'react-times';
+//import TimePicker from 'react-times';
 
 
-import '../css/AddChoir.css'
+//import '../css/AddChoir.css'
 import 'react-times/css/material/default.css';
 
 class AddChoir extends Component {
@@ -17,38 +17,43 @@ class AddChoir extends Component {
 	constructor(props) {
 		super(props);
 		const { defaultTime, focusedStart, focusedEnd, showTimezone, timezone } = props;
-	    let hourStart = '';
+	    /*let hourStart = '';
 	    let minuteStart = '';
 	    let hourEnd = '';
-	    let minuteEnd = '';
+	    let minuteEnd = '';*/
 	    let defaultName = '';
 	    let meetingDay = '';
+	    let startTime12 = '';
+	    let endTime12 = '';
 
-	    let timetest ='';
+	    /*let timetest ='';
 	    if (!defaultTime) {
 	      // [hour, minute] = timeHelper.current().split(/:/);
 	    } else {
 	      [hourStart, minuteStart] = defaultTime.split(/:/);
-	    }
+	    }*/
 
 	    this.state = {
-	      hourStart,
+	      /*hourStart,
 	      minuteStart,
 	      focusedStart,
 	      hourEnd,
 	      minuteEnd,
 	      focusedEnd,
 	      timezone,
-	      showTimezone,
+	      showTimezone,*/
 
 	      meetingDay,
-	      timetest
+	      //timetest,
+
+	      startTime12,
+	      endTime12
 	    };
 
 	    this.handleDayChange = this.handleDayChange.bind(this);
 	    this.handleNameChange = this.handleNameChange.bind(this);
 
-	    this.onFocusChange = this.onFocusChange.bind(this);
+	    /*this.onFocusChange = this.onFocusChange.bind(this);
 	    this.onHourChange = this.onHourChange.bind(this);
 	    this.onMinuteChange = this.onMinuteChange.bind(this);
 	    this.onTimeChange = this.onTimeChange.bind(this);
@@ -58,13 +63,13 @@ class AddChoir extends Component {
 	    this.onHourChangeEnd = this.onHourChangeEnd.bind(this);
 	    this.onMinuteChangeEnd = this.onMinuteChangeEnd.bind(this);
 	    this.onTimeChangeEnd = this.onTimeChangeEnd.bind(this);
-	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);
+	    this.handleFocusedChangeEnd = this.handleFocusedChangeEnd.bind(this);*/
 
-	    //this.handleChangeTimePicker12 = this.handleChangeTimePicker12.bind(this);
-	    			
+	    this.handleChangeStartTimePicker = this.handleChangeStartTimePicker.bind(this);
+	    this.handleChangeEndTimePicker = this.handleChangeEndTimePicker.bind(this);			
 	}
 
-	onHourChange(hourStart) {
+	/*onHourChange(hourStart) {
 		this.setState({ hourStart });
 	}
 
@@ -108,12 +113,15 @@ class AddChoir extends Component {
 	handleFocusedChangeEnd() {
 		const { focusedEnd } = this.state;
 		this.setState({ focusedEnd: !focusedEnd });
-	}
+	}*/
 
-	/*handleChangeTimePicker12 = (event, date) => {
-    	this.setState({value12: date});
-    	console.log(date)
-  	};*/
+	handleChangeStartTimePicker(event, date){
+    	this.setState({startTime12: date});
+  	};
+
+  	handleChangeEndTimePicker(event, date){
+    	this.setState({endTime12: date});
+  	};
 
 
 	handleNameChange(event, value) {
@@ -197,16 +205,23 @@ class AddChoir extends Component {
   	}
 
 	handleSubmit(e){
+		console.log(this.state.time12)
+		let startTimeString = this.state.startTime12 + " " ;
+		let endTimeString = this.state.endTime12 + " ";
+		let [sweekday, smonth, sday, syear, startTime, sextra] = startTimeString.split(" ");
+		let [eweekday, emonth, eday, eyear, endTime, eextra] = endTimeString.split(" ");
 		this.setState({newChoir:{
 			name: this.state.name,
 			meeting_day: this.state.meetingDay + 1,
-			meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
-			meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
+			//meeting_day_start_hour: this.state.hourStart + ":" + this.state.minuteStart + ":00",
+			//meeting_day_end_hour: this.state.hourEnd + ":" + this.state.minuteEnd + ":00",
+			meeting_day_start_hour: startTime,
+			meeting_day_end_hour: endTime,
 			organization: this.props.match.params.orgID,
 			choristers: [
 				1
 			],
-			//director_name: "Kenton Kravig",
+
 			director: 1
 		}}, function() {
 			console.log(this.state.newChoir);
@@ -261,37 +276,48 @@ class AddChoir extends Component {
   	});*/}
 
     return (
-    	<Card shadow={0} style={{ margin: '10px', width: '340px'}}>
-		    <CardTitle title="Add Choir" />
+    	<div className={"formContainer"} >
+        <div className={"form"}>
+    	<Card shadow={0}>
+		    <CardTitle title="ADD CHOIR" className={"title"}/>
 		    <CardText className={"timePickerForm"}>
 			       <TextField
 					    floatingLabelText="Name..."
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    required={true}
 					    onChange={this.handleNameChange}
 					    value={this.state.name}
 					/>
-					<br/>
+					
 		      		<SelectField
-		      			floatingLabelText="Meeting Day"
+		      			floatingLabelText="Meeting Day..."
 						value={this.state.meetingDay}
-						style={{width: '300px'}}
+						style={{width: '100%'}}
 						onChange={this.handleDayChange}
 		      		>{this.dayItems(this.values)}
 		      		</SelectField>
 		      		<br/>
 		      		<br/>
-
-		      		{/*<TimePicker
-						format="ampm"
-						hintText="12hr Format"
-						value={this.state.value12}
-						onChange={this.handleChangeTimePicker12}
-			        />*/}
 		      		<TimePicker
+		      			floatingLabelText = "Meeting Start Time..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						value={this.state.time12}
+						onChange={this.handleChangeStartTimePicker}
+			        />
+			        <br/>
+			        <TimePicker
+		      			floatingLabelText = "Meeting End Time..."
+		      			style={{width: '100%'}}
+						format="ampm"
+						value={this.state.time12}
+						onChange={this.handleChangeEndTimePicker}
+			        />
+			        <br/>
+		      		{/*<TimePicker
 			      		/*hintText="Meeting Start Time"
-	      				autoOk={true}
-	      				style={{width: '300px'}}*/
+	      				autoOk={true} * /
+	      				style={{width: '100%'}}
 						focused={focusedStart}
 						timezone={timezone}
 						onFocusChange={this.onFocusChange}
@@ -300,13 +326,13 @@ class AddChoir extends Component {
 						onTimeChange={this.onTimeChange}
 						showTimezone={showTimezone}
 						time={hourStart && minuteStart ? `${hourStart}:${minuteStart}` : null}
-			        />
+			        />*/}
 			        <br/>
-		      		<br/>
-			        <TimePicker
+
+			        {/*<TimePicker
 			        	/*hintText="Meeting End Time"
-			        	autoOk={true}
-			        	style={{width: '300px'}}*/
+			        	autoOk={true}* /
+			        	style={{width: '100%'}}
 						focused={focusedEnd}
 						timezone={timezone}
 						onFocusChange={this.onFocusChangeEnd}
@@ -315,7 +341,7 @@ class AddChoir extends Component {
 						onTimeChange={this.onTimeChangeEnd}
 						showTimezone={showTimezone}
 						time={hourEnd && minuteEnd ? `${hourEnd}:${minuteEnd}` : null}
-			        />
+			        />*/}
 		      		<br/>
 		      		<br/>
 		      		<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
@@ -327,13 +353,9 @@ class AddChoir extends Component {
 		        	<Redirect to={from || '/organizations/'+ this.props.match.params.orgID } />  
 		        )} 
 		    </CardText>
-		    {/*<CardActions border>
-		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
-		    </CardActions>*/}
 		</Card>
-
-
-      
+		</div>
+		</div>
     );
   }
 

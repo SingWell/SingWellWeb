@@ -397,7 +397,7 @@ class EditOrganization extends Component {
 		this.setState({newOrganization:{
 			name: this.state.orgName,
 			description: this.state.orgDescription,
-			address: this.state.orgAddress + " " + this.state.orgCity + ", " + this.state.orgState + " " + this.state.orgZip,
+			address: this.state.orgAddress,
 			phone_number: +this.state.orgPhone,
 			email: this.state.orgEmail,
 			admins: [1]
@@ -454,14 +454,15 @@ class EditOrganization extends Component {
   	// });
 
     return (
-    	<div>
+    	<div className={"formContainer"} >
+        <div className={"form"}>
     	<Card shadow={0} style={{ margin: '10px', width: '340px'}}>
-		    <CardTitle title="Edit Organization" />
+		    <CardTitle title="EDIT ORGANIZATION" className={"title"}/>
 		    <CardText>
 		       {/*<form onSubmit={this.handleSubmit.bind(this)}>*/}
 					<TextField 
 						floatingLabelText="Name..."
-						style={{width: '300px'}}
+						style={{width: '100%'}}
 						value={this.state.orgName}
 						onChange={this.handleNameChange}		
 					/>
@@ -469,21 +470,21 @@ class EditOrganization extends Component {
 		      		<TextField
 					    floatingLabelText="Description..."
 					    rows={3}
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    value={this.state.orgDescription}
 					    onChange={this.handleDescriptionChange}
 					/>
 					<br/>
 		      		<TextField
 					    floatingLabelText="Street Address..."
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    value={this.state.orgAddress}
 					    onChange={this.handleAddressChange}
 					/>
 					<br/>
-		      		<TextField
+		      		{/*<TextField
 					    floatingLabelText="City..."
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    value={this.state.orgCity}
 					    onChange={this.handleCityChange}
 					/>
@@ -491,7 +492,7 @@ class EditOrganization extends Component {
 		      		<SelectField
 		      			floatingLabelText="State..."
 						value={this.state.orgState}
-						style={{width: '300px'}}
+						style={{width: '100%'}}
 						onChange={this.handleStateChange}
 		      		>{this.stateItems(this.values)}
 		      		</SelectField>
@@ -499,13 +500,13 @@ class EditOrganization extends Component {
 		      		<TextField
 					    onChange={this.handleZipChange}
 					    floatingLabelText="Zipcode..."
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    value={this.state.orgZip}
-						/>
+						/>*/}
 		      		<TextField
 					    floatingLabelText="Phone Number..."
 					    ref="phoneNumber"
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    value={this.state.orgPhone}
 					    onChange={this.handlePhoneChange}
 					/>
@@ -513,7 +514,7 @@ class EditOrganization extends Component {
 		      		<TextField
 					    floatingLabelText="Email..."
 					    ref="email"
-					    style={{width: '300px'}}
+					    style={{width: '100%'}}
 					    value={this.state.orgEmail}
 					    onChange={this.handleEmailChange}
 					/>
@@ -529,6 +530,7 @@ class EditOrganization extends Component {
 		        )}*/}
 		    </CardText>
 		</Card>
+		</div>
 		</div>
      
     );

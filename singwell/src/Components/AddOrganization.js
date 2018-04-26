@@ -6,7 +6,7 @@ import { Redirect } from 'react-router'
     Menu, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';*/
 import { getColorClass, getTextColorClass } from '../css/palette';
-import styles from '../css/login.css'
+//import styles from '../css/login.css'
 import { TextField, SelectField, MenuItem, RaisedButton, FlatButton, Card, CardText, CardTitle } from 'material-ui/';
 
 //import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -49,7 +49,7 @@ class AddOrganization extends Component {
 		this.handleZipChange = this.handleZipChange.bind(this);
 		this.handlePhoneChange = this.handlePhoneChange.bind(this);
 		this.handleEmailChange = this.handleEmailChange.bind(this);	
-		this.handleMemberChange = this.handleMemberChange.bind(this);
+		//this.handleMemberChange = this.handleMemberChange.bind(this);
 	}
 
 	handleNameChange(event, value) {
@@ -102,13 +102,13 @@ class AddOrganization extends Component {
 		})
 	}
 
-	handleMemberChange(event, value) {
+	/*handleMemberChange(event, value) {
 		//let m=[];
 		//m[0]=value;
 		this.setState({
 			member: value
 		})
-	}
+	}*/
 
 	stateItems(values) {
 		return this.props.states.map((state) => (
@@ -388,10 +388,10 @@ class AddOrganization extends Component {
 			name: this.state.orgName,
 			description: this.state.orgDescription,
 			address: this.state.orgAddress + " " + this.state.orgCity + ", " + this.state.orgState + " " + this.state.orgZip,
-			phone_number: this.state.phoneNumber,
-			email: this.state.email,
+			phone_number: this.state.orgPhone,
+			email: this.state.orgEmail,
 			admins: [1], 
-			members: [1, 3]
+			members: 1
 		}}, function() {
 			console.log(this.state.newOrganization)
 			$.ajax({
@@ -416,6 +416,7 @@ class AddOrganization extends Component {
 		      }
 		    });
 		});
+		console.log(this.state);
   		e.preventDefault();
   	}
 
@@ -433,40 +434,53 @@ class AddOrganization extends Component {
   	});
 
     return (
-    	<div className={"materialContainer"} style={{overflowY: "auto"}}>
-        <div className={"box"}>
-        <Card shadow={0} style={{ margin: '10px', /*height: '700px'*/}}>
-        <CardTitle title="Add Organization" className={"title"}/>
+      <div className={"formConainer"}>
+        <div className={"form"} >
+        <Card shadow={0} >
+        <CardTitle title="ADD ORGANIZATION" className={"title"}/>
         	<CardText>
               	<TextField
 				    onChange={this.handleNameChange}
 				    floatingLabelText="Name..."
 				    ref="name"
-				    style={{width: '300px'}}
+				    style={{width: '100%'}}
 				/>
-				<br />
+				
+				<TextField
+			    onChange={this.handlePhoneChange}
+			    floatingLabelText="Phone Number..."
+			    ref="phoneNumber"
+			    style={{width: '100%'}}
+				/>
+				
+	      		<TextField
+			    onChange={this.handleEmailChange}
+			    floatingLabelText="Email..."
+			    ref="email"
+			    style={{width: '100%'}}
+				/>
 		      	<TextField
 				    onChange={this.handleDescriptionChange}
 				    floatingLabelText="Description..."
 				    ref="description"
 				    rows={3}
-				    style={{width: '300px'}}
+				    style={{width: '100%'}}
 				/>
-				<br />
+				
 		      	<TextField
 				    onChange={this.handleAddressChange}
 				    floatingLabelText="Street Address..."
 				    ref="streetAddress"
-				    style={{width: '300px'}}
+				    style={{width: '100%'}}
 				/>
-				<br />
+				
 		      	<TextField
 				    onChange={this.handleCityChange}
 				    floatingLabelText="City..."
 				    ref="city"
-				    style={{width: '300px'}}
+				    style={{width: '100%'}}
 				/>
-				<br />
+				
 		      		{/*<div>
 			      		<label>State</label><br />
 			      		<select ref= "state">
@@ -476,38 +490,20 @@ class AddOrganization extends Component {
 	      		<SelectField
 	      			floatingLabelText="State..."
 					value={this.state.orgState}
-					style={{width: '300px'}}
+					style={{width: '100%'}}
 					onChange={this.handleStateChange}
 	      		>{this.stateItems(this.values)}
 	      		</SelectField>
-	      		<br />
+	      		
 	      		<TextField
 			    onChange={this.handleZipChange}
 			    floatingLabelText="Zipcode..."
 			    ref="zipcode"
-			    style={{width: '300px'}}
-				/>
-				<br />
-	      		<TextField
-			    onChange={this.handlePhoneChange}
-			    floatingLabelText="Phone Number..."
-			    ref="phoneNumber"
-			    style={{width: '300px'}}
-				/>
-				<br />
-	      		<TextField
-			    onChange={this.handleEmailChange}
-			    floatingLabelText="Email..."
-			    ref="email"
-			    style={{width: '300px'}}
+			    style={{width: '100%'}}
 				/>
 				<br/>
-				<br />
-				<TextField
-				onChange={this.handleMemberChange}
-				floatingLabelText="Members..."
-				style={{width:'300px'}}
-				/>
+				<br/>
+				
 				<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)}/>
 				<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />
 

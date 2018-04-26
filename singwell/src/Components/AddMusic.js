@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, Icon, Card, CardTitle, CardMenu, List, ListItem, ListItemContent, CardText, CardActions,
-    Menu, MenuItem, Footer, FooterSection, FooterLinkList, Textfield,
+    Button, FABButton, IconButton, Icon, List, ListItem, ListItemContent, CardActions,
+    Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { SelectField, Option } from 'react-mdl-extra';
 import { getColorClass, getTextColorClass } from '../css/palette';
+import { Card, CardTitle, CardMenu, TextField, CardText, RaisedButton, FlatButton } from 'material-ui/';
 
 import '../css/AddChoir.css'
 
@@ -26,6 +27,31 @@ import '../css/AddMusic.css'
 
 
 class AddMusic extends Component {
+
+	constructor(props){
+		super(props);
+
+		let title = '';
+		let composer = '';
+		let arranger = '';
+		let publisher = '';
+		let instrument = '';
+
+		this.state = {
+			title, 
+			composer, 
+			arranger, 
+			publisher, 
+			instrument
+		}
+
+		this.handleTitleChange = this.handleTitleChange.bind(this);
+		this.handleComposerChange = this.handleComposerChange.bind(this);
+		this.handleArrangerChange = this.handleArrangerChange.bind(this);
+		this.handlePublisherChange = this.handlePublisherChange.bind(this);
+		this.handleInstrumentChange = this.handleInstrumentChange.bind(this);
+	}
+
 
 	removeFile(file, event) {
 		var i = this.state.filesToBeSent.indexOf(file);
@@ -69,10 +95,12 @@ class AddMusic extends Component {
 	    this.setState({filesToBeSent, filesPreview});
    }
 
+
 	componentWillMount() {
 		this.setState ( {
 			newMusic:{},
 			fireRedirect: false,
+			cancelRedirect: false,
 			musicID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
 			filesToBeSent: [],
@@ -84,10 +112,32 @@ class AddMusic extends Component {
 
 
 	}
+
+	handleCancel(e) {
+		this.setState({cancelRedirect: true})
+	}
+
+	handleTitleChange(event, value) {
+		this.setState({title: value});
+	}
 	
+	handleComposerChange(event, value) {
+		this.setState({composer: value});
+	}
+
+	handleArrangerChange(event, value) {
+		this.setState({arranger: value});
+	}
+
+	handlePublisherChange(event, value) {
+		this.setState({publisher: value});
+	}
+
+	handleInstrumentChange(event, value) {
+		this.setState({instrument: value});
+	}
 
 	handleSubmit(e){
-
 		if(this.state.filesToBeSent.length > 0) {
 			for(var file in this.state.filesToBeSent) {
 				var data = new FormData()
@@ -103,41 +153,41 @@ class AddMusic extends Component {
 				fireRedirect: true,
 			})	
 		} else {
-			console.log(this.refs.title.inputRef.value)
 			this.setState({newMusic:{
-				title: this.refs.title.inputRef.value,
-				composer: this.refs.composer.inputRef.value,
-				arranger: this.refs.arranger.inputRef.value,
-				publisher: this.refs.publisher.inputRef.value,
-				instrumentation: this.refs.instrumentation.inputRef.value,
-				organization: this.props.match.params.orgID
-			}}, function() {
-				$.ajax({
-				  type: "POST",
-			      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/",
-			      dataType: 'json',
-			      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-			      data: this.state.newMusic,
-			      success: function(data) {
-			        this.setState(
-			        	{
-			        		organization: this.props.match.params.orgID,
-			        		musicPost: data,
-			        		musicID: data.id,
-			        		fireRedirect: true
-			        	}, function(){
-			          console.log(this.state);
-			        })
-			      }.bind(this),
-			      error: function(xhr, status, err) {
-			        console.log(err);
-			        console.log(xhr.responseText);
-			      }
-			    });
-			});
-	  		e.preventDefault();
+			title: this.state.title,
+			composer: this.state.composer,
+			arranger: this.state.arranger,
+			publisher: this.state.publisher,
+			instrumentation: this.state.instrument,
+			organization: this.props.match.params.orgID
+		}}, function() {
+			$.ajax({
+			  type: "POST",
+		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/musicRecords/",
+		      dataType: 'json',
+		      headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+		      data: this.state.newMusic,
+		      success: function(data) {
+		        this.setState(
+		        	{
+		        		organization: this.props.match.params.orgID,
+		        		musicPost: data,
+		        		musicID: data.id,
+		        		fireRedirect: true
+		        	}, function(){
+		          console.log(this.state);
+		        })
+		      }.bind(this),
+		      error: function(xhr, status, err) {
+		        console.log(err);
+		        console.log(xhr.responseText);
+		      }
+		    });
+		});
+  		e.preventDefault();
 		}
 				
+
   	}
 
   render() {
@@ -146,52 +196,54 @@ class AddMusic extends Component {
 
   	const { from } = this.props.location.state || '/';
   	const { fireRedirect } = this.state;
+  	const { cancelRedirect } = this.state;
   	const { musicID } = this.state;
   	const { buttonClasses } = this.state
+  	const { value } = this.state;
 
 
     return (
-    	<Card shadow={0} style={{ margin: '10px'}}>
-		    <CardTitle>Add Music</CardTitle>
+        <div className={"formContainer"} >
+        <div className={"form"}>
+    	<Card shadow={0} >
+		    <CardTitle title="ADD MUSIC" className={"title"}/>
 		    <CardText className={"timePickerForm"}>
-		       <form onSubmit={this.handleSubmit.bind(this)}>
-			       <Textfield
-					    onChange={() => {}}
-					    label="Title..."
-					    floatingLabel
-					    ref="title"
-					    style={{width: '200px'}}
+			       <TextField
+					    onChange={this.handleTitleChange}
+					    floatingLabelText="Title..."
+					    //ref="title"
+					    style={{width: '100%'}}
+					    value={this.state.title}
 					/>
-					<Textfield
-					    onChange={() => {}}
-					    label="Composer..."
-					    floatingLabel
-					    ref="composer"
-					    style={{width: '200px'}}
+					<TextField
+					    onChange={this.handleComposerChange}
+					    floatingLabelText="Composer..."
+					    //ref="composer"
+					    style={{width: '100%'}}
+					    value={this.state.composer}
 					/>
-					<Textfield
-					    onChange={() => {}}
-					    label="Arranger..."
-					    floatingLabel
-					    ref="arranger"
-					    style={{width: '200px'}}
+					<TextField
+					    onChange={this.handleArrangerChange}
+					    floatingLabelText="Arranger..."
+					    //ref="arranger"
+					    style={{width: '100%'}}
+					    value={this.state.arranger}
 					/>
-					<Textfield
-					    onChange={() => {}}
-					    label="Publisher..."
-					    floatingLabel
-					    ref="publisher"
-					    style={{width: '200px'}}
+					<TextField
+					    onChange={this.handlePublisherChange}
+					    floatingLabelText="Publisher..."
+					    //ref="publisher"
+					    style={{width: '100%'}}
+					    value={this.state.publisher}
 					/>
-					<Textfield
-					    onChange={() => {}}
-					    label="Instrumentation..."
-					    floatingLabel
-					    ref="instrumentation"
-					    style={{width: '200px'}}
+					<TextField
+					    onChange={this.handleInstrumentChange}
+					    floatingLabelText="Instrumentation..."
+					    //ref="instrumentation"
+					    style={{width: '100%'}}
+					    value={this.state.instrument}
 					/>
-					
-					<Dropzone 
+      <Dropzone 
 						onDrop={(files) => this.onDrop(files)}
 						multiple={true}
 						className="dropzone"
@@ -201,19 +253,22 @@ class AddMusic extends Component {
 					         {this.state.filesPreview}
 			        	</div>
 		            </Dropzone>
-		            <br/>
-		      		<input className={this.state.buttonClasses} type="submit" value="Submit" />
-		      	</form>
+
+					<br/>
+					<br/>
+					<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)} />
+		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />		  
+
 		      	{fireRedirect && (
 		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID}/>
 		        )} 
+		        {cancelRedirect && (
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>
+		        )} 
 		    </CardText>
-		    <CardActions border>
-		        <Button colored accent onClick={() => this.props.history.push('/organizations/'+ this.props.match.params.orgID)}>Cancel</Button>
-		    </CardActions>
 		</Card>
-
-
+		</div>
+		</div>
       
     );
   }

@@ -171,31 +171,32 @@ class Event extends Component {
 
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
-          })
-            if(this.state.eventGet.choirs.length > 0) {
-                  this.state.eventGet.choirs.map( choir => {
-                    console.log(choir)
-                    $.ajax({
-                        type: "GET",
-                        url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + choir,
-                        dataType: 'json',
-                        cache: false, 
-                        headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
-                        success: function(data) {
-                            let choirDirectors =  this.state.choirDirectors;
-                            choirDirectors.push(data.director_name)
-                            this.setState({choirDirectors: choirDirectors})
-                            // this.state.choirDirectors.push(data.director_name)
-                            console.log(this.state.choirDirectors, data.director_name)
-                        }.bind(this),
-                        error: function(xhr, status, err) {
-                          console.log(err);
-                        }
-                    })
-                })
-            }
-              
-          // })    
+
+          });
+              if(this.state.eventGet.choirs.length > 0) {
+                    this.state.eventGet.choirs.map( choir => {
+                      console.log(choir)
+                      $.ajax({
+                          type: "GET",
+                          url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/" + choir,
+                          dataType: 'json',
+                          cache: false, 
+                          headers: {"Authorization": 'Token d79649e191d27d3b903e3b59dea9c8e4cae0b3c2'},
+                          success: function(data) {
+                              let choirDirectors =  this.state.choirDirectors;
+                              if(choirDirectors.indexOf(data.director_name) == -1)
+                              { choirDirectors.push(data.director_name) }
+                              this.setState({choirDirectors: choirDirectors})
+                              //this.state.choirDirectors.push(data.director_name)
+                              console.log(this.state.choirDirectors, data.director_name)
+                          }.bind(this),
+                          error: function(xhr, status, err) {
+                            console.log(err);
+                          }
+                      })
+                  })
+              } 
+
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -215,17 +216,13 @@ class Event extends Component {
               console.log(musicPiece)
               this.state.musicLibrary.push({title: musicPiece.title + " - " + musicPiece.instrumentation, id: musicPiece.id})
             });
-
           });
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
         }
       });
-
-
     }
-
 
     onChangeHeaderTab(tabId) {
         this.setState({

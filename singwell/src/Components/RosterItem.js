@@ -77,9 +77,11 @@ class RosterItem extends Component {
         this.setState({open: true});
       };
 
+
       handleClose = () => {
         this.setState({open: false});
       };
+
 
       handleSubmit(e) {
         this.setState({
@@ -112,34 +114,34 @@ class RosterItem extends Component {
       }
 {/* */}
     return (
-      
 
-
-
+      <div>
+      <Card style={{width: '300px'}}>
+      <Dialog
+          title="Are you sure?"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+          Removing a choir member cannot be undone.
+        </Dialog>
+      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
+        <ListItemContent avatar="person" >{this.props.person.first_name} {this.props.person.last_name}</ListItemContent>
         
+      </ListItem>
+      {/*<IconButton label="Alert" style={{display: 'block', float: 'right'}} tooltip="edit"  onClick={this.handleOpen}>
+          <ActionDelete />
+      </IconButton>*/}
 
       
       
+      </Card>
+      <li className="mn-pymk-list__card display-flex flex-column" onClick={() => this.props.history.push('/profile/' + this.props.person.id)} style={{cursor: 'pointer'}}>
+          <div className="pymk-card">
 
-      <li className="mn-pymk-list__card display-flex flex-column"  style={{cursor: 'pointer'}}>
-          <Dialog
-            title="Are you sure?"
-            actions={actions}
-            modal={false}
-            open={this.state.open}
-            onRequestClose={this.handleClose}
-          >
-            Removing a choir member cannot be undone.
-          </Dialog>
-          <IconButton
-                     iconClassName="material-icons"
-                      onClick={this.handleOpen}
-                      style={{left: '150px', top: '0px', padding: '0', width: 'auto', height: 'auto'}}
-                      className="delete-member"
-                    >
-                      close 
-           </IconButton>
-          <div className="pymk-card" onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
+  
+   
               <a className="pymk-card__imageember-view"><img className="lazy-image EntityPhoto-circle-7 loaded" src={this.state.image}/></a>
 
               <div className="pymk-card__details text-align-center">
@@ -158,6 +160,7 @@ class RosterItem extends Component {
            </div>
       </li>
 
+      </div>
 
     );
   }
