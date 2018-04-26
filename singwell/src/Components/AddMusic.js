@@ -15,7 +15,16 @@ import Moment from 'react-moment';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css';
 
-// import WeekdayPicker from "react-weekday-picker";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Dropzone from 'react-dropzone';
+import FontIcon from 'material-ui/FontIcon';
+import {blue500, red500, greenA200} from 'material-ui/styles/colors';
+
+
+import IconButton from 'material-ui/IconButton';
+
+import '../css/AddMusic.css'
+
 
 class AddMusic extends Component {
 
@@ -43,6 +52,50 @@ class AddMusic extends Component {
 		this.handleInstrumentChange = this.handleInstrumentChange.bind(this);
 	}
 
+
+	removeFile(file, event) {
+		var i = this.state.filesToBeSent.indexOf(file);
+
+	    if (i < 0)
+	        return;
+
+	    this.setState((prevState) => {
+	        return {
+	            filesToBeSent: prevState.filesToBeSent.filter((element, index) => index !== i),
+	            filesPreview: prevState.filesPreview.filter((element, index) => index !== i)
+	        };
+	    });
+
+	}
+
+	onDrop(acceptedFiles, rejectedFiles) {
+      console.log(acceptedFiles)
+      var filesToBeSent=this.state.filesToBeSent;
+      for(var file in acceptedFiles) {
+      	console.log('Accepted files: ', acceptedFiles[file].name);
+      	filesToBeSent.push(acceptedFiles[file]);
+      }
+	    
+	    console.log(filesToBeSent)
+	    var filesPreview=[];
+	    for(var i in filesToBeSent){
+	    	console.log(filesToBeSent[i].name)
+	      filesPreview.push(
+	      	<div key={i}>
+	        	{filesToBeSent[i].name}
+	        	<IconButton
+		              iconClassName="material-icons"
+		              onClick={this.removeFile.bind(this, filesToBeSent[i])}
+		            >
+		              close
+		        </IconButton>
+	        </div>
+	      )
+	    }
+	    this.setState({filesToBeSent, filesPreview});
+   }
+
+
 	componentWillMount() {
 		this.setState ( {
 			newMusic:{},
@@ -50,7 +103,13 @@ class AddMusic extends Component {
 			cancelRedirect: false,
 			musicID: null,
 			buttonClasses: `mdl-button ${getColorClass('primary')} ${getTextColorClass('white')}`,
+			filesToBeSent: [],
+			filesPreview: [],
+			fileToSend: {},
+			file: new FormData()
 		});
+
+
 
 	}
 
@@ -79,8 +138,22 @@ class AddMusic extends Component {
 	}
 
 	handleSubmit(e){
-		//console.log(this.refs.title.inputRef.value)
-		this.setState({newMusic:{
+		if(this.state.filesToBeSent.length > 0) {
+			for(var file in this.state.filesToBeSent) {
+				var data = new FormData()
+				data.append('organization_id', this.props.match.params.orgID)
+				data.append(this.state.filesToBeSent[file].name, this.state.filesToBeSent[file])
+				console.log(this.state.filesToBeSent[file])
+			 	var request = new XMLHttpRequest();
+				request.open("POST", "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/parse/");
+				request.send(data);
+			}
+			this.setState({
+				organization: this.props.match.params.orgID,
+				fireRedirect: true,
+			})	
+		} else {
+			this.setState({newMusic:{
 			title: this.state.title,
 			composer: this.state.composer,
 			arranger: this.state.arranger,
@@ -112,6 +185,9 @@ class AddMusic extends Component {
 		    });
 		});
   		e.preventDefault();
+		}
+				
+
   	}
 
   render() {
@@ -167,12 +243,24 @@ class AddMusic extends Component {
 					    style={{width: '100%'}}
 					    value={this.state.instrument}
 					/>
+      <Dropzone 
+						onDrop={(files) => this.onDrop(files)}
+						multiple={true}
+						className="dropzone"
+					>
+		                <div style={{wordWrap: 'break-word'}}>
+					         Files to be uploaded are:
+					         {this.state.filesPreview}
+			        	</div>
+		            </Dropzone>
+
 					<br/>
 					<br/>
 					<RaisedButton label="Submit" onClick={this.handleSubmit.bind(this)} />
 		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />		  
+
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID}/>
 		        )} 
 		        {cancelRedirect && (
 		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>

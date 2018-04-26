@@ -17,12 +17,27 @@
 
 .DayPicker-Day {
 	padding: 0 !important;
+    overflow: scroll;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+div.DayPicker-Months > div > div.DayPicker-Body > div > div > div > div > div {
+    text-overflow: ellipsis;
+    width: 142px;
+    display: block;
+    overflow: hidden;
 }
 
 .DayPicker-Month {
 	display: initial !important;
 }
 
+.DayPicker-Day--outside {
+    display: none !important;
+}
 
 .DayPicker-Day--today > div > div:nth-child(1) {
 	background: orangered !important;
@@ -42,14 +57,14 @@
 }
 
 .DayPicker-NavButton--prev {
-	display: none;
+	display: none !important;
 }
 
 .DayPicker-NavButton--next {
-	display: none;
+	display: none !important;
 }
 
-.DayPicker-Body > div:first-child > div > div {
+/*.DayPicker-Body > div:first-child > div > div {
 	border-top-width: 2px !important;
 }
 
@@ -63,7 +78,7 @@
 
 .DayPicker-Body > div > div:last-child > div {
 	border-right-width: 2px !important;
-}
+}*/
 
 
 .mn-pymk-list__cards {
@@ -150,7 +165,7 @@
 
 .pymk-card__occupation--card-layout {
     display: block;
-    max-height: none;
+    max-height: none !important;
 
 }
 

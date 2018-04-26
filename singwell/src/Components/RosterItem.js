@@ -8,6 +8,8 @@ import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
 import { IconButton, FontIcon, Card, Dialog, FlatButton, RaisedButton } from 'material-ui/';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 
+import '../css/RosterItem.css';
+
 
 
 class RosterItem extends Component {
@@ -64,26 +66,29 @@ class RosterItem extends Component {
      //    }
      //  });
 
-  }
 
-  handleEdit() {
-    console.log("edit");
-  }
+  
+}
+    handleEdit() {
+        console.log("edit");
+      }
 
-  handleOpen() {
-    this.setState({open: true});
-  };
+      handleOpen = () => {
+        this.setState({open: true});
+      };
 
-  handleClose() {
-    this.setState({open:false});
-  }
 
-  handleSubmit(e) {
-    this.setState({
-      open: false
+      handleClose = () => {
+        this.setState({open: false});
+      };
 
-    });
-  };
+
+      handleSubmit(e) {
+        this.setState({
+          open: false
+
+        });
+      };
 
   render() {
     const actions = [
@@ -107,8 +112,9 @@ class RosterItem extends Component {
         var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
         return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
       }
-
+{/* */}
     return (
+
       <div>
       <Card style={{width: '300px'}}>
       <Dialog
@@ -133,6 +139,9 @@ class RosterItem extends Component {
       </Card>
       <li className="mn-pymk-list__card display-flex flex-column" onClick={() => this.props.history.push('/profile/' + this.props.person.id)} style={{cursor: 'pointer'}}>
           <div className="pymk-card">
+
+  
+   
               <a className="pymk-card__imageember-view"><img className="lazy-image EntityPhoto-circle-7 loaded" src={this.state.image}/></a>
 
               <div className="pymk-card__details text-align-center">
@@ -150,7 +159,9 @@ class RosterItem extends Component {
               </div>
            </div>
       </li>
+
       </div>
+
     );
   }
 

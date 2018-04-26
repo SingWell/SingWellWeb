@@ -171,6 +171,7 @@ class Event extends Component {
 
               this.state.keys = $.unique(this.state.keys)
               console.log(this.state.keys)
+
           });
               if(this.state.eventGet.choirs.length > 0) {
                     this.state.eventGet.choirs.map( choir => {
@@ -195,6 +196,7 @@ class Event extends Component {
                       })
                   })
               } 
+
         }.bind(this),
         error: function(xhr, status, err) {
           console.log(err);
@@ -329,6 +331,10 @@ class Event extends Component {
                                 searchText={this.state.key}
                                 fullWidth={true}
                                 style={{marginTop: '0'}}
+                                menuStyle={{maxHeight: '200px'}}
+                                openOnFocus = {true}
+                                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                                targetOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                               />
                           </TableRowColumn>
                           <TableRowColumn>
@@ -342,6 +348,10 @@ class Event extends Component {
                                 searchText={this.state.value}
                                 fullWidth={true}
                                 style={{marginTop: '0'}}
+                                menuStyle={{maxHeight: '200px'}}
+                                openOnFocus = {true}
+                                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                                targetOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                               />
                           </TableRowColumn>
                            <TableRowColumn>
