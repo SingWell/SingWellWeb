@@ -149,7 +149,7 @@ class AddMusicResource extends Component {
 						multiple={true}
 						className="dropzone"
 					>
-		                <div>
+		                <div style={{wordWrap: 'break-word'}}>
 					         Files to be uploaded are:
 					         {this.state.filesPreview}
 			        	</div>

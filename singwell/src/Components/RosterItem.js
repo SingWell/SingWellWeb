@@ -8,6 +8,8 @@ import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
 import { IconButton, FontIcon, Card, Dialog, FlatButton, RaisedButton } from 'material-ui/';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 
+import '../css/RosterItem.css';
+
 
 
 class RosterItem extends Component {
@@ -71,13 +73,13 @@ class RosterItem extends Component {
         console.log("edit");
       }
 
-      handleOpen() {
+      handleOpen = () => {
         this.setState({open: true});
       };
 
-      handleClose() {
-        this.setState({open:false});
-      }
+      handleClose = () => {
+        this.setState({open: false});
+      };
 
       handleSubmit(e) {
         this.setState({
@@ -108,28 +110,36 @@ class RosterItem extends Component {
         var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
         return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
       }
-{/* <Card style={{width: '300px'}}>
-      <Dialog
-          title="Are you sure?"
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-        >
-          Removing a choir member cannot be undone.
-        </Dialog>
-
-      
-      
-      </Card> */}
+{/* */}
     return (
       
 
 
 
+        
 
-      <li className="mn-pymk-list__card display-flex flex-column" onClick={() => this.props.history.push('/profile/' + this.props.person.id)} style={{cursor: 'pointer'}}>
-          <div className="pymk-card">
+      
+      
+
+      <li className="mn-pymk-list__card display-flex flex-column"  style={{cursor: 'pointer'}}>
+          <Dialog
+            title="Are you sure?"
+            actions={actions}
+            modal={false}
+            open={this.state.open}
+            onRequestClose={this.handleClose}
+          >
+            Removing a choir member cannot be undone.
+          </Dialog>
+          <IconButton
+                     iconClassName="material-icons"
+                      onClick={this.handleOpen}
+                      style={{left: '150px', top: '0px', padding: '0', width: 'auto', height: 'auto'}}
+                      className="delete-member"
+                    >
+                      close 
+           </IconButton>
+          <div className="pymk-card" onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
               <a className="pymk-card__imageember-view"><img className="lazy-image EntityPhoto-circle-7 loaded" src={this.state.image}/></a>
 
               <div className="pymk-card__details text-align-center">
@@ -147,6 +157,7 @@ class RosterItem extends Component {
               </div>
            </div>
       </li>
+
 
     );
   }

@@ -207,9 +207,9 @@ class AddChoir extends Component {
 				1
 			],
 			//director_name: "Kenton Kravig",
-			director_id: 1
+			director: 1
 		}}, function() {
-			console.log("inside post statement");
+			console.log(this.state.newChoir);
 			$.ajax({
 			  type: "POST",
 		      url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/choirs/",
@@ -222,7 +222,7 @@ class AddChoir extends Component {
 		        		organization: this.props.match.params.orgID,
 		        		choirPost: data,
 		        		choirID: data.id,
-		        		fireRedirect: true
+		        		// fireRedirect: true
 		        	}, function(){
 		          console.log(this.state);
 		        })

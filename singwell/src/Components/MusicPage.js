@@ -156,10 +156,10 @@ class MusicPage extends Component {
                     <YoutubeItem key={item.resource_id} youtubeItem={item} musicID={this.props.match.params.musicID} orgID={this.props.match.params.orgID} history={this.props.history} />
                 )
             } else if (item.type ==="file" && item.extension === "mxl") {
-                // let href = "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/resource/?resource_id=" + item.resource_id + "&record_id=" + this.props.match.params.musicID
-                // mxlItems.push(
-                //     <a href={href} >{item.title}</a>
-                // )
+                let href = "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/resource/?resource_id=" + item.resource_id + "&record_id=" + this.props.match.params.musicID
+                mxlItems.push(
+                    <h4><a href={href} download={item.title} target="_blank">{item.title}</a></h4>
+                )
             }
 
         })

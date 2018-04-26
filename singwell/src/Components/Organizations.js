@@ -156,7 +156,7 @@ class Organizations extends Component {
         this.handleYearMonthChange = this.handleYearMonthChange.bind(this);
 
         this.handleTitleChange = this.handleTitleChange.bind(this);
-        this.handleComposereChange = this.handleComposerChange.bind(this);
+        this.handleComposerChange = this.handleComposerChange.bind(this);
         this.handleArrangerChange = this.handleArrangerChange.bind(this);
         this.handleInstrumentationChange = this.handleInstrumentationChange.bind(this);
 
@@ -256,20 +256,6 @@ class Organizations extends Component {
                               </Tooltip>
                             </List>
 
-                                <div className="map" style={{height: "300px"}}>
-                                <GoogleMapReact
-                                        bootstrapURLKeys={{ key: "AIzaSyDs9ev97Ko6vAon6w5wxflxhJBdcDhzXT0" }}
-                                        defaultCenter={this.props.center}
-                                        defaultZoom={this.props.zoom}
-                                      >
-                                        <AnyReactComponent
-                                          lat={this.state.center.lat}
-                                          lng={this.state.center.lng}
-                                          text={this.state.orgGet.description}
-                                        />
-                                      </GoogleMapReact>
-                                    {/* <MapContainer initialCenter={{lat: 55, lng: -93}}/> */}
-                                </div>
                         </Cell>
                 </Grid>
                         
@@ -375,8 +361,6 @@ class Organizations extends Component {
                     }
                 }
             }
-
-            
         });
 
         console.log(eventsTest)
@@ -492,7 +476,6 @@ class Organizations extends Component {
                     </Cell>
                     <Cell col={12}>
                         <DayPicker
-                          showOutsideDays
                           canChangeMonth={true}
                           className="Birthdays"
                           renderDay={renderDay.bind(this)}
@@ -518,56 +501,43 @@ class Organizations extends Component {
         this.setState({
             title: value
         })
-        this.filterMusicLibrary(value)
+        this.filterMusicLibrary()
     }
 
     handleComposerChange(event, value) {
         this.setState({
             composer: value
         })
-        this.filterMusicLibrary(value)
+        this.filterMusicLibrary()
     }
 
     handleArrangerChange(event, value) {
         this.setState({
             arranger: value
         })
-        this.filterMusicLibrary(value)
+        this.filterMusicLibrary()
     }
 
     handleInstrumentationChange(event, value) {
         this.setState({
             instrumentation: value
         })
-        this.filterMusicLibrary(value)
+        this.filterMusicLibrary()
     }
 
-    filterMusicLibrary(value) {
-        // console.log(this.state.title)
-        let musicLibraryItems = [];
-        this.state.musicGet.map(music => {
-            if(music.title.includes(this.state.title)) {
-                musicLibraryItems.push(
-                    <MusicLibraryItem key= {music.id} music={music} history={this.props.history}/>
-                );
-            }
-            
-        });
-        
-        return musicLibraryItems;
-        
+    filterMusicLibrary() {
+        const filteredMusicItems = this.state.musicGet.filter((music) =>
+            (!this.state.title || music.title && music.title.toLowerCase().includes(this.state.title.toLowerCase())) &&
+            (!this.state.composer || music.composer && music.composer.toLowerCase().includes(this.state.composer.toLowerCase())) &&
+            (!this.state.arranger || music.arranger && music.arranger.toLowerCase().includes(this.state.arranger.toLowerCase())) &&
+            (!this.state.instrumentation || music.instrumentation && music.instrumentation.toLowerCase().includes(this.state.instrumentation.toLowerCase()))
+          );
+          return filteredMusicItems.map((music) =>
+            <MusicLibraryItem key={music.id} music={music} history={this.props.history}/>
+          );
     }
 
     renderMusicLibrary() {
-
-        const { musicGet } = this.state
-        
-        // let musicLibraryItems;
-        this.state.musicLibraryItems = this.state.musicGet.map(music => {
-            return (
-                <MusicLibraryItem key= {music.id} music={music} history={this.props.history}/>
-            );
-        });
 
         return (
             <div className="title__padding">
