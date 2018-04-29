@@ -108,7 +108,7 @@ class Event extends Component {
                 "notes": this.state.notes,
                 "field_title": this.state.key
             }}, function() {
-                console.log(this.state.programItem)
+                // console.log(this.state.programItem)
                 $.ajax({
                   type: "POST",
                   url: "http://ec2-34-215-244-252.us-west-2.compute.amazonaws.com/events/" + this.props.match.params.eventID + "/program/",

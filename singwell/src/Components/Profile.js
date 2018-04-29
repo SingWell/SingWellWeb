@@ -29,6 +29,8 @@ import Drawer from 'material-ui/Drawer';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
+import '../css/Profile.css';
+
 
 
 class Profile extends Component {

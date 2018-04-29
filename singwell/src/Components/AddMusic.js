@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Redirect } from 'react-router';
 import { Layout, Header, HeaderRow, HeaderTabs, Tab, Content, Grid, Cell,
-    Button, FABButton, IconButton, Icon, List, ListItem, ListItemContent, CardActions,
+    Button, FABButton, Icon, List, ListItem, ListItemContent, CardActions,
     Menu, MenuItem, Footer, FooterSection, FooterLinkList,
     FooterDropDownSection } from  'react-mdl';
 import { SelectField, Option } from 'react-mdl-extra';
@@ -150,7 +150,7 @@ class AddMusic extends Component {
 			}
 			this.setState({
 				organization: this.props.match.params.orgID,
-				fireRedirect: true,
+				cancelRedirect: true,
 			})	
 		} else {
 			this.setState({newMusic:{
@@ -260,10 +260,10 @@ class AddMusic extends Component {
 		      		<FlatButton label="Cancel" onClick={this.handleCancel.bind(this)} />		  
 
 		      	{fireRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID}/>
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>
 		        )} 
 		        {cancelRedirect && (
-		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID + '/music/' + musicID}/>
+		          <Redirect to={from || '/organizations/' + this.props.match.params.orgID}/>
 		        )} 
 		    </CardText>
 		</Card>

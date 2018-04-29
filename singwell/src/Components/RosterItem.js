@@ -115,28 +115,8 @@ class RosterItem extends Component {
 {/* */}
     return (
 
-      <div>
-      <Card style={{width: '300px'}}>
-      <Dialog
-          title="Are you sure?"
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-        >
-          Removing a choir member cannot be undone.
-        </Dialog>
-      <ListItem style={{cursor: 'pointer'}} onClick={() => this.props.history.push('/profile/' + this.props.person.id)}>
-        <ListItemContent avatar="person" >{this.props.person.first_name} {this.props.person.last_name}</ListItemContent>
-        
-      </ListItem>
-      {/*<IconButton label="Alert" style={{display: 'block', float: 'right'}} tooltip="edit"  onClick={this.handleOpen}>
-          <ActionDelete />
-      </IconButton>*/}
 
       
-      
-      </Card>
       <li className="mn-pymk-list__card display-flex flex-column" onClick={() => this.props.history.push('/profile/' + this.props.person.id)} style={{cursor: 'pointer'}}>
           <div className="pymk-card">
 
@@ -160,7 +140,7 @@ class RosterItem extends Component {
            </div>
       </li>
 
-      </div>
+
 
     );
   }

@@ -87,8 +87,8 @@ class MusicPage extends Component {
             }
         })
 
-        previousEvents = previousEvents.reverse()
-        nextEvents = nextEvents.reverse()
+        // previousEvents = previousEvents.reverse()
+        // nextEvents = nextEvents.reverse()
 
         previousEventItem = previousEvents.map(event => {
                 return (

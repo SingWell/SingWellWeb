@@ -237,7 +237,7 @@ class AddChoir extends Component {
 		        		organization: this.props.match.params.orgID,
 		        		choirPost: data,
 		        		choirID: data.id,
-		        		// fireRedirect: true
+		        		fireRedirect: true
 		        	}, function(){
 		          console.log(this.state);
 		        })

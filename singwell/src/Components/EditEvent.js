@@ -243,7 +243,7 @@ class EditEvent extends Component {
 				key={choir.id}
 				insetChildren={true}
 				checked={values && values.indexOf(choir) > -1}
-				value={choir.id - 1}
+				value={choir.id}
 				primaryText={choir.name}
 			/>
 		));

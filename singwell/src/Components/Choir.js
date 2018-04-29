@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import 'react-day-picker/lib/style.css';
 import { IconButton, FontIcon, Dialog, FlatButton, RaisedButton, SelectField, MenuItem, DropDownMenu } from 'material-ui/';
-import { Grid } from 'material-ui/';
+// import { Grid } from 'material-ui/';
 import ImageEdit from 'material-ui/svg-icons/image/edit';
 import '../css/Choir.css'
 
@@ -381,7 +381,7 @@ class Choir extends Component {
             } 
         })
 
-        eventItems = eventItems.reverse()
+        // eventItems = eventItems.reverse()
 
         eventItems = eventItems.map(event => {
             return (
@@ -417,9 +417,9 @@ class Choir extends Component {
             <h4 className="title__padding">
                     Upcoming Events:
             </h4>
-            {/*<Grid component="section" className="section--center" shadow={0} noSpacing>
+            <Grid component="section" className="section--center" shadow={0} noSpacing>
                     {eventItems.slice(0,3)}
-            </Grid>*/}
+            </Grid>
           </div>
         );
     }

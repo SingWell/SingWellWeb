@@ -129,8 +129,8 @@ class AddEvent extends Component {
 			<MenuItem
 				key={choir.id}
 				insetChildren={true}
-				checked={values && values.indexOf(choir) > -1}
-				value={choir.id - 1}
+
+				value={choir.id}
 				primaryText={choir.name}
 			/>
 		));
@@ -180,7 +180,7 @@ class AddEvent extends Component {
 			time: startTime,
 			location: this.state.location,
 			choirs: this.state.choirs,
-			organization: this.props.match.params.orgID
+			organization: +this.props.match.params.orgID
 		}}, function() {
 			console.log(this.state.newEvent)
 			$.ajax({

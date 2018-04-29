@@ -29,8 +29,9 @@ class Main extends Component {
 	  return (
 	  	<main>
 		    <Switch>
+		      <Route exact path='/' component={Login} />
 		      <Route exact path='/login' component={Login} />
-		      <Route exact path='/' component={AddOrganization} />
+		      <Route exact path='/organizations' component={AddOrganization} />
 		      <Route exact path='/organizations/:orgID' component={Organizations} />
 		      <Route exact path='/organizations/:orgID/choirs' component={AddChoir} />
 		      <Route exact path='/organizations/:orgID/choirs/:choirID' component={Choir} />
