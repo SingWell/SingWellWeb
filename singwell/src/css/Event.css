@@ -1,14 +1,14 @@
 /*super hacky fix for the tabbing accross autocompletes*/
 #root > div > div > main > div > div > div > main > div > div > div > div > div:nth-child(3) > table > tfoot > tr > td {
-	overflow: inherit !important;
+  overflow: inherit !important;
 }
 
 #root > div > div > main > div > div > div > main > div > div#event > div > div > div:nth-child(3) {
-	position: sticky !important;
-	bottom: 0 !important;
-	/*margin-bottom: 250px;*/
+  position: sticky !important;
+  bottom: 0 !important;
+  /*margin-bottom: 250px;*/
 }
 
 #root > div > div > main > div > div > div > main > div > div > div > div {
-	overflow: inherit !important;
+  overflow: inherit !important;
 }

@@ -1,104 +1,102 @@
 .mn-pymk-list__cards {
-    display: flex;
-    flex-wrap: wrap;
-
-
-    margin: 8px;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    background: 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 8px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: 0 0;
 }
 
 .mn-pymk-list__card {
-    flex-basis: calc(24% + .1em);
-    max-width: calc(24% + .1em);
-    padding: 10pt;
+  flex-basis: calc(24% + .1em);
+  max-width: calc(24% + .1em);
+  padding: 10pt;
 }
 
 .mn-pymk-list__card {
-    outline: #cdcfd2 solid 1px;
-    background: #fff;
-    position: relative;
-    overflow: hidden;
+  outline: #cdcfd2 solid 1px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
 }
 
 .flex-column {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .display-flex {
-    display: flex;
+  display: flex;
 }
 
 .pymk-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: none;
-    margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: none;
+  margin-bottom: 40px;
 }
 
 .EntityPhoto-circle-7 {
-    width: 104px;
-    height: 104px;
-    box-sizing: border-box;
-    background-clip: content-box;
-    border: 0 solid transparent;
-    border-radius: 49.9%;
+  width: 104px;
+  height: 104px;
+  box-sizing: border-box;
+  background-clip: content-box;
+  border: 0 solid transparent;
+  border-radius: 49.9%;
 }
 
 .justify-center {
-    justify-content: center;
+  justify-content: center;
 }
 
 .pymk-card__name--card-layout {
-    display: block;
+  display: block;
 }
 
 .pymk-card__name {
-    display: block;
-    margin: 8pt;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 2rem;
-    word-break: keep-all;
-    flex: 1 100%;
-    color: black;
-    font-weight: 700;
-    font-size: 1.5rem;
+  display: block;
+  margin: 8pt;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 2rem;
+  word-break: keep-all;
+  flex: 1 100%;
+  color: black;
+  font-weight: 700;
+  font-size: 1.5rem;
 
 }
 
 .pymk-card__occupation {
-    display: block;
-    display: -webkit-box;
-    margin: 0 auto;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 4rem;
-    word-break: break-word;
-    flex: 1 100%;
-    color: black;
-    font-size:1.25rem;
-    opacity: 0.7;
+  display: block;
+  display: -webkit-box;
+  margin: 0 auto;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4rem;
+  word-break: break-word;
+  flex: 1 100%;
+  color: black;
+  font-size: 1.25rem;
+  opacity: 0.7;
 }
 
 .pymk-card__occupation--card-layout {
-    display: block;
-    max-height: 3.2rem;
+  display: block;
+  max-height: 3.2rem;
 }
 
 .text-align-center {
-	text-align: center;
+  text-align: center;
 }
 
 .pymk-card__name:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
